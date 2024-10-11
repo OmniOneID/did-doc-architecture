@@ -203,7 +203,9 @@ Holder는 Issuer가 발급한 신분증을 소지한 자를 말하며, 일반적
 
 
 ### 3.3. Issuer Legacy
-Issuer Legacy는 이전에 사용되던 신원 관리 시스템으로, Holder에게 신분증을 발급하거나 발급을 위해 필요한 신원 정보를 가지고 있는 시스템이다.  이 시스템은 VC를 발급하기 위해 필요한 정보를 OpenDID에 전달하는 역할을 하지만, 그 방식은 구현에 따라 달라진다. 예를 들어, API를 호출하거나 OpenDID에서 제공하는 SDK를 사용할 수 있다.
+Issuer Legacy는 이전에 사용되던 신원 관리 시스템으로, Holder에게 신분증을 발급하거나 발급을 위해 필요한 신원 정보를 가지고 있는 시스템이다. [2. Digital ID 플랫폼](#2-digital-id-플랫폼)에서는 Goverment의 도로공단, 국가보훈부, 행정안전부 시스템이 이에 해당한다.
+
+이 시스템은 VC를 발급하기 위해 필요한 정보를 OpenDID에 전달하는 역할을 하지만, 그 방식은 구현에 따라 달라진다. 예를 들어, API를 호출하거나 OpenDID에서 제공하는 SDK를 사용할 수 있다.
 
 구체적인 예는 다음과 같다:
 
@@ -225,7 +227,9 @@ Issuer Legacy는 발급에 필요한 사용자 정보의 출처이며, 기존 Is
 또한 시스템 운영 중에 Issuer가 추가되거나 제거될 수도 있다.
 
 ### 3.5. Verifier Legacy
-Verifier Legacy는 기존에 Holder의 신원을 확인하고 서비스를 제공하는 시스템을 의미한다. 이 시스템은 Holder가 제출한 Verifiable Presentation(VP)을 통해 신원을 검증하며, VP는 OpenDID 시스템에서 검증된 후 Verifier Legacy에 전달된다. Verifier Legacy는 검증된 VP를 바탕으로 Holder의 신원을 확인하고, 그에 따라 서비스를 제공한다.
+Verifier Legacy는 기존에 Holder의 신원을 확인하고 서비스를 제공하는 시스템을 의미한다. [2. Digital ID 플랫폼](#2-digital-id-플랫폼)에서는 Service Provider의 금융권, 경찰청, 편의점 시스템이 이에 해당한다.
+
+이 시스템은 Holder가 제출한 Verifiable Presentation(VP)을 통해 신원을 검증하며, VP는 OpenDID 시스템에서 검증된 후 Verifier Legacy에 전달된다. Verifier Legacy는 검증된 VP를 바탕으로 Holder의 신원을 확인하고, 그에 따라 서비스를 제공한다.
 
 구체적인 예는 다음과 같다:
 
