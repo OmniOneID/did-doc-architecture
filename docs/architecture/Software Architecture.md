@@ -28,40 +28,43 @@ Software Architecture
 ---
 
 <!-- TOC tocDepth:2..4 chapterDepth:2..6 -->
-
-- [1. 개요](#1-개요)
+  - [1. 개요](#1-개요)
     - [1.1. C4 model](#11-c4-model)
     - [1.2. 참조문서](#12-참조문서)
-- [2. System Context Diagram](#2-system-context-diagram)
-    - [2.1. OpenDID](#21-opendid)
-    - [2.2. Holder](#22-holder)
-    - [2.3. Issuer](#23-issuer)
-    - [2.4. Verifier](#24-verifier)
-- [3. Container Diagram](#3-container-diagram)
-    - [3.1. Core](#31-core)
-    - [3.2. Wallet](#32-wallet)
-    - [3.3. Certified App](#33-certified-app)
+  - [2. Digital ID 플랫폼](#2-digital-id-플랫폼)
+    - [2.1. Open DID](#21-open-did)
+  - [3. System Context Diagram](#3-system-context-diagram)
+    - [3.1. OpenDID](#31-opendid)
+    - [3.2. Holder](#32-holder)
+    - [3.3. Issuer Legacy](#33-issuer-legacy)
     - [3.4. Issuer](#34-issuer)
-    - [3.5. Verifier](#35-verifier)
-    - [3.6. Supplements](#36-supplements)
-- [4. Component Diagram](#4-component-diagram)
-    - [4.1. Trust Agent](#41-trust-agent)
-        - [4.1.1. Enroll Controller](#411-enroll-controller)
-        - [4.1.2. Issuance Controller](#412-issuance-controller)
-        - [4.1.3. List Controller](#413-list-controller)
-    - [4.2. Issuer Service](#42-issuer-service)
-        - [4.2.1. Issuance Controller](#421-issuance-controller)
-        - [4.2.2. VC Controller](#422-vc-controller)
-    - [4.3. Verifier Service](#43-verifier-service)
-        - [4.3.1. Verify Controller](#431-verify-controller)
-    - [4.4. Certified App (CApp)](#44-certified-app-capp)
-        - [4.4.1. DID Module](#441-did-module)
-        - [4.4.2. VC Module](#442-vc-module)
-        - [4.4.3. VP Module](#443-vp-module)
-    - [4.5. Wallet Service](#45-wallet-service)
-    - [4.6. CApp Service](#46-capp-service)
-    - [4.7. User Service](#47-user-service)
-    - [4.8. Notification Service](#48-notification-service)
+    - [3.5. Verifier Legacy](#35-verifier-legacy)
+    - [3.6. Verifier](#36-verifier)
+  - [4. Container Diagram](#4-container-diagram)
+    - [4.1. Core](#41-core)
+    - [4.2. Wallet](#42-wallet)
+    - [4.3. Certified App](#43-certified-app)
+    - [4.4. Issuer](#44-issuer)
+    - [4.5. Verifier](#45-verifier)
+    - [4.6. Supplements](#46-supplements)
+  - [5. Component Diagram](#5-component-diagram)
+    - [5.1. Trust Agent](#51-trust-agent)
+      - [5.1.1. Enroll Controller](#511-enroll-controller)
+      - [5.1.2. Issuance Controller](#512-issuance-controller)
+      - [5.1.3. List Controller](#513-list-controller)
+    - [5.2. Issuer Service](#52-issuer-service)
+      - [5.2.1. Issuance Controller](#521-issuance-controller)
+      - [5.2.2. VC Controller](#522-vc-controller)
+    - [5.3. Verifier Service](#53-verifier-service)
+      - [5.3.1. Verify Controller](#531-verify-controller)
+    - [5.4. Certified App (CApp)](#54-certified-app-capp)
+      - [5.4.1. DID Module](#541-did-module)
+      - [5.4.2. VC Module](#542-vc-module)
+      - [5.4.3. VP Module](#543-vp-module)
+    - [5.5. Wallet Service](#55-wallet-service)
+    - [5.6. CApp Service](#56-capp-service)
+    - [5.7. User Service](#57-user-service)
+    - [5.8. Notification Service](#58-notification-service)
 
 <!-- /TOC -->
 
@@ -87,23 +90,72 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 | 참조명       | 문서명                                             | 위치                 |
 | ------------ | -------------------------------------------------- | -------------------- |
 | [C4-MODEL]   | The C4 model for visualising software architecture | https://c4model.com/ |
-| [DATA-SPEC]  | (OpenDID) 데이터 명세서(Data Specification)        |  [데이터 명세서](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/data%20specification/Data%20Specification_ko.md)                    |
-| [USER-REG]   | (OpenDID) 사용자 등록                              |  [사용자 등록](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/User%20Registration_ko.md)                    |
-| [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance_ko.md)                     |
-| [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP_ko.md)                    |
-| [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md)                     |
-
+| [DATA-SPEC]  | (OpenDID) 데이터 명세서(Data Specification)        |  [데이터 명세서](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/data%20standard/data%20specification/Data%20Specification_ko.md?ref_type=heads)                    |
+| [USER-REG]   | (OpenDID) 사용자 등록                              |  [사용자 등록](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/User%20Registration_ko.md?ref_type=heads)                    |
+| [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/VC%20Issuance_ko.md?ref_type=heads)                     |
+| [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/Presentation%20of%20VP_ko.md?ref_type=heads)                    |
+| [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md?ref_type=heads)                     |
 
 <div style="page-break-after: always;"></div>
 
-## 2. System Context Diagram
+## 2. Digital ID 플랫폼
+
+Digital ID 플랫폼은 블록체인 기반의 DID(Decentralized Identity) 기술을 활용하여 모바일 신분증(예: 운전면허증, 모바일 유공자증, 모바일 주민등록증)을 발급, 관리, 검증할 수 있는 시스템이다.
+이를 통해 사용자들은 자신의 신원을 안전하게 관리하고 필요한 서비스에서 신원을 검증받을 수 있다.
+
+![](images/2.digital_id_platform.svg)
+
+Digital ID 플랫폼은 다음과 같은 주요 구성 요소로 이루어진다.
+
+- **발급 시스템(Issuer)**: 사용자 요청에 따라 신분증을 발급하는 시스템
+- **검증 시스템(Verifier)**: 사용자 신분증을 검증하는 시스템
+- **신뢰 시스템**: 플랫폼 구성원들이 서로 신뢰할 수 있도록 **신뢰체인을 형성**하도록 돕는 시스템
+- **신뢰 저장소(Verifiable Data Registry)**: 블록체인에 기반한 데이터 저장소로, 분산 식별자(DID) 및 자격증명(VC)을 관리하는 시스템
+- **사용자(User)**: 신분증을 발급받고 검증받는 개인
+
+Digital ID 플랫폼에서 정부는 사용자의 요청에 따라 검증 가능한 자격증명(VC) 기반의 신분증을 **발급 시스템**을 통해 발급한다.
+이후 사용자는 **Service Provider**가 요청하는 신분 정보를 VC 기반 신분증으로 **검증 시스템**에 제출하여 신분을 검증받게 된다.
+
+모든 사용자는 Digital ID 플랫폼에 참여하기 위해 **분산 식별자(DID)** 를 생성하고, 이를 **신뢰 시스템**을 통해 **신뢰 저장소**에 등록해야 한다.
+
+### 2.1. Open DID
+
+**OpenDID**는 이러한 Digital ID 플랫폼을 오픈소스화한 프로젝트이며, 블록체인 기반의 디지털 신원증명 시스템을 누구나 활용하고 확장할 수 있도록 구현하였다.
+이를 통해 조직, 개발자, 정부 기관 등이 Digital ID 시스템을 손쉽게 구축하고 사용자에게 신분증을 발급할 수 있다.
+
+<div style="page-break-after: always;"></div>
+
+## 3. System Context Diagram
 
 System context diagram은 시스템의 전체적인 맥락을 보여준다.
 여기서는 시스템과 외부 엔티티들 간의 상호작용을 나타내며, 주요 사용자의 역할과 외부 시스템과의 관계를 파악할 수 있다.
 
 ![](images/101.system_context.svg)
 
-DID 기반 digital ID 시스템인 OpenDID의 핵심 기능은 다음과 같다.
+Context Diagram에는 OpenDID의 주요 기능인 **VC 발급**, **VP 제출**, **사용자 등록** 만을 표기하였다.
+
+1. **VC 발급**: Holder가 Issuer Legacy를 통해 VC를 요청하면, Issuer Legacy는 필요한 데이터를 OpenDID에 전달하고, OpenDID는 이를 바탕으로 VC를 생성하여 Holder에게 제공한다.
+2. **VP 제출**: Holder가 Verifier Legacy에게 신원 확인을 요구받으면, Holder는 VP를 생성하여 OpenDID에 제출한다. OpenDID는 VP를 검증한 후 Verifier Legacy에게 전달하며, Verifier Legacy는 이를 통해 Holder의 신원을 확인하고 서비스를 제공한다.
+3. **사용자 등록**: 모든 Holder는 OpenDID 서비스를 이용하기 전에 사용자 등록 과정을 거쳐야 한다. 이 과정에서 Holder는 분산 식별자(DID)를 생성하고, 생성된 DID와 함께 DID Document를 OpenDID의 신뢰 시스템을 통해 신뢰 저장소에 등록해야 한다.
+
+OpenDID의 핵심 기능은 아래와 같다.
+- 신뢰체인의 기반이 되는 DID Document의 생애주기 관리
+- 개인키와 문서 등을 안전하게 저장하고 사용
+- 신분증으로서의 VC 발급
+- VC의 생애주기 관리
+- VP 제출 및 검증
+
+Holder가 상기 핵심 기능을 더욱 편리하게 이용하도록 돕는 부가적인 기능들도 있는데 이는 다음과 같다.
+- 사용자 등록 (Sign-up, user registration)
+- 분실 및 회수 신고 (Report lost and found)
+- DID Document 말소 신고 (Request termination)
+- VC 삭제 및 재발급
+- 회원 탈퇴 (Cancel membership)
+
+부가 기능은 OpenDID 구현체의 정책이나 요구사항에 따라 다양한 방식이 존재할 수 있다.
+그러므로 부가 기능은 정해져 있다기 보다는 특정 구현체가 채택한 사례로 보아야 한다.
+
+<!-- DID 기반 digital ID 시스템인 OpenDID의 핵심 기능은 다음과 같다.
 
 - 신뢰체인의 기반이 되는 DID Document의 생애주기 관리
 - 개인키와 문서 등을 안전하게 저장하고 사용
@@ -121,9 +173,9 @@ Holder가 상기 핵심 기능을 더욱 편리하게 이용하도록 돕는 부
 - 회원 탈퇴 (Cancel membership)
 
 부가 기능은 OpenDID 구현체의 정책이나 요구사항에 따라 다양한 방식이 존재할 수 있다.
-그러므로 부가 기능은 정해져 있다기 보다는 특정 구현체가 채택한 사례로 보아야 한다.
+그러므로 부가 기능은 정해져 있다기 보다는 특정 구현체가 채택한 사례로 보아야 한다. -->
 
-### 2.1. OpenDID
+### 3.1. OpenDID
 
 OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 제공한다.
 
@@ -143,13 +195,24 @@ OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 �
 
 OpenDID의 하위 구성요소는 Container diagram에서 설명한다.
 
-### 2.2. Holder
+### 3.2. Holder
 
 Holder는 Issuer가 발급한 신분증을 소지한 자를 말하며, 일반적으로 사용자(User)와 같은 의미이다.
 넓은 의미에서 사용자는 Holder 뿐만 아니라 Trust Agent, Issuer, Verifier의 관리자도 포함될 수 있다.
 그러나 특별히 관리자라고 명시하지 않는 한 사용자는 Holder와 같은 의미이다.
 
-### 2.3. Issuer
+
+### 3.3. Issuer Legacy
+Issuer Legacy는 이전에 사용되던 신원 관리 시스템으로, Holder에게 신분증을 발급하거나 발급을 위해 필요한 신원 정보를 가지고 있는 시스템이다.  이 시스템은 VC를 발급하기 위해 필요한 정보를 OpenDID에 전달하는 역할을 하지만, 그 방식은 구현에 따라 달라진다. 예를 들어, API를 호출하거나 OpenDID에서 제공하는 SDK를 사용할 수 있다.
+
+구체적인 예는 다음과 같다:
+
+- 실물 신분증 발급 시스템: 기존에 주민등록증이나 운전면허증 같은 실물 신분증을 발급하던 정부기관의 신원 관리 시스템이 Issuer Legacy가 될 수 있다. 이런 시스템은 실물 신분증 발급을 위한 데이터를 보유하고 있으며, 이를 통해 OpenDID와 연계하여 모바일 신분증을 발급한다.
+- 신원 정보를 보유한 기관: 기존에 신분증을 발급하지는 않았지만, 사용자의 신원 정보(예: 이름, 생년월일, 주민등록번호)를 관리해오던 기관도 Issuer Legacy가 될 수 있다. 이 기관은 OpenDID를 통해 모바일 신분증 발급을 시작할 수 있다.
+
+이처럼 Issuer Legacy는 다양한 조직이나 시스템이 될 수 있으며, 신원 정보를 바탕으로 OpenDID와 상호작용하여 VC 발급을 지원한다
+
+### 3.4. Issuer
 
 본 문서에서 Issuer는 일반적으로 OpenDID 내에서 발급 사업자의 역할을 수행하는 API Service를 의미하지만
 넓은 의미에서는 Issuer Legacy(기존 시스템)를 포함하기도 한다.
@@ -161,17 +224,25 @@ Issuer Legacy는 발급에 필요한 사용자 정보의 출처이며, 기존 Is
 중요한 점은, Issuer는 하나의 OpenDID 구현체 별로 단 하나만 존재하는 것이 아니라 최소한 하나 이상이라는 것이다.
 또한 시스템 운영 중에 Issuer가 추가되거나 제거될 수도 있다.
 
-### 2.4. Verifier
+### 3.5. Verifier Legacy
+Verifier Legacy는 기존에 Holder의 신원을 확인하고 서비스를 제공하는 시스템을 의미한다. 이 시스템은 Holder가 제출한 Verifiable Presentation(VP)을 통해 신원을 검증하며, VP는 OpenDID 시스템에서 검증된 후 Verifier Legacy에 전달된다. Verifier Legacy는 검증된 VP를 바탕으로 Holder의 신원을 확인하고, 그에 따라 서비스를 제공한다.
+
+구체적인 예는 다음과 같다:
+
+- 금융기관의 신원 확인 시스템: 은행이나 보험사 등에서 사용자의 신분을 확인한 후 금융 서비스를 제공하는 기존 시스템이 Verifier Legacy로 작동할 수 있다. 이러한 시스템은 VP를 검증하고 사용자가 신뢰할 수 있는 신원임을 확인한 후에 서비스 제공을 진행한다.
+- 정부기관의 신원 확인 시스템: 정부 서비스에서 기존에 사용되던 신원 확인 절차를 진행하는 시스템도 Verifier Legacy의 역할을 할 수 있다. OpenDID를 통해 제출된 VP를 검증하여 신원을 확인하고, 필요한 서비스를 제공한다.
+
+
+### 3.6. Verifier
 
 본 문서에서 Verifier는 일반적으로 OpenDID 내에서 검증 사업자의 역할을 수행하는 API Service를 의미하지만
 넓은 의미에서는 Verifier Legacy(기존 시스템)를 포함하기도 한다.
 
-Verifier Legacy는 Holder로부터 VP를 제출받아 검증한 후 서비스를 제공하는 시스템이다.
 Verifier 또한 하나가 아니라 최소 하나 이상이며, 시스템 운영 중 Verifier가 추가되거나 제거될 수 있다.
 
 <div style="page-break-after: always;"></div>
 
-## 3. Container Diagram
+## 4. Container Diagram
 
 Container diagram은 시스템 내부의 주요 container(예: API application, database 등)를 나타내고, 이들 간의 상호작용과 데이터 흐름을 설명한다. 
 Docker의 container와는 다른 개념이므로 이에 주의한다.
@@ -197,7 +268,7 @@ Container를 분류하면 다음과 같다.
 | **Supplements**             | • User Service<br>                           |          |\
 |                             | • CLI Tool for Wallet                        |          |
 
-### 3.1. Core
+### 4.1. Core
 
 Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공통 요소를 포함한다.
 
@@ -224,7 +295,7 @@ Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공�
 - List provider
 - Log and backup provider
 
-### 3.2. Wallet
+### 4.2. Wallet
 
 Walelt group은 사용자용 client wallet과 관련된 다음의 요소를 포함한다.
 
@@ -241,7 +312,7 @@ Walelt group은 사용자용 client wallet과 관련된 다음의 요소를 포�
 여기서 도메인이라 함은 고유의 DID method를 보유하고, Trust Agent를 운영중인 OpenDID 구현체를 의미한다.
 하나의 위원회가 여러 개의 도메인을 보유할 수 있다.
 
-### 3.3. Certified App
+### 4.3. Certified App
 
 CApp group은 사용자용 모바일 앱과 관련된 다음의 요소를 포함한다.
 
@@ -254,7 +325,7 @@ CApp group은 사용자용 모바일 앱과 관련된 다음의 요소를 포함
 
 하나의 도메인에는 최소 1개 이상의 CApp group이 필요하다.
 
-### 3.4. Issuer
+### 4.4. Issuer
 
 Issuer group은 신분증 발급과 관련된 다음의 요소를 포함한다.
 
@@ -266,7 +337,7 @@ Issuer group은 신분증 발급과 관련된 다음의 요소를 포함한다.
 
 하나의 도메인에는 최소 1개 이상의 Issuer group이 필요하다.
 
-### 3.5. Verifier
+### 4.5. Verifier
 
 Verifier group은 신분증 제출 및 검증과 관련된 다음의 요소를 포함한다.
 
@@ -279,7 +350,7 @@ Verifier group은 신분증 제출 및 검증과 관련된 다음의 요소를 �
 
 하나의 도메인에는 최소 1개 이상의 Verifier group이 필요하다.
 
-### 3.6. Supplements
+### 4.6. Supplements
 
 Supplements group은 부가적인 기능이나 임시 기능을 제공하는 다음의 요소를 포함한다.
 
@@ -303,7 +374,7 @@ Supplements group은 부가적인 기능이나 임시 기능을 제공하는 다
 
 <div style="page-break-after: always;"></div>
 
-## 4. Component Diagram
+## 5. Component Diagram
 
 Component diagram은 각 container 내부의 주요 구성요소와 그들 간의 관계를 구체적으로 나타낸다.
 여기서는 아주 상세한 관계보다는 구성요소에 치중하여 간략하게 표현하였다.
@@ -336,7 +407,7 @@ OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류�
 
 
 
-### 4.1. Trust Agent
+### 5.1. Trust Agent
 
 ![](images/301.component_trust_agent.svg)
 
@@ -359,7 +430,7 @@ Trust Agent는 OpenDID가 제공하는 SDK를 이용하여 등록, 발급, 목�
 |                     | &nbsp;&nbsp;- Allowed CApp package list for a wallet<br> |                                    |\
 |                     | &nbsp;&nbsp;- Certificate VC by DID                      |                                    |
 
-#### 4.1.1. Enroll Controller
+#### 5.1.1. Enroll Controller
 
 Enroll Controller는 등록과 관련된 기능을 담당한다.
 등록의 대상이 되는 주체의 종류는 다음과 같다.
@@ -476,7 +547,7 @@ TA Admin이 CLI Tool for Wallet을 이용하여 DID Document를 생성하고,
 
 - 사용자 DID Document 말소 (* → TERMINATED)
 
-#### 4.1.2. Issuance Controller
+#### 5.1.2. Issuance Controller
 
 Issuance Controller는 Holder용 VC 발급 및 상태변경 중개를 담당한다.
 VC 발급 및 상태변경은 Issuer가 담당하나 다음과 같은 이유로 인가앱이 직접 Issuer에 요청하는 것이 불가한 경우 많다.
@@ -499,7 +570,7 @@ Issuer에 의한 발급 개시(Issuer-init offer) 및 사용자에 의한 발급
 
 *[NOT yet documented]*
 
-#### 4.1.3. List Controller
+#### 5.1.3. List Controller
 
 List Controller는 목록 사업자(List Provider)가 수행하는 기능인데,
 데모 구현체는 Trust Agent가 이 역할을 대신 수행한다.
@@ -529,7 +600,7 @@ VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않�
 
 <div style="page-break-after: always;"></div>
 
-### 4.2. Issuer Service
+### 5.2. Issuer Service
 
 ![](images/302.component_issuer_service.svg)
 
@@ -558,7 +629,7 @@ Issuer Service는 OpenDID가 제공하는 SDK를 이용하여 VC 발급, VC 상�
 또한 Issuer Legacy에 저장되어 있는 사용자 개인정보 및 claim 데이터를 Issuer Database로
 어떻게 전달하는지는 본 문서의 범위 밖이다.
 
-#### 4.2.1. Issuance Controller
+#### 5.2.1. Issuance Controller
 
 Issuance Controller는 인가앱이 아닌 Trust Agent에 의해 호출되는 VC 발급 API 이다.
 아래 절차도는 인가앱, client wallet, Trust Agent, Issuer Service가 표준 API를 호출하는 순서를 보여준다.
@@ -597,7 +668,7 @@ Trust Agent가 수행하는 KYC와는 무관하게 Issuer가 자체적으로 KYC
 
 ![](images/p210-2.issue_vc.svg)
 
-#### 4.2.2. VC Controller
+#### 5.2.2. VC Controller
 
 VC 생애주기(Lifecyle) 등 상세한 내용은 [VC-FORMAT] 문서를 참조한다.
 VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
@@ -607,7 +678,7 @@ VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
 
 <div style="page-break-after: always;"></div>
 
-### 4.3. Verifier Service
+### 5.3. Verifier Service
 
 ![](images/303.component_verifier_service.svg)
 
@@ -671,7 +742,7 @@ VP 제출 절차를 간단하게 요약하면 다음과 같다.
     - 동일한 사용자 모바일에 설치된 앱들 간 통신 방식
     - 인가앱과 Verifer 응대장치에 해당하는 서비스앱이 통신
 
-#### 4.3.1. Verify Controller
+#### 5.3.1. Verify Controller
 
 Verify Controller는 다양한 경로로 암호화된 VP를 제출하기 위한 API 이다.
 
@@ -694,7 +765,7 @@ Direct mode인 경우라면 서비스앱이 VerifyOfferPayload만 전달해주�
 
 <div style="page-break-after: always;"></div>
 
-### 4.4. Certified App (CApp)
+### 5.4. Certified App (CApp)
 
 ![](images/304.component_certified_app.svg)
 
@@ -710,7 +781,7 @@ CApp은 OpenDID가 제공하는 SDK(Android, iOS 각각)를 이용하여 구현 
 상기 모듈은 기능적으로 분류한 것이며 실제 소프트웨어 모듈은 더욱 다양하며 서로 유기적으로 연결되어 있다.
 또한 client wallet은 파일 형태의 wallet만 고려하였다.
 
-#### 4.4.1. DID Module
+#### 5.4.1. DID Module
 
 DID Module은 사용자 신원과 관련된 다음의 기능을 담당한다.
 
@@ -721,7 +792,7 @@ DID Module은 사용자 신원과 관련된 다음의 기능을 담당한다.
 - 분실 후 회수 신고
 - Trust Repository로부터 DID Document, VC Metadata 등 정보 조회
 
-#### 4.4.2. VC Module
+#### 5.4.2. VC Module
 
 VC Module은 VC와 관련된 다음의 기능을 담당한다.
 
@@ -729,7 +800,7 @@ VC Module은 VC와 관련된 다음의 기능을 담당한다.
 - VC 조회, 상태변경
 - VC 발급에 필요한 부가기능 (KYC 등)
 
-#### 4.4.3. VP Module
+#### 5.4.3. VP Module
 
 VC Module은 VP와 관련된 다음의 기능을 담당한다.
 
@@ -740,7 +811,7 @@ VC Module은 VP와 관련된 다음의 기능을 담당한다.
 
 <div style="page-break-after: always;"></div>
 
-### 4.5. Wallet Service
+### 5.5. Wallet Service
 
 ![](images/305.component_wallet_service.svg)
 
@@ -755,7 +826,7 @@ Wallet Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 �
 
 <div style="page-break-after: always;"></div>
 
-### 4.6. CApp Service
+### 5.6. CApp Service
 
 ![](images/306.component_capp_service.svg)
 
@@ -771,7 +842,7 @@ CApp Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 구
 
 <div style="page-break-after: always;"></div>
 
-### 4.7. User Service
+### 5.7. User Service
 
 ![](images/307.component_user_service.svg)
 
@@ -782,7 +853,7 @@ User Service는 OpenDID가 제공하는 SDK를 이용하여 사용자 모바일 
 | Blockchain Controller | • Blockchain으로부터 정보 조회 |      |
 
 
-### 4.8. Notification Service
+### 5.8. Notification Service
 
 현재 정의된 표준 API가 없다.
 
