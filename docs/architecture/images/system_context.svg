@@ -137,11 +137,11 @@
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55) translate(393,383)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" font-weight="bold" stroke-miterlimit="1.45">
       <text x="0" xml:space="preserve" y="12" clip-path="url(#clipPath12)" stroke="none">Use:</text>
       <text x="0" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="gray" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Register User </text>
+      <text fill="red" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Issue VC</text>
       <text x="0" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="red" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Issue VC</text>
+      <text fill="green" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Present VP</text>
       <text x="0" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="green" x="12" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">Present VP</text>
+      <text fill="gray" x="12" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">Register User </text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M281 300 L543.4957 145.4384" clip-path="url(#clipPath2)"/>

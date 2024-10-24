@@ -212,9 +212,9 @@ with OpenDID elements</y:NodeLabel>
           <y:EdgeLabel alignment="left" backgroundColor="#FFFFFF" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasLineColor="false" height="64.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#999999" verticalTextPosition="bottom" visible="true" width="103.0" x="58.191400455729195" xml:space="preserve" y="-32.0">&lt;html&gt;
 &lt;body&gt;
     &lt;p&gt;Use:&lt;/p&gt;
-    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: gray;"&gt;Register User&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: red;"&gt;Issue VC&lt;/span&gt;&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present VP&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: gray;"&gt;Register User&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 <y:LabelModel><y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/></y:LabelModel><y:ModelParameter><y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="21.99999999999992" distanceToCenter="true" position="center" ratio="0.5" segment="0"/></y:ModelParameter><y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/></y:EdgeLabel>
