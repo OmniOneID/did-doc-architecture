@@ -18,20 +18,20 @@ puppeteer:
 Software Architecture
 ==
 
-- 주제: C4 model을 이용한 Software Architecture 설명
-- 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- Topic: Explanation of Software Architecture using the C4 model  
+- Author: Kang Young-ho 
+- Date: 2024-09-03  
+- Version: v1.0.0  
 
 
-목차
+Table of Contents
 ---
 
 <!-- TOC tocDepth:2..4 chapterDepth:2..6 -->
-  - [1. 개요](#1-개요)
-    - [1.1. C4 model](#11-c4-model)
-    - [1.2. 참조문서](#12-참조문서)
-  - [2. Digital ID 플랫폼](#2-digital-id-플랫폼)
+  - [1. Overview](#1-overview)
+    - [1.1. C4 Model](#11-c4-model)
+    - [1.2. Reference Documents](#12-reference-documents)
+  - [2. Digital ID Platform](#2-digital-id-platform)
     - [2.1. Open DID](#21-open-did)
   - [3. System Context Diagram](#3-system-context-diagram)
     - [3.1. OpenDID](#31-opendid)
@@ -71,57 +71,50 @@ Software Architecture
 
 <div style="page-break-after: always;"></div>
 
-## 1. 개요
+## 1. Overview
 
-본 문서는 OpenDID의 software architecture를 C4 model을 이용하여 설명한다.
+This document explains the software architecture of OpenDID using the C4 model.
 
-### 1.1. C4 model
+### 1.1. C4 Model
 
-C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 다이어그램 작성 방법론이다.
-이름에서 알 수 있듯이, C4 모델은 네 가지 주요 다이어그램 유형인 컨텍스트(Context), 컨테이너(Container),
-컴포넌트(Component), 코드(Code)를 사용하여 시스템의 다양한 수준에서 구조를 명확하게 표현한다.
-각 다이어그램은 특정 관점에서 시스템을 설명하며, 이해 관계자들이 시스템의 구조와 상호작용을 쉽게 이해할 수 있도록 돕는다.
+The C4 model is a methodology for creating diagrams that visualize software system architecture. As its name suggests, the C4 model uses four primary types of diagrams—Context, Container, Component, and Code—to clearly represent the structure of a system from various perspectives. Each diagram describes the system from a specific viewpoint to help stakeholders easily understand the system’s structure and interactions.
 
-이러한 4단계 접근 방식은 시스템의 전체 구조를 계층적으로 이해할 수 있게 하여, 개발자와 비기술적 이해관계자 모두에게 유용한 도구가 된다.
-본 문서에서는 Code 수준의 구조는 생략하였다.
+This four-step approach enables a hierarchical understanding of the entire system, making it a useful tool for both developers and non-technical stakeholders. In this document, the Code-level structure is omitted.
 
-### 1.2. 참조문서
+### 1.2. Reference Documents
 
-| 참조명       | 문서명                                             | 위치                 |
-| ------------ | -------------------------------------------------- | -------------------- |
-| [C4-MODEL]   | The C4 model for visualising software architecture | https://c4model.com/ |
-| [DATA-SPEC]  | (OpenDID) 데이터 명세서(Data Specification)        |  [데이터 명세서](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/data%20standard/data%20specification/Data%20Specification_ko.md?ref_type=heads)                    |
-| [USER-REG]   | (OpenDID) 사용자 등록                              |  [사용자 등록](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/User%20Registration_ko.md?ref_type=heads)                    |
-| [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/VC%20Issuance_ko.md?ref_type=heads)                     |
-| [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/concepts/features/Presentation%20of%20VP_ko.md?ref_type=heads)                    |
-| [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://gitlab.raondevops.com/opensourcernd/source/design/did-doc-architecture/-/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md?ref_type=heads)                     |
+| Reference Name | Document Name | Location |
+| -------------- | ------------- | -------- |
+| [C4-MODEL] | The C4 model for visualising software architecture | https://c4model.com/ |
+| [DATA-SPEC] | (OpenDID) Data Specification | [Data Specification](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/data%20specification/Data%20Specification.md?ref_type=heads) |
+| [USER-REG] | (OpenDID) User Registration | [User Registration](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/User%20Registration.md?ref_type=heads) |
+| [ISSUE-VC] | (OpenDID) VC Issuance | [VC Issuance](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance.md?ref_type=heads) |
+| [PRESENT-VP] | (OpenDID) VP Presentation | [VP Presentation](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP.md?ref_type=heads) |
+| [VC-FORMAT] | (OpenDID) VC Format | [VC Format](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format.md?ref_type=heads) |
 
 <div style="page-break-after: always;"></div>
 
-## 2. Digital ID 플랫폼
+## 2. Digital ID Platform
 
-Digital ID 플랫폼은 블록체인 기반의 DID(Decentralized Identity) 기술을 활용하여 모바일 신분증(예: 운전면허증, 모바일 유공자증, 모바일 주민등록증)을 발급, 관리, 검증할 수 있는 시스템이다.
-이를 통해 사용자들은 자신의 신원을 안전하게 관리하고 필요한 서비스에서 신원을 검증받을 수 있다.
+The Digital ID Platform utilizes blockchain-based Decentralized Identity (DID) technology to issue, manage, and verify mobile identity cards (e.g., driver's licenses, mobile veteran cards, and mobile resident registration cards). Through this system, users can securely manage their identities and verify them for necessary services.
 
 ![](images/digital_id_platform.svg)
 
-Digital ID 플랫폼은 다음과 같은 주요 구성 요소로 이루어진다.
+The Digital ID Platform consists of the following key components:
 
-- **발급 시스템(Issuer)**: 사용자 요청에 따라 신분증을 발급하는 시스템
-- **검증 시스템(Verifier)**: 사용자 신분증을 검증하는 시스템
-- **신뢰 시스템**: 플랫폼 구성원들이 서로 신뢰할 수 있도록 **신뢰체인을 형성**하도록 돕는 시스템
-- **신뢰 저장소(Verifiable Data Registry)**: 블록체인에 기반한 데이터 저장소로, 분산 식별자(DID) 및 자격증명(VC)을 관리하는 시스템
-- **사용자(User)**: 신분증을 발급받고 검증받는 개인
+- **Issuing System (Issuer)**: Issues identity cards based on user requests.
+- **Verification System (Verifier)**: Verifies the user’s identity card.
+- **Trust System**: Helps platform participants establish a **trust chain** among themselves.
+- **Verifiable Data Registry (Trust Repository)**: A blockchain-based storage system that manages decentralized identifiers (DIDs) and Verifiable Credentials (VCs).
+- **User**: An individual who receives and verifies identity cards.
 
-Digital ID 플랫폼에서 정부는 사용자의 요청에 따라 검증 가능한 자격증명(VC) 기반의 신분증을 **발급 시스템**을 통해 발급한다.
-이후 사용자는 **Service Provider**가 요청하는 신분 정보를 VC 기반 신분증으로 **검증 시스템**에 제출하여 신분을 검증받게 된다.
+The government issues identity cards based on **Verifiable Credentials (VC)** at the user’s request through the **Issuing System**. Users then present their identity information using VC-based identity cards to the **Verification System** as requested by **Service Providers**.
 
-모든 사용자는 Digital ID 플랫폼에 참여하기 위해 **분산 식별자(DID)** 를 생성하고, 이를 **신뢰 시스템**을 통해 **신뢰 저장소**에 등록해야 한다.
+All participants must generate **DIDs** to join the Digital ID Platform and register them in the **Trust Repository** through the **Trust System**.
 
 ### 2.1. Open DID
 
-**OpenDID**는 이러한 Digital ID 플랫폼을 오픈소스화한 프로젝트이며, 블록체인 기반의 디지털 신원증명 시스템을 누구나 활용하고 확장할 수 있도록 구현하였다.
-이를 통해 조직, 개발자, 정부 기관 등이 Digital ID 시스템을 손쉽게 구축하고 사용자에게 신분증을 발급할 수 있다.
+**OpenDID** is an open-source project for a Digital ID platform, enabling organizations, developers, and government agencies to easily implement Digital ID systems and issue identity cards to users.
 
 ![](images/digital_id_platform_opendid.svg)
 
@@ -129,130 +122,113 @@ Digital ID 플랫폼에서 정부는 사용자의 요청에 따라 검증 가능
 
 ## 3. System Context Diagram
 
-System context diagram은 시스템의 전체적인 맥락을 보여준다.
-여기서는 시스템과 외부 엔티티들 간의 상호작용을 나타내며, 주요 사용자의 역할과 외부 시스템과의 관계를 파악할 수 있다.
+The System Context Diagram illustrates the overall context of the system, depicting interactions between the system and external entities, as well as the roles of key users and relationships with external systems.
 
 ![](images/system_context.svg)
 
-Context Diagram에는 OpenDID의 주요 기능인 **VC 발급**, **VP 제출**, **사용자 등록** 만을 표기하였다.
+The diagram highlights the core features of OpenDID: **User Registration**, **VC Issuance**, and **VP Presentation**.
 
-1. **VC 발급**: Holder가 Issuer Legacy를 통해 VC를 요청하면, Issuer Legacy는 필요한 데이터를 OpenDID에 전달하고, OpenDID는 이를 바탕으로 VC를 생성하여 Holder에게 제공한다.
-2. **VP 제출**: Holder가 Verifier Legacy에게 신원 확인을 요구받으면, Holder는 VP를 생성하여 OpenDID에 제출한다. OpenDID는 VP를 검증한 후 Verifier Legacy에게 전달하며, Verifier Legacy는 이를 통해 Holder의 신원을 확인하고 서비스를 제공한다.
-3. **사용자 등록**: 모든 Holder는 OpenDID 서비스를 이용하기 전에 사용자 등록 과정을 거쳐야 한다. 이 과정에서 Holder는 분산 식별자(DID)를 생성하고, 생성된 DID와 함께 DID Document를 OpenDID의 신뢰 시스템을 통해 신뢰 저장소에 등록해야 한다.
+1. **User Registration**: Every Holder must complete the registration process, which involves creating a DID and registering the DID Document in the Trust Repository through OpenDID’s Trust System.
+2. **VC Issuance**: When a Holder requests a VC through Issuer Legacy, the system sends the necessary data to OpenDID, which generates the VC and provides it to the Holder.
+3. **VP Presentation**: When a Holder receives a VP request from Verifier Legacy, they generate a VP and submit it to OpenDID. OpenDID verifies the VP and forwards it to Verifier Legacy, which confirms the Holder’s identity to provide services.
 
-OpenDID의 핵심 기능은 아래와 같다.
-- 신뢰체인의 기반이 되는 DID Document의 생애주기 관리
-- 개인키와 문서 등을 안전하게 저장하고 사용
-- 신분증으로서의 VC 발급
-- VC의 생애주기 관리
-- VP 제출 및 검증
+The core functions of OpenDID include:
+- Lifecycle management of DID Documents that form the trust chain.
+- Secure storage and usage of private keys and documents.
+- Issuance of VCs as identity cards.
+- Management of VC lifecycles.
+- VP submission and verification.
 
-Holder가 상기 핵심 기능을 더욱 편리하게 이용하도록 돕는 부가적인 기능들도 있는데 이는 다음과 같다.
-- 사용자 등록 (Sign-up, user registration)
-- 분실 및 회수 신고 (Report lost and found)
-- DID Document 말소 신고 (Request termination)
-- VC 삭제 및 재발급
-- 회원 탈퇴 (Cancel membership)
+Additionally, the system provides extra features to enhance user convenience:
+- User Registration (Sign-up, user registration)
+- Report Lost and Found
+- Request Termination (for DID Documents)
+- VC Deletion and Reissuance
+- Cancel Membership
 
-부가 기능은 OpenDID 구현체의 정책이나 요구사항에 따라 다양한 방식이 존재할 수 있다.
-그러므로 부가 기능은 정해져 있다기 보다는 특정 구현체가 채택한 사례로 보아야 한다.
+The implementation of these extra features may vary based on the policies or requirements of each OpenDID implementation.
 
-<!-- DID 기반 digital ID 시스템인 OpenDID의 핵심 기능은 다음과 같다.
+<!-- The core functions of the DID-based digital ID system, OpenDID, are as follows:
 
-- 신뢰체인의 기반이 되는 DID Document의 생애주기 관리
-- 개인키와 문서 등을 안전하게 저장하고 사용
-- 신분증으로서의 VC 발급
-- VC의 생애주기 관리
-- VP 제출 및 검증
+- Manage the lifecycle of DID Documents that form the basis of the trust chain.
+- Securely store and use private keys and documents.
+- Issue VCs as identity cards.
+- Manage the lifecycle of VCs.
+- Submit and verify VPs.
 
-발급받은 VC를 소지한 사용자를 Holder라고 한다.
-Holder가 상기 핵심 기능을 더욱 편리하게 이용하도록 돕는 부가적인 기능들도 있는데 이는 다음과 같다.
+A user who holds an issued VC is referred to as a Holder. 
+Additional features are provided to help Holders conveniently utilize the core functions:
 
-- 사용자 등록 (Sign-up, user registration)
-- 분실 및 회수 신고 (Report lost and found)
-- DID Document 말소 신고 (Request termination)
-- VC 삭제 및 재발급
-- 회원 탈퇴 (Cancel membership)
+- User registration (Sign-up, user registration)
+- Report lost and found (Report lost and found)
+- Request termination of DID Documents (Request termination)
+- Delete and reissue VCs
+- Cancel membership
 
-부가 기능은 OpenDID 구현체의 정책이나 요구사항에 따라 다양한 방식이 존재할 수 있다.
-그러므로 부가 기능은 정해져 있다기 보다는 특정 구현체가 채택한 사례로 보아야 한다. -->
+The implementation of these additional features may vary depending on the policies or requirements of each OpenDID implementation. 
+Thus, they should be viewed as examples adopted by specific implementations rather than fixed features. -->
 
 ### 3.1. OpenDID
 
-OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 제공한다.
+OpenDID serves as the target system, offering the following services to participants:
 
-- to Holder
-    - 사용자 등록
-    - 신분증 발급 및 제출
-    - 모바일 기기 분실 및 회수 신고
-    - DID Document 말소 신고
-    - 회원 탈퇴
-- to Issuer
-    - IssueOffer를 Holder에 발송
-    - Holder에 VC 발급
-    - VC 상태 관리
-- to Verifier
-    - 응대장치에 VerifyOffer 제공
-    - Holder로부터 VP 수신하여 검증
+- to Holder:
+    - User registration
+    - Issuance and presentation of identity cards
+    - Reporting lost or recovered mobile devices
+    - Requesting the termination of DID Documents
+    - Membership cancellation
+- to Issuer:
+    - Sending IssueOffers to Holders
+    - Issuing VCs to Holders
+    - Managing the status of VCs
+- to Verifier:
+    - Providing VerifyOffers to Service Devices
+    - Receiving and verifying VPs from Holders
 
-OpenDID의 하위 구성요소는 Container diagram에서 설명한다.
+Further details about OpenDID components are provided in the Container Diagram.
 
 ### 3.2. Holder
 
-Holder는 Issuer가 발급한 신분증을 소지한 자를 말하며, 일반적으로 사용자(User)와 같은 의미이다.
-넓은 의미에서 사용자는 Holder 뿐만 아니라 Trust Agent, Issuer, Verifier의 관리자도 포함될 수 있다.
-그러나 특별히 관리자라고 명시하지 않는 한 사용자는 Holder와 같은 의미이다.
-
+The Holder is an individual possessing identity cards issued by an Issuer, generally referred to as a user. In a broader sense, users may also include administrators of Trust Agents, Issuers, and Verifiers. Unless specified otherwise, however, the term user is synonymous with Holder.
 
 ### 3.3. Issuer Legacy
-Issuer Legacy는 이전에 사용되던 신원 관리 시스템으로, Holder에게 신분증을 발급하거나 발급을 위해 필요한 신원 정보를 가지고 있는 시스템이다.  이 시스템은 VC를 발급하기 위해 필요한 정보를 OpenDID에 전달하는 역할을 하지만, 그 방식은 구현에 따라 달라진다. 예를 들어, API를 호출하거나 OpenDID에서 제공하는 SDK를 사용할 수 있다.
+Issuer Legacy refers to legacy systems previously used for identity management, such as issuing identity cards or maintaining identity information. These systems supply the necessary data to OpenDID for VC issuance. Legacy systems can interact with OpenDID through APIs or SDKs provided by OpenDID.
 
-구체적인 예는 다음과 같다:
+Examples include:
 
-- 실물 신분증 발급 시스템: 기존에 주민등록증이나 운전면허증 같은 실물 신분증을 발급하던 정부기관의 신원 관리 시스템이 Issuer Legacy가 될 수 있다. 이런 시스템은 실물 신분증 발급을 위한 데이터를 보유하고 있으며, 이를 통해 OpenDID와 연계하여 모바일 신분증을 발급한다.
-- 신원 정보를 보유한 기관: 기존에 신분증을 발급하지는 않았지만, 사용자의 신원 정보(예: 이름, 생년월일, 주민등록번호)를 관리해오던 기관도 Issuer Legacy가 될 수 있다. 이 기관은 OpenDID를 통해 모바일 신분증 발급을 시작할 수 있다.
+- Physical ID issuance systems: Legacy government systems that previously issued physical IDs (e.g., resident registration cards, driver’s licenses) can act as Issuer Legacy systems, providing data for mobile identity issuance through OpenDID.
+- Identity information management institutions: Organizations that do not issue physical IDs but manage user identity information (e.g., name, date of birth, national ID number) can also serve as Issuer Legacy systems.
 
-이처럼 Issuer Legacy는 다양한 조직이나 시스템이 될 수 있으며, 신원 정보를 바탕으로 OpenDID와 상호작용하여 VC 발급을 지원한다
+Issuer Legacy can encompass various organizations or systems and supports VC issuance by interacting with OpenDID based on identity information.
 
 ### 3.4. Issuer
 
-본 문서에서 Issuer는 일반적으로 OpenDID 내에서 발급 사업자의 역할을 수행하는 API Service를 의미하지만
-넓은 의미에서는 Issuer Legacy(기존 시스템)를 포함하기도 한다.
+The Issuer generally refers to the API service within OpenDID responsible for issuing VCs. However, it may also encompass Issuer Legacy systems. Legacy Issuer systems act as data sources for the issuance process and may share administrators with the new Issuer Service.
 
-Issuer Legacy는 발급에 필요한 사용자 정보의 출처이며, 기존 Issuer 관리자(admin)가 사용하던 시스템이므로
-신규로 구축할 Issuer Service와 동일체이거나 직접적으로 연관된 엔티티이다.
-그러므로 이 둘을 완전히 분리하기보다 필요에 따라 묶어서 하나로 표현하기도 하고 별도로 표현하기도 한다.
-
-중요한 점은, Issuer는 하나의 OpenDID 구현체 별로 단 하나만 존재하는 것이 아니라 최소한 하나 이상이라는 것이다.
-또한 시스템 운영 중에 Issuer가 추가되거나 제거될 수도 있다.
+Multiple Issuers can exist within a single OpenDID implementation, and additional Issuers can be added or removed during system operation.
 
 ### 3.5. Verifier Legacy
-Verifier Legacy는 기존에 Holder의 신원을 확인하고 서비스를 제공하는 시스템을 의미한다. 이 시스템은 Holder가 제출한 Verifiable Presentation(VP)을 통해 신원을 검증하며, VP는 OpenDID 시스템에서 검증된 후 Verifier Legacy에 전달된다. Verifier Legacy는 검증된 VP를 바탕으로 Holder의 신원을 확인하고, 그에 따라 서비스를 제공한다.
+Verifier Legacy refers to legacy systems used to verify the identity of Holders and provide services based on the verification. It receives and verifies Verifiable Presentations (VPs) through OpenDID.
 
-구체적인 예는 다음과 같다:
-
-- 금융기관의 신원 확인 시스템: 은행이나 보험사 등에서 사용자의 신분을 확인한 후 금융 서비스를 제공하는 기존 시스템이 Verifier Legacy로 작동할 수 있다. 이러한 시스템은 VP를 검증하고 사용자가 신뢰할 수 있는 신원임을 확인한 후에 서비스 제공을 진행한다.
-- 정부기관의 신원 확인 시스템: 정부 서비스에서 기존에 사용되던 신원 확인 절차를 진행하는 시스템도 Verifier Legacy의 역할을 할 수 있다. OpenDID를 통해 제출된 VP를 검증하여 신원을 확인하고, 필요한 서비스를 제공한다.
+Examples include:
+- Financial institution identity verification systems: Banks and insurance companies use legacy systems to verify user identities and offer services based on that verification.
+- Government identity verification systems: Legacy government systems can also act as Verifier Legacy, verifying VPs submitted through OpenDID to offer services.
 
 
 ### 3.6. Verifier
 
-본 문서에서 Verifier는 일반적으로 OpenDID 내에서 검증 사업자의 역할을 수행하는 API Service를 의미하지만
-넓은 의미에서는 Verifier Legacy(기존 시스템)를 포함하기도 한다.
-
-Verifier 또한 하나가 아니라 최소 하나 이상이며, 시스템 운영 중 Verifier가 추가되거나 제거될 수 있다.
+The Verifier generally refers to the API service within OpenDID responsible for verifying VPs. Similar to the Issuer, multiple Verifiers can exist within a single OpenDID implementation, and they can be added or removed as needed during system operation.
 
 <div style="page-break-after: always;"></div>
 
 ## 4. Container Diagram
 
-Container diagram은 시스템 내부의 주요 container(예: API application, database 등)를 나타내고, 이들 간의 상호작용과 데이터 흐름을 설명한다. 
-Docker의 container와는 다른 개념이므로 이에 주의한다.
+The Container Diagram illustrates the major containers within the system (e.g., API applications, databases) and explains their interactions and data flows. This diagram does not refer to Docker containers but instead depicts the logical components of the system.
 
 ![](images/container.svg)
 
-상기 Container diagram은 OpenDID 시스템의 Container 레벨 구성을 보여준다.
-Container를 분류하면 다음과 같다.
+The diagram categorizes containers as follows:
 
 | Group                       | Containers                                   | Multiple |
 | --------------------------- | -------------------------------------------- | :------: |
@@ -272,25 +248,25 @@ Container를 분류하면 다음과 같다.
 
 ### 4.1. Core
 
-Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공통 요소를 포함한다.
+The Core group contains the essential components for operating the Digital ID system:
 
-- Trust Repository
-    - Blockchain 기반 저장소로서 해킹 및 위변조 차단
-    - DID Document, VC Metadata 등을 저장
-- Trust Agent
-    - Digital Identity Committee (이하 위원회)로부터 다음의 권한을 위임받아 신뢰체인을 구축하고 운영
-        - DID Document 등록
-        - Entity(Issuer, Verifier and other providers) 등록 및 가입증명서(Certificate VC) 발급
-        - Client Wallet 등록
-        - 사용자 등록/탈퇴
-    - 기타 부가적인 기능 제공
-        - VC Plan 등록 및 조회
-        - KYC
-- Notification Service
-    - 서버로부터 인가앱으로 이메일, PUSH 알림 등 메시지를 전달
-    - Issuer나 Verifier는 별도의 Notification Service를 운영할 수도 있음
+- Trust Repository:
+    - A blockchain-based storage system that prevents hacking and tampering.
+    - Stores DID Documents and VC metadata.
+- Trust Agent:
+    - Authorized by the Digital Identity Committee to operate the trust chain and perform the following tasks:
+        - Registering DID Documents.
+        - Registering entities (e.g., Issuers, Verifiers) and issuing Certificate VCs.
+        - Registering client wallets.
+        - User registration and membership cancellation.
+    - Provides additional services:
+        - Registering and retrieving VC Plans.
+        - Performing Know Your Customer (KYC) procedures.
+- Notification Service:
+    - Sends emails and push notifications from servers to CApps.
+    - Issuers and Verifiers can operate their own Notification Services if needed.
 
-핵심적인 기능 외에 구현체 정책에 따라 다음의 사업자가 수행하는 기능을 Trust Agent에 구축할 수도 있다.
+In addition to the core functions, the following providers’ services may also be integrated into the Trust Agent, depending on the implementation policies.
 
 - KYC provider
 - Notification provider
@@ -299,113 +275,106 @@ Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공�
 
 ### 4.2. Wallet
 
-Walelt group은 사용자용 client wallet과 관련된 다음의 요소를 포함한다.
+The Wallet group includes elements related to the user’s client wallet:
 
 - Client wallet
     - File wallet
     - Mobile app wallet
     - Cloud wallet
-- Wallet Service
-    - Client wallet을 Trust Agent에 등록 시 wallet 등록 정보를 서명하며 authenticity 증명
-    - Client wallet 등록 용도로만 사용됨
+- Wallet Service:
+    - Signs the client wallet’s registration information with the Trust Agent’s signature for authenticity.
+    - Used solely for client wallet registration.
 
-하나의 도메인에는 최소 1개 이상의 wallet group이 필요하다.
-
-여기서 도메인이라 함은 고유의 DID method를 보유하고, Trust Agent를 운영중인 OpenDID 구현체를 의미한다.
-하나의 위원회가 여러 개의 도메인을 보유할 수 있다.
+Each domain must have at least one Wallet group. A domain refers to an OpenDID implementation that operates a unique DID method and a Trust Agent.
 
 ### 4.3. Certified App
 
-CApp group은 사용자용 모바일 앱과 관련된 다음의 요소를 포함한다.
+The Certified App (CApp) group involves mobile applications for users:
 
-- CApp (인가앱)
-    - CApp Provider로 등록된 사업자가 운영하는 사용자용 모바일 앱
-    - 등록된 Wallet Provider가 제공하는 client wallet을 반드시 사용해야 함
-- CApp Service
-    - WalletToken 및 ServerToken 생성 시 token seed 정보를 서명하여 인가앱의 authenticity 증명
-    - 인가앱이 client wallet이나 TA 서비스 이용 시마다 CApp Service의 서명이 필요함
+- CApp:
+    - A mobile app operated by a CApp Provider registered as a business.
+    - Must use the client wallet provided by a registered Wallet Provider.
+- CApp Service:
+    - Signs token seed information to generate WalletTokens and ServerTokens, proving the app’s authenticity.
+    - CApp Services must sign every interaction with client wallets or Trust Agent services.
 
-하나의 도메인에는 최소 1개 이상의 CApp group이 필요하다.
+Each domain must have at least one CApp group.
 
 ### 4.4. Issuer
 
-Issuer group은 신분증 발급과 관련된 다음의 요소를 포함한다.
+The Issuer group contains elements related to identity issuance:
 
-- Issuer Service
-    - OpenDID에서 제공하는 SDK를 이용하여 Issuer API를 구현한 서버
-    - Issuer Legacy에 Issuer API를 추가로 구현하는 것도 가능
-- Issuer Legacy
-    - 신분증 발급에 필요한 개인정보를 보유하고 관리하는 Issuer의 기존 서버
+- Issuer Service:
+    - A server implementing the Issuer API using the OpenDID SDK.
+    - Alternatively, Issuer Legacy systems may add Issuer APIs to their infrastructure.
+- Issuer Legacy:
+    - Legacy servers that store and manage the personal data necessary for identity issuance.
 
-하나의 도메인에는 최소 1개 이상의 Issuer group이 필요하다.
+Each domain must have at least one Issuer group.
 
 ### 4.5. Verifier
 
-Verifier group은 신분증 제출 및 검증과 관련된 다음의 요소를 포함한다.
+The Verifier group consists of components for identity verification:
 
-- Verifier Service
-    - OpenDID에서 제공하는 SDK를 이용하여 Verifier API를 구현한 서버
-    - Verifier Legacy에 Verifier API를 추가로 구현하는 것도 가능
-- Verifier Legacy
-    - 사용자의 신원확인 후 사용자에게 고유의 서비스를 제공하는 Verifier의 기존 서버
-    - 다양한 신원확인 서비스가 존재하며, Verifier Service는 그 중의 하나
+- Verifier Service:
+    - A server implementing the Verifier API using the OpenDID SDK.
+    - Verifier APIs can also be integrated into Verifier Legacy systems.
+- Verifier Legacy:
+    - Legacy systems used to confirm identities and provide tailored services to users.
+    - Various identity verification services exist, and the Verifier Service is one of them.
 
-하나의 도메인에는 최소 1개 이상의 Verifier group이 필요하다.
+Each domain must have at least one Verifier group.
 
 ### 4.6. Supplements
 
-Supplements group은 부가적인 기능이나 임시 기능을 제공하는 다음의 요소를 포함한다.
+The Supplements group includes auxiliary or temporary functions:
 
-- User Service
-    - 인가앱이 Trust Repository에 접근하는 API 제공
-    - 저장소 Blockchain으로 HyperLedger Fabric (이하 HLF)을 사용하는 경우에 한해 필요
-        - HLF은 인증서 기반으로 접근통제를 하고 있으며, 읽기/쓰기 권한을 따로 부여할 수 없다.
-        - 그러므로 User Serivce에 인증서를 부여하고, User Service는 읽기 서비스만 제공함으로써 상세 접근통제를 가능하게 한다.
-- CLI Tool for Wallet
-    - Issuer, Verifier를 포함한 사업자(Provider)용 entity를 위한 Wallet 도구
-    - 다음의 기능 제공
-        - Wallet 생성
-        - DID 용 ECC, RSA 키 쌍 생성
-        - DID Document 생성
-    - 사용 시나리오
-        - Entity 관리자가 wallet, DID 용 키 쌍, DID Document 생성
-        - Wallet 파일은 Provider Service 서버에 복사하여 server wallet 설정
-        - TA 관리자에 DID Document를 전송하여 신뢰 저장소에 등록 요청
-        - Provider Service에서 Trust Agent로 Entity 등록 프로토콜을 호출
+- User Service:
+    - Provides APIs for CApps to access the Trust Repository.
+    - Required only when HyperLedger Fabric (HLF) is used as the blockchain.
+        - HLF uses certificate-based access control, which does not distinguish between read and write permissions.
+        - User Service can receive certificates to provide read-only access for detailed access control.
+- CLI Tool for Wallet:
+    - A wallet tool for entities like Issuers and Verifiers.
+    - Provides the following functions:
+        - Create wallets.
+        - Generate ECC/RSA key pairs for DIDs.
+        - Create DID Documents.
+- Usage Scenario
+    - The entity administrator creates a wallet, key pairs for DID, and a DID Document.  
+    - The wallet file is copied to the Provider Service server to configure the server wallet.  
+    - The DID Document is sent to the TA administrator to request registration in the Trust Repository.  
+    - The Provider Service invokes the entity registration protocol with the Trust Agent.
 
 
 <div style="page-break-after: always;"></div>
 
 ## 5. Component Diagram
 
-Component diagram은 각 container 내부의 주요 구성요소와 그들 간의 관계를 구체적으로 나타낸다.
-여기서는 아주 상세한 관계보다는 구성요소에 치중하여 간략하게 표현하였다.
+The Component Diagram outlines the major components within each container and their relationships. It focuses on components rather than detailing specific interactions.
 
-OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류와 기능은 다음과 같다.
+The OpenDID SDK is used across all containers and includes the following types:
 
-| SDK                    | 기능                                                        | 비고                       |
-| ---------------------- | ----------------------------------------------------------- | -------------------------- |
-| Core SDK               | • DID Document 생성<br>                                     | DID, VC, VP                |\
-|                        | • VC 생성<br>                                               |                            |\
-|                        | • VP 생성, VP 검증                                          |                            |
-| Common SDK             | • 공통으로 사용하는 유틸리티                                | 날짜 함수, 문자열 함수 등  |
-| Crypto SDK             | • 대칭키 암호화/복호화<br>                                  | 암호화, 서명, 해시, 인코딩 |\
-|                        | • 공개키 서명/검증<br>                                      |                            |\
-|                        | • 키 쌍 생성 (ECC, RSA)<br>                                 |                            |\
-|                        | • Multibase 인코딩/디코딩<br>                               |                            |\
-|                        | • Hash 등                                                   |                            |
-| Data Model SDK         | • 각종 JSON 문서, API 메시지, 데이터의 모델 제공            | JSON ↔ Java Class 변환     |
-| Blockchain SDK         | • DID Document 생애주기 관리 (등록/수정/삭제/폐기/말소)<br> | Blockchain 등록/조회       |\
-|                        | • VC Metadata 등록/조회<br>                                 |                            |\
-|                        | • VC 생애주기 관리 (중지/폐기)<br>                          |                            |
-| (Server)<br>Wallet SDK | • Wallet 초기화/연결/해제<br>                               | DID 키 관리 및 사용        |\
-|                        | • DID 키 쌍 생성<br>                                        |                            |\
-|                        | • DID 키로 서명/검증<br>                                    |                            |\
-|                        | • 키교환<br>                                                |                            |
-| (Client)<br>Util SDK   | • Crypto SDK와 Common SDK의 기능 포함                       | Utility                    |
-| (Client)<br>Wallet SDK | • Client Wallet 초기화/잠금/잠금해제<br>                    | DID 및 VC 관리             |\
-|                        | • DID Document 생성/저장/조회<br>                           |                            |\
-|                        | • VC 저장/조회<br>                                          |                            |
+| SDK                    | Functionality                                       | Notes |
+| ---------------------- | --------------------------------------------------- | ----- |
+| Core SDK               | • Create DID Documents<br>                          | Supports DID, VC, VP |
+|                        | • Create VCs<br>                                     |       |
+|                        | • Create and verify VPs                             |       |
+| Common SDK             | • General utilities                                 | Date and string functions |
+| Crypto SDK             | • Symmetric encryption/decryption<br>               | For encryption, signing, hashing |
+|                        | • Public key signing/verification<br>               |       |
+|                        | • Generate key pairs (ECC, RSA)<br>                 |       |
+|                        | • Multibase encoding/decoding<br>                   |       |
+| Data Model SDK         | • Provides data models for JSON documents and APIs | JSON ↔ Java Class conversion |
+| Blockchain SDK         | • Manage DID Document lifecycles (create/update/delete/revoke)<br> | For blockchain operations |
+|                        | • Register and retrieve VC metadata<br>            |       |
+| Server Wallet SDK      | • Initialize/connect/disconnect wallets<br>        | For DID key management |
+|                        | • Generate DID key pairs<br>                        |       |
+|                        | • Sign and verify using DID keys<br>               |       |
+|                        | • Key exchange                                     |       |
+| Client Wallet SDK      | • Manage client wallets (lock/unlock)<br>          | For DID and VC management |
+|                        | • Create, store, and retrieve DID Documents<br>    |       |
+|                        | • Store and retrieve VCs                           |       |
 
 
 
@@ -413,191 +382,170 @@ OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류�
 
 ![](images/component_trust_agent.svg)
 
-Trust Agent는 OpenDID가 제공하는 SDK를 이용하여 등록, 발급, 목록 API를 구현한 container이다.
+The Trust Agent implements registration, issuance, and listing APIs using the OpenDID SDK.
 
-| API Group           | 기능                                                     | 비고                               |
-| ------------------- | -------------------------------------------------------- | ---------------------------------- |
-| Enroll Controller   | • DID Document 등록/수정<br>                             | 신뢰체인 형성<br>및 사용자 관리    |\
-|                     | • Entity 등록<br>                                        |                                    |\
-|                     | • Wallet 등록<br>                                        |                                    |\
-|                     | • 사용자 등록/탈퇴<br>                                   |                                    |\
-|                     | • 사용자 모바일 분실/회수 신고<br>                       |                                    |\
-|                     | • 사용자 DID Document 말소 신고                          |                                    |
-| Issuance Controller | • VC 발급 중개<br>                                       | 발급과 상태변경은<br>Issuer가 수행 |\
-|                     | • VC 상태변경 중개                                       |                                    |
-| List Controller     | • 다음의 정보 조회<br>                                   | 목록 사업자의 기능                 |\
-|                     | &nbsp;&nbsp;- VC category list<br>                       |                                    |\
-|                     | &nbsp;&nbsp;- VC Plan list for a category<br>            |                                    |\
-|                     | &nbsp;&nbsp;- VC Plan information<br>                    |                                    |\
-|                     | &nbsp;&nbsp;- Allowed CApp package list for a wallet<br> |                                    |\
-|                     | &nbsp;&nbsp;- Certificate VC by DID                      |                                    |
+| API Group           | Functionality                                        | Notes |
+| ------------------- | ---------------------------------------------------- | ----- |
+| Enroll Controller   | • Register and update DID Documents<br>              | Builds the trust chain and manages users |
+|                     | • Register entities<br>                              |       |
+|                     | • Register wallets<br>                               |       |
+|                     | • Register and deregister users<br>                  |       |
+|                     | • Report lost and recovered mobile devices<br>       |       |
+|                     | • Request DID Document termination                   |       |
+| Issuance Controller | • Mediate VC issuance<br>                            | Issuers handle issuance and status updates |
+|                     | • Mediate VC status updates                          |       |
+| List Controller     | • Retrieve information<br>                           | Handles list services |
+|                     | &nbsp;&nbsp;- VC category list<br>                   |       |
+|                     | &nbsp;&nbsp;- VC Plan list by category<br>           |       |
+|                     | &nbsp;&nbsp;- VC Plan details<br>                    |       |
+|                     | &nbsp;&nbsp;- Allowed CApp packages for wallets<br> |       |
+|                     | &nbsp;&nbsp;- Certificate VCs by DID                 |       |
 
 #### 5.1.1. Enroll Controller
 
-Enroll Controller는 등록과 관련된 기능을 담당한다.
-등록의 대상이 되는 주체의 종류는 다음과 같다.
+The Enroll Controller is responsible for registration-related functions.  
+The types of entities eligible for registration are as follows.
 
 1. Entity: Trust Agent, Issuers, Verifiers and the other providers such as Wallet Provider, CApp Provider
 2. Client Wallet
 3. User (Holder)
 
-아래 표는 각 주체 별로 식별자 타입 (Id type), DID 보유 여부, 가입증명서 보유 여부 등을 설명한다.
+The table below describes the identifier type (Id type), whether the entity owns a DID, and whether it holds a certificate VC for each entity.
 
-| Subject         | Id. Type           | own a DID | own a Certificate VC |
-| --------------- | ------------------ | --------- | -------------------- |
-| Trust Agent     | did                | Y         | Y (role="Tas")       |
-| Issuer          | did                | Y         | Y (role="Issuer")    |
-| Verifier        | did                | Y         | Y (role="Verifier")  |
-| Other providers | did                | Y         | Y (role=...)         |
-| Client Wallet   | walletId, did      | Y         | N                    |
-| User            | personId(PII), did | Y         | N                    |
-| CApp            | appId              | N         | N                    |
+| Subject         | Identifier Type   | Owns DID | Owns Certificate VC |
+| --------------- | ----------------- | -------- | ------------------- |
+| Trust Agent     | did               | Y        | Y (role="Tas")      |
+| Issuer          | did               | Y        | Y (role="Issuer")   |
+| Verifier        | did               | Y        | Y (role="Verifier")   |
+| Other providers | did               | Y        | Y (role=...)        |
+| Client Wallet   | walletId, did     | Y        | N                   |
+| User            | personId(PII), did | Y       | N                   |
+| CApp            | appId             | N        | N                   |
 
-인가앱은 DID를 보유하지 않으므로 인가앱의 authenticity를 증명하기 위해서는
-인가앱 사업자(CApp Provider)의 서명(attestation)이 필요하다.
+Since CApps do not own DIDs, they must rely on attestation signatures from CApp Providers to prove authenticity.
 
-■ Entity의 DID Document 등록 절차
+■ Procedure for Registering an Entity’s DID Document
 
-DID를 보유한 주체는 DID Document를 Trust Repository에 먼저 등록하여야 한다.
-데모 구현체는 `<<Java Application>> CLI Tool for Wallet`을 제공하여 각 사업자가
-자신의 Server wallet과 DID Document를 생성할 수 있도록 한다.
-Provider의 DID Document 등록 절차는 다음과 같다.
+Entities that own a DID must first register their DID Document in the Trust Repository.  
+The demo implementation provides the `<<Java Application>> CLI Tool for Wallet`, allowing providers to generate their server wallets and DID Documents.  
+The steps for registering a provider’s DID Document are as follows:
 
-1. (Provider Admin) CLI Tool for wallet으로 DID Document 생성
-2. (Provider Admin) Trust Agent Admin에게 이메일 등의 방식으로 다음의 문서를 전달
-    - DID Document
-    - Evdidence documents (사업자등록증 등 사업자를 증빙할 서류)
-3. (TA Admin) 제출받은 문서 검토 후 TA Tool을 이용하여 시스템에 Provider 정보 입력
-4. (TA Admin) TA Tool을 이용하여 Provider의 DID Document를 Trust Repository에 등록
+1. (Provider Admin): Create a DID Document using the CLI Tool for Wallet.
+2. (Provider Admin): Send the following documents to the Trust Agent Admin via email or other means:
+    - DID Document  
+    - Evidence documents (e.g., business registration certificate)  
+3. (TA Admin): Review the submitted documents and enter the provider information into the system using the TA Tool.
+4. (TA Admin): Register the provider’s DID Document in the Trust Repository using the TA Tool.
 
-■ 가입증명서 (Certificate VC)
+■ Certificate VC
 
-Trust Agent를 포함한 사업자들은 모두 Trust Agent로부터 가입증명서를 발급받는다.
-가입증명서는 다음의 claim을 포함한다.
+All providers, including the Trust Agent, must receive a Certificate VC from the Trust Agent.  
+The Certificate VC contains the following claims:
 
-- `subject` (DN = Distinguished Name): 주체의 정보
-- `role` (ROLE_TYPE): 주체의 역할. "Tas", "Issuer", "Verifier" 등
+- `subject` (DN = Distinguished Name): Information about the entity.  
+- `role` (ROLE_TYPE): The role of the entity (e.g., "Tas", "Issuer", "Verifier").  
 
-DID Document만으로는 해당 주체가 어떤 역할을 수행하는지 알 수가 없다.
-그러므로 Trust Agent는 Provider entity 등록 시 가입증명서를 발급하여
-해당 주체가 어떤 역할을 수행하는지 증명하는 수단으로 사용하도록 한다.
+A DID Document alone does not indicate what role the entity performs.  
+Therefore, the Trust Agent issues a Certificate VC upon provider registration to certify the role of the entity.
 
-발급한 가입증명서를 어디에 저장하고 어떻게 조회하는지는 본 문서의 범위 밖이나,
-데모 구현체는 provider `did`로 가입증명서를 조회하는 기능을 제공한다.
+The storage and retrieval methods for issued Certificate VCs are beyond the scope of this document. However, the demo implementation provides a function to retrieve a Certificate VC using the provider’s DID.
 
-■ Trust Agent 등록
+■ Trust Agent Registration
 
-Trust Agent 등록은 도메인 당 한 차례만 수행하는 특별한 절차이다.
-TA Admin이 CLI Tool for Wallet을 이용하여 DID Document를 생성하고,
-이를 위원회에 송부하여 위원회가 Trust Repository에 등록한다.
-이 부분은 본 문서의 범위 밖이므로 한 가지 사례로 제시한다.
+Registering the Trust Agent is a unique process performed once per domain.  
+The TA Admin uses the CLI Tool for Wallet to generate a DID Document, which is then sent to the committee for registration in the Trust Repository.  
+This process is outside the scope of this document but is illustrated as one example.
 
 ![](images/enroll_ta.svg)
 
 <div style="page-break-after: always;"></div>
 
-■ Entity 등록
+■ Entity Registration
 
 ![](images/enroll_entity.svg)
 
 <div style="page-break-after: always;"></div>
 
-■ 사용자 등록/탈퇴
+■ User Registration / Deregistration
 
-사용자 등록 과정은 다음과 같다.
+The user registration process consists of the following steps:
 
-1. Client Wallet 등록
-    ![](images/register_wallet.svg)
-1. 사용자 등록
-    ![](images/register_user.svg)
+1. Register the Client Wallet
+   ![](images/register_wallet.svg)  
+2. Register the User  
+   ![](images/register_user.svg)  
 
-사용자 등록과 관련한 상세한 내용은 [USER-REG] 문서를 참조한다.
+For more details on user registration, refer to the [USER-REG] document.
 
-사용자 회원탈퇴는 인가앱이나 TA Portal 사이트를 통해 신청이 가능하다.
-회원탈퇴 시 Trust Agent가 처리해야 하는 내용은 본 문서에 명시하지 않는다.
-그 이유는 DID 정책 등 구현체의 요구사항에 따라 처리할 내용이 달라지기 때문이다.
-다만 여기서는 일반적인 처리내용에 대해 사례만 언급한다.
+Users can request membership cancellation through the CApp or the TA Portal website.  
+The specific actions required by the Trust Agent upon membership cancellation are not outlined in this document, as they may vary based on DID policies or implementation requirements.  
+However, common actions include:
 
-- 사용자 DID Docment 폐기 (사용자 요구시 말소 가능)
-- 사용자에 발급된 모든 VC 폐기
-- 사용자 개인정보 삭제
+- Revoke the user’s DID Document (termination may be requested by the user).  
+- Revoke all VCs issued to the user. 
+- Delete the user’s personal information.
 
-■ 사용자 모바일 분실/회수 신고
+■ Reporting Lost or Recovered Mobile Devices
 
-사용자가 인가앱이 설치된 모바일 기기를 분실한 경우 TA Portal 사이트를 통해 분실 신고를 할 수 있다.
-분실 신고 접수 시 Trust Agent는 다음을 수행한다.
+If a user loses the mobile device with the installed CApp, they can report the loss via the TA Portal website.  
+Upon receiving the report, the Trust Agent performs the following actions:
 
-- 사용자 DID Document 비활성화 (ACTIVATED → DEACTIVATED)
-- 사용자에 발급된 모든 VC 중지 (ACTIVE → INACTIVE)
-- 인가앱과 client wallet 상태를 분실로 변경
+- Deactivate the user’s DID Document (ACTIVATED → DEACTIVATED).  
+- Suspend all VCs issued to the user (ACTIVE → INACTIVE).  
+- Change the status of the CApp and client wallet to "Lost."
 
-분실 신고(Report a lost) 이후 모바일 기기를 되찾은 경우 회수 신고를 하여 정상으로 복구할 수 있다.
-회수는 인가앱과 TA Portal 사이트를 통해 신고가 가능하다.
-회수 신고(Report a found) 접수 시 Trust Agent는 다음을 수행한다.
+If the lost device is recovered, the user can report the recovery through the CApp or the TA Portal website.  
+Upon receiving the recovery report, the Trust Agent performs the following actions:
 
-- 사용자 DID Document 활성화 (DEACTIVATED → ACTIVATED)
-- 사용자에 발급된 모든 VC 정상화 (INACTIVE → ACTIVE)
-- 인가앱과 client wallet 상태를 정상으로 변경
+- Reactivate the user’s DID Document (DEACTIVATED → ACTIVATED).  
+- Restore all VCs issued to the user (INACTIVE → ACTIVE).  
+- Change the status of the CApp and client wallet to "Normal."
 
-■ 사용자 DID Document 말소 신고
+■ Request for DID Document Termination
 
-말소 신고(Request termination)는 사용자가 자신의 계정이 해킹된 것으로 판단하는 등의 사유로
-더이상 해당 DID로 제출된 VP를 검증하지 말기를 요청하는 것이다.
-그러므로 말소 신고를 할 때에는 말소 시작일자가 필요하다.
-말소 시작일자를 기준으로 그 이전에 제출된 VP는 사용자가 정상적으로 제출한 것으로 볼 수 있다.
-말소 신고 접수 시 Trust Agent는 다음을 수행한다.
+A termination request is submitted when a user believes their account has been compromised and requests that VPs issued under that DID no longer be validated.  
+A termination start date must be provided with the request, and any VPs submitted before that date will be considered valid.
 
-- 사용자 DID Document 말소 (* → TERMINATED)
+Upon receiving the termination request, the Trust Agent performs the following action:
+
+- Terminate the user’s DID Document (* → TERMINATED).
 
 #### 5.1.2. Issuance Controller
 
-Issuance Controller는 Holder용 VC 발급 및 상태변경 중개를 담당한다.
-VC 발급 및 상태변경은 Issuer가 담당하나 다음과 같은 이유로 인가앱이 직접 Issuer에 요청하는 것이 불가한 경우 많다.
+The Issuance Controller mediates the issuance and status updates of VCs for Holders. Although Issuers handle issuance directly, it is often impractical for CApps to communicate with Issuers due to the following reasons:
 
-- Issuer 시스템은 공공기관의 내부망에 존재하는 경우가 많아 인터넷망과 단절되어 있음
-- 보안이 유지되고 신뢰된 소수의 서버와만 연결됨
-- Issuer 시스템과 연결을 위해서는 방화벽 설정, 인증서 설치 등 복잡한 과정이 필요함
+- Issuer systems are often part of internal networks in public institutions, isolated from the internet.
+- They are connected only to a limited number of trusted servers for security.
+- Establishing connections requires complex procedures such as firewall configurations and certificate installations.
 
-이러한 이유로 인터넷망을 이용하는 다수의 인가앱이 Issuer 시스템과 직접 연결하는 것은 사실상 불가능하다.
-따라서 Trust Agent가 둘 사이에 발급을 중개하도록 구성하였다.
+To address these challenges, the Trust Agent acts as an intermediary for VC issuance.
 
-■ VC 발급 중개
+■ VC Issuance Mediation
 
-아래 그림에서 CApp이 Trust Agent를 호출하는 API (2a, 3, 5, 6a, 10a) 부분이 VC 발급 중개에 해당한다.
-Issuer에 의한 발급 개시(Issuer-init offer) 및 사용자에 의한 발급 개시(User-init offer) 절차는 Issuer Service 부분을 참조한다.
+In the diagram below, the API calls made by the CApp to the Trust Agent (2a, 3, 5, 6a, 10a) represent the VC issuance mediation process. Both issuer-initiated and user-initiated issuance processes are supported.
 
 ![](images/issue_vc.svg)
 
-■ VC 상태변경
+■ VC Status Updates
 
 *[NOT yet documented]*
 
 #### 5.1.3. List Controller
 
-List Controller는 목록 사업자(List Provider)가 수행하는 기능인데,
-데모 구현체는 Trust Agent가 이 역할을 대신 수행한다.
-향후 List Service를 별도의 Container로 분리할 수도 있다.
+The List Controller handles list services typically managed by a List Provider. The demo implementation integrates these services into the Trust Agent but may separate them into a dedicated List Service in the future.
 
-VC 발급과 관련한 상세한 내용은 [ISSUE-VC] 문서를 참조한다.
+Relevant details are available in the [ISSUE-VC] document. Essential but currently unimplemented features in the demo include:
 
-VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않은 부분은 다음과 같다.
+- VC Plan registration
+- VC Plan Issuer registration
 
-- VC Plan 등록
-- VC Plan Issuer 등록
+This information is stored in the List Provider's database, not in the Trust Repository. The Trust Agent in the demo provides the following list services:
 
-상기 정보는 Trust Repository가 아닌 목록 사업자의 데이터베이스에 저장한다.
-데모 구현체의 Trust Agent는 목록 사업자를 대신하여 아래의 조회 기능을 제공한다.
-
-1. VC category list
-    - 발급 가능한 VC의 category
-1. VC Plan list for a category
-    - 해당 category에 속하는 VC Plan의 목록
-1. VC Plan information
-    - VC Plan의 상세 정보
-1. Allowed CApp package list for a wallet
-    - 특정 client wallet을 사용할 수 있는 인가앱의 package id 목록
-1. Certificate VC by DID
-    - Provider의 did를 지정하여 가입증명서 원문을 조회
+1. VC Category List: Categories of issuable VCs.
+1. VC Plan List for a Category: Available VC Plans under a specific category.
+1. VC Plan Information: Details about a specific VC Plan.
+1. Allowed CApp Package List for Wallets: Package IDs of CApps that can use specific wallets.
+1. Certificate VCs by DID: Retrieve certificate VCs using provider DIDs.
 
 
 <div style="page-break-after: always;"></div>
@@ -606,74 +554,62 @@ VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않�
 
 ![](images/component_issuer_service.svg)
 
-Issuer Service는 OpenDID가 제공하는 SDK를 이용하여 VC 발급, VC 상태관리 API를 구현한 container이다.
+The Issuer Service implements VC issuance and management APIs using the OpenDID SDK.
 
-| API Group           | 기능          | 비고 |
-| ------------------- | ------------- | ---- |
-| Issuance Controller | • VC 발급     |      |
-| VC Controller       | • VC 상태변경 |      |
+| API Group           | Functionality    | Notes |
+| ------------------- | ---------------- | ----- |
+| Issuance Controller | VC Issuance      |       |
+| VC Controller       | VC Status Update |       |
 
-[ISSUE-VC] 문서에 정의된 VC 발급의 전체 절차를 요약하면 다음과 같다.
+The [ISSUE-VC] document outlines the complete issuance process:
 
-1. 사전준비 절차
-    - (A) 계획 단계 (Planning)
-        - Claim, VC Schema 정의 및 게시
-    - (B) 등록 단계 (Registration)
-        - VC Plan, VC Plan Issuer 등록
-2. 발급 절차
-    - (C) 개시 단계 (Initiation)
+1. Preparation:
+    - (A) Planning: Define and publish Claims and VC schemas.
+    - (B) Registration: Register VC Plans and VC Plan Issuers.
+2. Issuance:
+    - (C) Initiation
         - Issuer initiated
         - User initiated
-    - (D) 발급 단계 (Issueance)
+    - (D) Issuance
 
-(A) ~ (C) 단계는 데이터 모델만 정의하고 API는 정의하고 있지 않으므로 구현체가 이를
-별도로 구현하여야 한다.
-또한 Issuer Legacy에 저장되어 있는 사용자 개인정보 및 claim 데이터를 Issuer Database로
-어떻게 전달하는지는 본 문서의 범위 밖이다.
+The initial steps focus on data models without defining APIs, leaving implementation up to each provider. How personal data stored in Issuer Legacy systems is transferred to the Issuer Database is also beyond this document’s scope.
 
 #### 5.2.1. Issuance Controller
 
-Issuance Controller는 인가앱이 아닌 Trust Agent에 의해 호출되는 VC 발급 API 이다.
-아래 절차도는 인가앱, client wallet, Trust Agent, Issuer Service가 표준 API를 호출하는 순서를 보여준다.
-API 호출은 오렌지 색으로 표시하였다.
+The Issuance Controller is a VC issuance API invoked by the Trust Agent, not the CApp.  
+The following process diagram shows the sequence of standard API calls among the CApp, client wallet, Trust Agent, and Issuer Service.  
+API calls are indicated in orange.
 
-Trust Agent에 의해 호출되는 아래 4개의 API가 Issuance Contoller가 제공하는 기능이다.
+The following four APIs, invoked by the Trust Agent, represent the functions provided by the Issuance Controller:
 
-- Inspect Propose Issue: 인가앱의 발급 요청을 검사
-- Generate Issue Profile: IssueProfile 생성
-- Issue VC: VC 발급
-- Complete VC: VC 발급 프로토콜 완료 처리
+- Inspect Propose Issue: Inspect the issuance request from the CApp.
+- Generate Issue Profile: Create the IssueProfile.
+- Issue VC: Issue the VC.
+- Complete VC: Complete the VC issuance protocol.
 
 ![](images/seq_issuance_controller.svg)
 
 ■ Issuer initiated
 
-아래 그림은 Issuer 직원이 특정 사용자(1명 이상)에게 지정된 VC를 발급하도록 요청하는
-정보인 (IssueOfferPayload)payload를 QR과 PUSH 메시지 형태로 사용자에게 전달하는 과정을 설명한다.
-이는 데모 구현체에서 구현한 사례이므로 반드시 이렇게 해야 하는 것은 아니다.
-다만 payload의 데이터 모델은 표준을 준수하여야 한다.
+The diagram below illustrates how Issuers initiate issuance by sending an IssueOfferPayload (as a QR code or push message) to one or more users. This demo showcases one way to implement this process, but other implementations are possible. However, the data model of the payload must comply with standards.
 
 ![](images/issuer_init.svg)
 
 ■ User initiated
 
-아래 그림은 사용자가 발급할 VC와 Issuer를 직접 선택하여 발급을 요청하는 과정을 설명한다.
+The following diagram demonstrates how users initiate issuance by selecting a VC and Issuer.
 
 ![](images/user_init.svg)
 
-■ VC 발급
+■ VC Issuance Process
 
-아래 그림은 (D) 발급 단계를 설명한다.
-Trust Agent가 수행하는 KYC와는 무관하게 Issuer가 자체적으로 KYC를 수행할 수도 있다.
-만약 KYC를 수행한다면 Generate Issue Profile 호출 이전에 하여야 한다.
-왜냐하면 IssueProfile을 생성하기 위해서 사용자가 누구인지 식별하여야 하기 때문이다.
+The diagram below illustrates the (D) Issuance stage. While the Trust Agent can perform KYC, the Issuer may also conduct KYC independently before generating an Issue Profile, as it requires identifying the user.
 
 ![](images/issue_vc.svg)
 
 #### 5.2.2. VC Controller
 
-VC 생애주기(Lifecyle) 등 상세한 내용은 [VC-FORMAT] 문서를 참조한다.
-VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
+The VC Controller manages the VC lifecycle. Additional details are provided in the [VC-FORMAT] document. API definitions for VC lifecycle management are not currently available.
 
 *[NOT yet documented]*
 
@@ -684,50 +620,47 @@ VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
 
 ![](images/component_verifier_service.svg)
 
-Verifier Service는 OpenDID가 제공하는 SDK를 이용하여 VP 제출 API를 구현한 container이다.
+The Verifier Service implements the VP submission API using the OpenDID SDK.
 
-| API Group         | 기능                   | 비고 |
-| ----------------- | ---------------------- | ---- |
-| Verify Controller | • VerifyOffer 생성<br> |      |\
-|                   | • VP 제출받아 검증     |      |
+| API Group         | Functionality                     | Notes |
+| ----------------- | ---------------------------------- | ----- |
+| Verify Controller | • Create VerifyOffer<br>           |       |\
+|                   | • Receive and verify VP submissions |       |
 
-[PRESENT-VC] 문서에 정의된 VP 제출의 전체 절차를 요약하면 다음과 같다.
+The [PRESENT-VC] document outlines the complete VP submission process:
 
-1. 사전준비 절차
-    - (A) 계획 단계 (Planning)
-        - 서비스 및 응대장치 정의
-        - 제출 Offer 전달매체 및 메시지 형식 정의
-2. 제출 절차
-    - (B) Offer 단계 (Offering)
-    - (C) 제출 단계 (Presentation)
+1. Preparation Procedure
+   - (A) Planning Stage
+     - Define services and service devices.  
+     - Define the transmission media and message formats for Verify Offers.
+2. Submission Procedure
+   - (B) Offering Stage
+   - (C) Presentation Stage
 
-(A) ~ (B) 단계는 데이터 모델만 정의하고 API는 정의하고 있지 않으므로 구현체가 이를
-별도로 구현하여야 한다.
+The steps from (A) to (B) only define data models, without specifying APIs. Implementations must develop the APIs independently.
 
-VP 제출 절차를 간단하게 요약하면 다음과 같다.
+Summary of the VP Submission Process
 
-1. 사용자가 Service Provider에 서비스를 요청한다.
-2. VerifyOfferPayload를 사용자의 인가앱에 전달한다.
-3. 인가앱이 Verifier Service로부터 VerifyProfile을 입수한다.
-    - VerifyProfile 내에 VP 암호화를 위한 E2E 요청정보가 포함되어 있음
-4. 사용자의 인증을 받아 VP를 생성한다.
-5. 인가앱이 Verifier Service에 암호화된 VP를 제출한다.
-6. Verifier Service는 VP를 복호화하여 검증한 후 사용자에 서비스를 제공한다.
+1. The user requests a service from the Service Provider.  
+2. The VerifyOfferPayload is sent to the user's CApp.  
+3. The CApp obtains the VerifyProfile from the Verifier Service.  
+   - The VerifyProfile contains E2E request information required for VP encryption.  
+4. The CApp generates the VP after user authentication.  
+5. The CApp submits the encrypted VP to the Verifier Service.  
+6. The Verifier Service decrypts and verifies the VP, then provides the service to the user.
 
-상기 절차 중 2, 3, 4 항목은 전달매체(Media), 모드, 응대장치의 종류에 다양한 방법이 존재한다.
+Steps 2, 3, and 4 may involve various methods depending on the transmission media, mode, and the type of service device.
 
-■ 전달매체, 모드, 응대장치
+■ Transmission Media, Modes, and Service Devices
 
-전달매체는 QR 이미지, PUSH 메시지, App2App 통신, NFC 통신, Bluetooth 통신 등 다양하다.
+Transmission media include QR codes, push messages, app-to-app communication, NFC, and Bluetooth.
 
-모드는 다음 세 가지가 있다.
+Modes:
+- Direct: CApps submit directly to the Verifier.
+- Indirect: Submissions are routed through service devices.
+- Proxy(Currently unsupported): A third-party server mediates submissions.
 
-- Direct: 인가앱이 검증 사업자에 직접 제출
-- Indirect: 인가앱이 응대장치 등을 통해 간접 제출
-- Proxy(현재 미지원): 제3의 서버가 제출을 중계
-
-아래 표는 주요 3가지 전달매체로 VP를 제출하는 사례를 나타낸다.
-모든 가능한 케이스가 아니라 주요 케이스임에 주의하여야 한다.
+The table below summarizes typical submission scenarios based on media and mode.
 
 | Media(↓) / Mode(→) | Direct           | Indirect           | Proxy           |
 | ------------------ | ---------------- | ------------------ | --------------- |
@@ -735,32 +668,26 @@ VP 제출 절차를 간단하게 요약하면 다음과 같다.
 | PUSH               | PUSH + Direct    |                    | PUSH + Proxy    |
 | App2App            | App2App + Direct | App2App + Indirect | App2App + Proxy |
 
-- QR-MPM (Merchant Presented Mode)
-    - 응대장치가 QR을 표출하고 인가앱이 스캔하는 방식
-- QR-CPM (Customer Presented Mode)
-    - 인가앱이 QR을 표출하고 응대장치가 스캔하는 방식
-    - Verifier에서 인가앱으로 접근할 방법이 없으므로 Proxy 방식만 가능
-- App2App
-    - 동일한 사용자 모바일에 설치된 앱들 간 통신 방식
-    - 인가앱과 Verifer 응대장치에 해당하는 서비스앱이 통신
+- QR-MPM (Merchant Presented Mode): The service device displays a QR code, and the CApp scans it.
+- QR-CPM (Customer Presented Mode): The CApp displays a QR code, and the service device scans it.
+- App2App: Communication between apps installed on the same mobile device.
 
 #### 5.3.1. Verify Controller
 
-Verify Controller는 다양한 경로로 암호화된 VP를 제출하기 위한 API 이다.
+The Verify Controller is an API designed for submitting encrypted VPs through various channels.
 
-- Request Profile: VerifyProfile 요청
-- Request Verify: VP를 제출하여 검증을 요청
+- Request Profile: Request a VerifyProfile.
+- Request Verify: Submit a VP and request verification.
 
-■ QR-MPM + Direct mode 예시
+■ Example: QR-MPM + Direct Mode
 
-아래 그림은 QR-MPM 전달매체를 이용하여 Verifier Service로 바로 제출하는 Direct mode의 사례를 보여준다.
+The following diagram illustrates a scenario where the Verifier Service receives a VP submission through QR-MPM in direct mode.
 
 ![](images/vp_qrmpm_direct.svg)
 
-■ App2App + Indirect mode 예시
+■ Example: App2App + Indirect Mode
 
-아래 그림은 응대장치가 서비스앱이며, 서비스앱이 VerifyProfile 요청과 VP 제출을 대신해주는 Indirect mode의 사례를 보여준다.
-Direct mode인 경우라면 서비스앱이 VerifyOfferPayload만 전달해주며, 나머지는 인가앱이 직접 수행한다.
+This diagram depicts a scenario where a service app acts as the intermediary for VerifyOffer requests and VP submissions.
 
 ![](images/vp_app2app_indirect.svg)
 
@@ -771,44 +698,42 @@ Direct mode인 경우라면 서비스앱이 VerifyOfferPayload만 전달해주�
 
 ![](images/component_certified_app.svg)
 
-CApp은 OpenDID가 제공하는 SDK(Android, iOS 각각)를 이용하여 구현 모바일 응용 프로그램으로서
-아래와 같은 모듈로 구성되어 있다.
+A Certified App (CApp) is a mobile application built using the OpenDID SDK (available for Android and iOS). It consists of the following modules:
 
-| Module     | 기능                    | 비고 |
-| ---------- | ----------------------- | ---- |
-| DID Module | • 사용자 신원 관련 기능 |      |
-| VC Module  | • VC 발급, 상태변경     |      |
-| VP Module  | • VP 제출               |      |
+| Module     | Functionality            | Notes |
+| ---------- | ------------------------ | ----- |
+| DID Module | • Identity-related features |      |
+| VC Module  | • VC issuance and status updates | |
+| VP Module  | • VP submission          |      |
 
-상기 모듈은 기능적으로 분류한 것이며 실제 소프트웨어 모듈은 더욱 다양하며 서로 유기적으로 연결되어 있다.
-또한 client wallet은 파일 형태의 wallet만 고려하였다.
+These modules are conceptual categories. In practice, software modules may be more diverse and interconnected. Only file-based wallets are considered for the client wallet in this case.
 
 #### 5.4.1. DID Module
 
-DID Module은 사용자 신원과 관련된 다음의 기능을 담당한다.
+The DID Module manages identity-related tasks:
 
-- Wallet 생성, 잠금/잠금해제(lock/unlock) 및 등록
-- 사용자 DID 생성, 사용자 등록/회원탈퇴
-- DID 키 사용을 위한 사용자 인증 (PIN, BIO 인증)
-- DID 상태변경
-- 분실 후 회수 신고
-- Trust Repository로부터 DID Document, VC Metadata 등 정보 조회
+- Create, lock/unlock, and register wallets
+- Create user DIDs and manage user registration/membership cancellation
+- Authenticate users for DID key usage (PIN or biometric authentication)
+- Change DID statuses
+- Report lost or recovered devices
+- Retrieve information (e.g., DID Documents, VC metadata) from the Trust Repository
 
 #### 5.4.2. VC Module
 
-VC Module은 VC와 관련된 다음의 기능을 담당한다.
+The VC Module handles tasks related to VCs:
 
-- VC 발급, 삭제, 재발급
-- VC 조회, 상태변경
-- VC 발급에 필요한 부가기능 (KYC 등)
+- Issue, delete, and reissue VCs
+- Retrieve VCs and update their statuses
+- Support additional functions (e.g., KYC) required for issuance
 
 #### 5.4.3. VP Module
 
-VC Module은 VP와 관련된 다음의 기능을 담당한다.
+The VP Module manages tasks related to VPs:
 
-- VerifyOffer 입수 (QR Scan, PUSH 메시지 처리 등)
-- VP 생성
-- VP 제출 (전달매체, 모드, 응대장치 종류별)
+- Receive VerifyOffers (via QR scan, push messages, etc.)
+- Create VPs
+- Submit VPs based on the transmission media, mode, and type of service device
 
 
 <div style="page-break-after: always;"></div>
@@ -817,13 +742,12 @@ VC Module은 VP와 관련된 다음의 기능을 담당한다.
 
 ![](images/component_wallet_service.svg)
 
-Wallet Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 구현한 container이다.
+The Wallet Service implements the following functions using the OpenDID SDK:
 
-- Client wallet attestation
-    - Client wallet의 DID Document를 서명하여 Trust Agent가 wallet의 authenticity 확인
+- Client wallet attestation:
+    - Signs the DID Document of the client wallet to confirm its authenticity with the Trust Agent.
 
-데이터 모델만 정의하고 API는 정의하고 있지 않으므로 구현체가 이를 별도로 구현하여야 한다.
-상세한 내용은 [USER-REG], [DATA-SPEC] 문서를 참조한다.
+Since only the data model is defined, providers must implement the API. Refer to the [USER-REG] and [DATA-SPEC] documents for more details.
 
 
 <div style="page-break-after: always;"></div>
@@ -832,14 +756,13 @@ Wallet Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 �
 
 ![](images/component_capp_service.svg)
 
-CApp Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 구현한 container이다.
+The CApp Service implements the following functions using the OpenDID SDK:
 
-- CApp attestation
-    - WalletToken 생성 시 Client wallet이 제공한 WalletTokenSeed를 서명하여 CApp의 authenticity 증명
-    - ServerToken 생성 시 CApp의 appId를 서명하여 CApp의 authenticity 증명
+- CApp attestation:
+    - Signs WalletTokenSeed information provided by the client wallet to generate WalletTokens.
+    - Signs appId information to generate ServerTokens, confirming the CApp's authenticity.
 
-데이터 모델만 정의하고 API는 정의하고 있지 않으므로 구현체가 이를 별도로 구현하여야 한다.
-상세한 내용은 [USER-REG], [DATA-SPEC] 문서를 참조한다.
+As with the Wallet Service, only the data model is defined. Providers must implement the API. Refer to the [USER-REG] and [DATA-SPEC] documents for further information.
 
 
 <div style="page-break-after: always;"></div>
@@ -848,16 +771,16 @@ CApp Service는 OpenDID가 제공하는 SDK를 이용하여 아래 기능을 구
 
 ![](images/component_user_service.svg)
 
-User Service는 OpenDID가 제공하는 SDK를 이용하여 사용자 모바일 전용 API를 구현한 container이다.
+The User Service provides APIs for mobile users, implemented using the OpenDID SDK.
 
-| API Group             | 기능                           | 비고 |
-| --------------------- | ------------------------------ | ---- |
-| Blockchain Controller | • Blockchain으로부터 정보 조회 |      |
+| API Group             | Functionality                 | Notes |
+| --------------------- | ------------------------------ | ----- |
+| Blockchain Controller | • Retrieve information from the blockchain | |
 
 
 ### 5.8. Notification Service
 
-현재 정의된 표준 API가 없다.
+A standard API for the Notification Service is not yet defined.
 
 [NOT yet documented]
 
