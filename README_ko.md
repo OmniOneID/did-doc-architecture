@@ -67,6 +67,7 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 #### Document
 
 1. [did-doc-architecture](https://github.com/OmniOneID/did-doc-architecture)
+1. [did-release](https://github.com/OmniOneID/did-release)
 
 #### Server SDK
 
@@ -75,16 +76,29 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-crypto-sdk-server](https://github.com/OmniOneID/did-crypto-sdk-server)
 1. [did-datamodel-sdk-server](https://github.com/OmniOneID/did-datamodel-sdk-server)
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
+1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
+1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
 
 #### Mobile SDK 
 
-1. [did-client-sdk-aos](http://gitlab.raondevops.com/opensourcernd/source/sdk/app/did-client-sdk-aos)
-1. [did-client-sdk-ios](http://gitlab.raondevops.com/opensourcernd/source/sdk/app/did-client-sdk-ios)
+1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
+1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
 
 #### Server Application 
 
 1. [did-fabric-contact](https://github.com/OmniOneID/did-fabric-contract)
-1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
+1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
+1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
+1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
+1. [did-api-server](https://github.com/OmniOneID/did-api-server)
+1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
+1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
+1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+
+#### Mobile Application 
+
+1. [did-ca-aos](https://github.com/OmniOneID/did-ca-aos)
+1. [did-ca-ios](https://github.com/OmniOneID/did-ca-ios)
 
 ## 6. Folder Structure
 ```
