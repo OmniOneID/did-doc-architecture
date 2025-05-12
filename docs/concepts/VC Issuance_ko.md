@@ -85,6 +85,8 @@ VC 발급 순서는 다음과 같다.
         - (D4) Issue Profile 요청 - Request Issue Profile
         - (D5) DID Auth 및 발급 요청 - Request Issue VC
         - (D6) 발급 완료 - Confirm Issue VC
+1. VC와 ZKP Credential 간의 관계
+   - ZKP Credential 단독 발급은 현재 지원되지 않으며, ZKP를 지원하는 VC인 경우 VC 발급 시 ZKP Credential이 병렬로 함께 발급된다.
 
 ### 1.1. 참조문서
 
