@@ -111,7 +111,7 @@ def object CredentialSchema: "Credential schema"
         + string      "name": "namespace 이름"
         - url         "ref" : "namespace에 대한 정보 페이지 URL"
       }
-      + array(object) "items": "클레임 정의 목록", min_count(1)
+      + array(object) "items": "attribute 정의 목록", min_count(1)
       {
         + string        "label"     : "attribute 별 라벨"
         + string        "caption"   : "attribute 별 이름"
