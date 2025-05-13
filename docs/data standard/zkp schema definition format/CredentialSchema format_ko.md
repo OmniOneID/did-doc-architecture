@@ -19,16 +19,17 @@ Credential Schema format
 ==
 
 - 주제
-    - ZKP Credentail Schema 구조 정의
+    - ZKP Credential Schema 구조 정의
 - 작성: Park Dongjun
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2025-05-13
+- 버전: v1.0.1
 
 개정이력
 ---
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | ---------|
+| v1.0.1 | 2025-05-13 | 네임스페이스 추가(Suhyun Forten Lee) |
 | v1.0.0 | 2025-04-30 | 초안      |
 
 
@@ -102,10 +103,24 @@ def object CredentialSchema: "Credential schema"
     + string               "name"        : "Credential Schema 이름"
     + string               "version"     : "Credential Schema 버전"
     + array(string)        "attrNames"   : "attribute 별 이름"
-    - array(object)        "attrTypes"   : "attribute 별 타입"
+    - array(object)        "attrTypes"   : "attribute 별 네임스페이스 및 타입"
     {
-      + string               "label"     : "attribute 별 라벨"
-      + ATTR_TYPE            "type"      : "attribute 별 타입"
+      + object "namespace": "attribute namespace"
+      {
+        + namespaceId "id"  : "attribute namespace", emptiable(true)
+        + string      "name": "namespace 이름"
+        - url         "ref" : "namespace에 대한 정보 페이지 URL"
+      }
+      + array(object) "items": "클레임 정의 목록", min_count(1)
+      {
+        + string        "label"     : "attribute 별 라벨"
+        + string        "caption"   : "attribute 별 이름"
+        + ATTR_TYPE     "type"      : "attribute 별 타입"
+        - object        "i18n"      : "기타 언어의 attribute 이름"
+        {
+          + string $lang: "기타언어 attribute 이름", variable_type(LANGUAGE), min_extend(1)
+        }
+      }
     }
     + string               "tag"         : "Credential Schema 테그"
 }
@@ -114,8 +129,8 @@ def object CredentialSchema: "Credential schema"
 - `~/id`: 해당 Credential Schema의 고유식별자
 - `~/name`: 스키마의 이름 (예제에서는 'mdl' 이라는 이름을 사용)
 - `~/version`: 해당 스키마의 버전정보
-- `~/attrNames`: 증명서에 포함될 속성들의 이름 목록 (예제에서는 zkpsex, zkpsort, zkpaddr, zkpbirth)이 포함
-- `~/attrTypes`: 증명서에 포함될 속성들의 타입 목록
+- `~/attrNames`: 증명서에 포함될 속성들의 이름 목록 (네임스페이스 식별자 기준 저장)
+- `~/attrTypes`: 증명서에 포함될 속성들의 네임스페이스 및 타입 등 목록
 - `~/tag`: 스키마를 구별하거나 필터링하는데 사용되는 태그
 
 <div style="page-break-after: always;"></div>
@@ -137,21 +152,21 @@ def object CredentialSchema: "Credential schema"
   "schemaId": "did:omn:NcYxiDXkpYi6ov5FcYDi1e:2:mdl:1.0",
   "credDefId": "did:omn:NcYxiDXkpYi6ov5FcYDi1e:3:CL:did:omn:NcYxiDXkpYi6ov5FcYDi1e:2:mdl:1.0:Tag1",
   "values": {
-    "zkpsex": {
-      "encoded": "5944657099558967239210949258394887428692050081607692519917050011144233115103",
-      "raw": "male"
-    },
-    "zkpbirth": {
-      "encoded": "20010101",
-      "raw": "20010101"
-    },
-    "zkpasort": {
-      "encoded": "1111",
-      "raw": "1111"
-    },
-    "zkpaddr": {
+    "org.rso.10001.zkpcity": {
       "encoded": "21224889883149768092131882119095173851218656983871668929472739274089421294476",
       "raw": "seoul"
+    },
+    "org.rso.10001.zkpphone": {
+      "encoded": "91244139883149338092131882119112173851233256983871739294727392740894442944243",
+      "raw": "1111"
+    },
+    "org.rso.10001.zkpsalary": {
+      "encoded": "21224889883149768092131882119095173851218656983871668929472739274089421294476",
+      "raw": "seoul"
+    },
+    "org.rso.10002.zkpsex": {
+      "encoded": "5944657099558967239210949258394887428692050081607692519917050011144233115103",
+      "raw": "male"
     }
   },
   "signature": {
@@ -178,28 +193,50 @@ def object CredentialSchema: "Credential schema"
   "name": "mdl",
   "version": "1.0",
   "attrNames": [
-    "zkpsex",
-    "zkpasort",
-    "zkpaddr",
-    "zkpbirth"
+    "org.rso.10001.zkpcity",
+    "org.rso.10001.zkpphone",
+    "org.rso.10001.zkpsalary",
+    "org.rso.10002.zkpsex"
   ],
   "attrTypes": [
-     {
-      "label": "zkpsex",
-      "type": "String"
+    {
+      "namespace": {
+        "id": "org.rso.10001",
+        "ref": "https://www.rso.org/standard/10001.html"
+      },
+      "items": [
+        {
+          "label": "zkpcity",
+          "caption": "City",
+          "type": "String",
+          "i18n": {
+            "ko": "도시",
+            "en": "City"
+          }
+        },
+        {
+          "label": "zkpphone",
+          "caption": "Phone",
+          "type": "String"
+        },
+        {
+          "label": "zkpsalary",
+          "caption": "Salary",
+          "type": "Number"
+        }
+      ]
     },
     {
-      "label": "zkpasort",
-      "type": "String"
-    },
-    {
-      "label": "zkpaddr",
-      "type": "String"
-    },
-    {
-      "label": "zkpbirth",
-      "type": "Number"
-    },
+      "namespace": {
+        "id": "org.rso.10002"
+      },
+      "items": [
+        {
+          "label": "zkpsex",
+          "type": "String"
+        }
+      ]
+    }
   ],
   "tag": "Tag1"
 }
@@ -207,8 +244,8 @@ def object CredentialSchema: "Credential schema"
 - `~/id`: Credential Schema의 고유 식별자(ID). 특정 스키마를 참조하기 위해 사용됨.
 - `~/name`: 스키마의 이름(Name). (예: "mdl")
 - `~/version`: 해당 스키마의 버전정보
-- `~/attrNames`: 증명서에 포함될 속성들의 이름 목록 (예제에서는 zkpsex, zkpsort, zkpaddr, zkpbirth)이 포함
-- `~/attrTypes`: 증명서에 포함될 속성들의 타입 목록
+- `~/attrNames`: 증명서에 포함될 속성들의 이름 목록 (네임스페이스 식별자 기준 저장)
+- `~/attrTypes`: 증명서에 포함될 속성들의 타입 등 목록
 - `~/tag`: Credential Definition에서 사용되는 태그(Tag). 같은 Credential Definition을 구분하는 데 사용될 수 있음.
 
 
