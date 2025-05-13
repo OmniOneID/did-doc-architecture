@@ -72,7 +72,8 @@ format은 모두 OSD (OpenDID Schema Definition Language)로 정의한다.
 | 참조명              | 문서명                                          | 위치 |
 | ------------------- | ----------------------------------------------- | ---- |
 | [OSD]               | OpenDID Schema Definition Language              |      |
-| [ZKP-DATA-SPEC]     | (OpenDID) 데이터 명세서(ZKP Data Specification) |      |
+| [DATA-SPEC]         | (OpenDID) 데이터 명세서(Data Specification) |      |
+| [ZKP-DATA-SPEC]     | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
 | [CREDENTIAL-FORMAT] | (OpenDID) Credential format                     |      |
 
 
