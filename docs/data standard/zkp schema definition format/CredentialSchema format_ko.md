@@ -104,7 +104,7 @@ def object CredentialSchema: "Credential schema"
     + string               "name"        : "Credential Schema 이름"
     + string               "version"     : "Credential Schema 버전"
     + array(string)        "attrNames"   : "attribute 별 이름"
-    - array(object)        "attrTypes"   : "attribute 별 네임스페이스 및 타입"
+    + array(object)        "attrTypes"   : "attribute 별 네임스페이스 및 타입"
     {
       + object "namespace": "attribute namespace"
       {
