@@ -97,7 +97,7 @@ def object CredentialSchema: "Credential schema"
     + string               "name"        : "Credential Schema Name"
     + string               "version"     : "Credential Schema Version"
     + array(string)        "attrNames"   : "Attribute Names"
-    - array(object)        "attrTypes"   : "Attribute Types"
+    + array(object)        "attrTypes"   : "Attribute Types"
     {
       + string               "label"     : "Attribute Label"
       + ATTR_TYPE            "type"      : "Attribute Type"
