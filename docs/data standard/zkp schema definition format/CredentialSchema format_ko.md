@@ -234,6 +234,7 @@ def object CredentialSchema: "Credential schema"
       "items": [
         {
           "label": "zkpsex",
+          "caption": "Gender",
           "type": "String"
         }
       ]
