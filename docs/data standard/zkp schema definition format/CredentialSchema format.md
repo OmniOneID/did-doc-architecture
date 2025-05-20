@@ -198,6 +198,7 @@ Scenario:
     {
       "namespace": {
         "id": "org.rso.10001",
+        "name": "RSO 10001 Namespace",
         "ref": "https://www.rso.org/standard/10001.html"
       },
       "items": [
@@ -224,7 +225,8 @@ Scenario:
     },
     {
       "namespace": {
-        "id": "org.rso.10002"
+        "id": "org.rso.10002",
+        "name": "RSO 10002 Namespace"
       },
       "items": [
         {
