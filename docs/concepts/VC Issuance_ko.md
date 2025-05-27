@@ -20,11 +20,12 @@ VC 발급
 
 - 주제 : VC 발급의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2024-10-18
-- 버전 : v1.0.0
+- 일자 : 2025-05-27
+- 버전 : v2.0.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v2.0.0  | 2025-05-27 | VcPlan 관련 데이터 포맷 변경 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
 <br>
@@ -207,6 +208,12 @@ def object VcPlan: "VC plan 정보"
     {
         + url                    "id"  : "VC Schema URL"
         + CREDENTIAL_SCHEMA_TYPE "type": "VC Schema format type"
+    }
+
+    - object "credentialDefinition": "ZKP Credential Definition 정보"
+    {
+        + string                 "id"  : "ZKP Credential Definition ID"
+        + string                 "schemaId": "ZKP Credential Schema ID"
     }
 
     + object "option": "옵션 설정"

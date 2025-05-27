@@ -218,8 +218,8 @@ def enum PREDICATE_TYPE: "Predicate type"
 
 def enum ATTR_TYPE: "Attribute type"
 {
-    "String": "String type",
-    "Number": "Numeric type"
+    "STRING": "String type",
+    "NUMBER": "Numeric type"
 }
 ```
 ## 4. Data Structures
