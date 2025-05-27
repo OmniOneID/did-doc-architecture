@@ -19,13 +19,14 @@ puppeteer:
 ==
 
 - 주제: 주요 데이터의 구조 및 요건
-- 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 작성: 오픈소스개발팀
+- 일자: 2025-05-09
+- 버전: v2.0.0
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2024-09-03 | 초기 작성 |
+| v2.0.0 | 2025-05-09 | ZKP 데이터 추가 |
 
 
 <div style="page-break-after: always;"></div>
@@ -613,13 +614,17 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "발급 요청 정보",
     "VerifyProfile": "검증 요청 정보",
+    //sjkim 추가해야함
 }
 
 def enum OFFER_TYPE: "offer type"
 {
+    //sjkim 추가
     "IssueOffer"     : "발급 오퍼 정보",
     "VerifyOffer"    : "제출 오퍼 정보",
     "RestoreDidOffer": "DID 복구 오퍼 정보",
+    "ZkpIssueOffer"  : "ZKP 포함 발급 오퍼 정보",
+    "ZkpVerifyOffer" : "ZKP 제출 오퍼 정보",
 }
 
 def enum PRESENT_MODE: "VP 제출 모드"
@@ -1348,6 +1353,33 @@ def object IssueProfile: "Issue Profile"
             - multibase              "value": "VC Schema를 multibase로 인코딩한 값"
         }
 
+        //sjkim 추가
+        - object "credentialOffer": "Credential Offer 정보"
+        {    
+            + nonce "nonce"                      : "nonce"
+            + schema-identifier "schemaId"       : "CredentialSchema 식별자"
+            + definition-identifier "credDefId"  : "CredentialDefinition 식별자"
+            + object "keyCorrectnessProof"       : "KeyCorrectnessProof"
+            {
+                + string "c"           : "hash"
+                + string "xzCap"       : "xzCap"
+                + object "xrCap"       : "xrCap", min_extend(1)
+                {
+                    /* 
+                    ... 예시 (순서 보장 필요)
+                    - string "zkpsex"
+                    - string "zkpasort"
+                    - string "zkpaddr"
+                    - string "zkpbirth"
+                    .
+                    .
+                    */
+                    + string $attributeName : "각 attribute에 대한 커밋 값", min_extend(1)
+                    + string "masterSecret" : "사용자가 소유한 master secret에 대한 커밋 값" 
+                }
+            }
+        }
+
         + object "process": "발급 수행방법"
         {
             + array(url) "endpoints"  : "발급 API endpoint 목록"
@@ -1362,6 +1394,8 @@ def object IssueProfile: "Issue Profile"
     + AssertProof "proof": "profile에 대한 issuer 서명"
 }
 ```
+- `~/profile/credentialOffer`: 발급자가 사용자에게 Credential을 발급해주기 전에 생성
+    (ZKP Data Specification #4.2. CredentialOffer 참조)
 
 #### 4.5.2. VerifyProfile
 
@@ -1437,6 +1471,56 @@ def object VerifyProfile: "Verify Profile"
         - 미지정의 경우 모든 Issuer를 허용
 - `~/profile/process/endpoints`: VP를 제출할 검증 사업자 API endpoint 목록
     - 제출 모드가 "Direct"인 경우 enpoints는 필수
+
+
+
+#### 4.5.3. ProofRequestProfile
+
+```c#
+
+//sjkim 추가
+
+def object ProofRequestProfile: "ProofRequest Profile"
+{
+    //--------------------------------------------------------------------------
+    // Profile Metadata
+    //--------------------------------------------------------------------------
+    + uuid         "id"         : "profile id"
+    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile)
+    + string       "title"      : "profile 제목"
+    - string       "description": "profile 설명", default(""), emptiable(true)
+    - LogoImage    "logo"       : "제출에 대한 로고 이미지"
+    + ENCODING     "encoding"   : "인코딩", default("UTF-8")
+    + LANGUAGE     "language"   : "언어 코드"
+
+    //--------------------------------------------------------------------------
+    // Profile Contents
+    //--------------------------------------------------------------------------
+    + object "profile": "profile contents"
+    {
+        + ProviderDetail "verifier": "verifier 정보"
+
+        + object "proofRequest" : "ProofRequest 정보" 
+        {
+            + string "name"                  : "proofs 대상 이름"
+            + string "version"               : "version"
+            + nonce  "nonce"                 : "nonce"
+            - object "requestedAttributes"   : "AttributeInfo", min_extend(1)
+            - object "requestedPredicates"   : "PredicateInfo", min_extend(1)
+        }
+
+        + ReqE2e           "reqE2e"       : "E2E 요청 정보(proof 없음)"
+
+    }
+
+    //--------------------------------------------------------------------------
+    // Proof
+    //--------------------------------------------------------------------------
+    + AssertProof "proof": "profile에 대한 verifier 서명"
+}
+```
+- `~/profile/proofRequest`: 검증자가 증명자(사용자)에게 요구하는 증명 조건을 정의 
+    (ZKP Data Specification #4.5. ProofRequest 참조)
 
 ### 4.6. OpenDID Implementation
 

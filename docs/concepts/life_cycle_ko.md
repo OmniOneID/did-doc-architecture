@@ -128,3 +128,4 @@ VC(Verifiable Credential)를 폐기한다.
 <br>
 해당기능은 Issuer가 요청
 
+> *ZKP(Zero-Knowledge Proof) 기반 Credential은 VC(Verifiable Credential)의 데이터 구조와 신뢰 모델을 따르며, VC의 생명주기 관리 정책에 종속적으로 운용됩니다. 따라서, ZKP Credential 역시 VC와 동일한 생명주기 단계를 따릅니다.
