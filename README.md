@@ -78,11 +78,13 @@ For more information, refer to the following documents:
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
+1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
 
 #### Mobile SDK 
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
+1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
 
 #### Server Application 
 
@@ -94,6 +96,7 @@ For more information, refer to the following documents:
 1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
 1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 
 #### Mobile Application 
 

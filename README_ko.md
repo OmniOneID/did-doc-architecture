@@ -84,10 +84,11 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
+1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
 
 #### Server Application 
 
-1. [did-fabric-contact](https://github.com/OmniOneID/did-fabric-contract)
+1. [did-besu-contact](https://github.com/OmniOneID/did-fabric-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
