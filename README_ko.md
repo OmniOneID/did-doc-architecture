@@ -78,6 +78,7 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
+1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
 
 #### Mobile SDK 
 
