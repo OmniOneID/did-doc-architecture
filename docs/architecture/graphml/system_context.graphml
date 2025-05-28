@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:java="http://www.yworks.com/xml/yfiles-common/1.0/java" xmlns:sys="http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0" xmlns:x="http://www.yworks.com/xml/yfiles-common/markup/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xmlns:yed="http://www.yworks.com/xml/yed/3" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
-  <!--Created by yEd 3.23.1-->
+  <!--Created by yEd 3.23.2-->
   <key attr.name="Description" attr.type="string" for="graph" id="d0"/>
   <key for="port" id="d1" yfiles.type="portgraphics"/>
   <key for="port" id="d2" yfiles.type="portgeometry"/>
@@ -209,11 +209,11 @@ with OpenDID elements</y:NodeLabel>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#999999" type="line" width="1.0"/>
           <y:Arrows source="none" target="delta"/>
-          <y:EdgeLabel alignment="left" backgroundColor="#FFFFFF" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasLineColor="false" height="64.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#999999" verticalTextPosition="bottom" visible="true" width="103.0" x="58.191400455729195" xml:space="preserve" y="-32.0">&lt;html&gt;
+          <y:EdgeLabel alignment="left" backgroundColor="#FFFFFF" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasLineColor="false" height="64.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#999999" verticalTextPosition="bottom" visible="true" width="158.0" x="30.691400455729195" xml:space="preserve" y="-32.0">&lt;html&gt;
 &lt;body&gt;
     &lt;p&gt;Use:&lt;/p&gt;
-    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: red;"&gt;Issue VC&lt;/span&gt;&lt;/p&gt;
-    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present VP&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: red;"&gt;Issue VC(with opt ZKP)&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present VP or ZKP&lt;/span&gt;&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: gray;"&gt;Register User&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;

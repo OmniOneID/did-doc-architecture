@@ -37,7 +37,7 @@
         <path d="M555.0085 706.9156 L555.0085 725.4039 L796.9915 725.4039 L796.9915 706.9156 Z"/>
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath12">
-        <path d="M0 0 L0 60 L99 60 L99 0 Z"/>
+        <path d="M0 0 L0 60 L154 60 L154 0 Z"/>
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath13">
         <path d="M-30.5 -564.0636 L656.5 -564.0636 L656.5 150.9364 L-30.5 150.9364 L-30.5 -564.0636 Z"/>
@@ -132,14 +132,14 @@
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path d="M553.0009 413 L541.0009 407 L541.0009 419 Z" stroke="none" clip-path="url(#clipPath2)"/>
-      <rect x="391.8168" y="381" clip-path="url(#clipPath2)" fill="white" width="103" height="64" stroke="none"/>
+      <rect x="364.3168" y="381" clip-path="url(#clipPath2)" fill="white" width="158" height="64" stroke="none"/>
     </g>
-    <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55) translate(393,383)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" font-weight="bold" stroke-miterlimit="1.45">
+    <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55) translate(366,383)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" font-weight="bold" stroke-miterlimit="1.45">
       <text x="0" xml:space="preserve" y="12" clip-path="url(#clipPath12)" stroke="none">Use:</text>
       <text x="0" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="red" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Issue VC</text>
+      <text fill="red" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Issue VC(with opt ZKP)</text>
       <text x="0" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="green" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Present VP</text>
+      <text fill="green" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Present VP or ZKP</text>
       <text x="0" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">   </text>
       <text fill="gray" x="12" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">Register User </text>
     </g>
