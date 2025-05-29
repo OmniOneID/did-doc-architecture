@@ -64,6 +64,10 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
   
 ## 5. DID Repository 목록
 
+#### Demo
+
+1. [did-demo-app](https://github.com/OmniOneID/did-demo-app)
+
 #### Document
 
 1. [did-doc-architecture](https://github.com/OmniOneID/did-doc-architecture)
@@ -88,7 +92,7 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 
 #### Server Application 
 
-1. [did-besu-contact](https://github.com/OmniOneID/did-fabric-contract)
+1. [did-besu-contact](https://github.com/OmniOneID/did-besu-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
@@ -96,6 +100,7 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
 1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
 1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 
 #### Mobile Application 
