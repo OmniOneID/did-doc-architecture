@@ -165,10 +165,10 @@
       <text x="683.2383" xml:space="preserve" y="327.7927" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">7a. Show VC(with ZKP) List</text>
       <path fill="none" d="M555.4818 398.3239 L364.4914 398.3239" clip-path="url(#clipPath2)"/>
       <path d="M356.4914 398.3239 L368.4914 403.3239 L365.4914 398.3239 L368.4914 393.3239 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <text x="382.7285" xml:space="preserve" y="349.3943" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">[SDK]</text>
-      <text x="382.7285" xml:space="preserve" y="363.5271" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">5. Request WalletToken</text>
-      <text x="382.7285" xml:space="preserve" y="377.6599" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">6a. Search VC candidates</text>
-      <text x="382.7285" xml:space="preserve" y="391.7927" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">8a. Request VP</text>
+      <text x="379.9424" xml:space="preserve" y="349.3943" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">[SDK]</text>
+      <text x="379.9424" xml:space="preserve" y="363.5271" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">5. Request WalletToken</text>
+      <text x="379.9424" xml:space="preserve" y="377.6599" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">6a. Search ZKP candidates</text>
+      <text x="379.9424" xml:space="preserve" y="391.7927" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">8a. Request Proof</text>
       <path fill="none" d="M187.5 354.2932 L187.5 347.3086 L186.875 344.2528 L185 342.0701 L181.875 340.7605 L177.5 340.3239 L156.5 340.3239 L152.125 340.9489 L149 342.8239 L147.125 345.9489 L146.5 350.3239 L146.5 368.1 L148.0023 375.6 L149.8802 377.475 L152.5092 378.1 L158.5183 378.1" clip-path="url(#clipPath2)"/>
       <path d="M166.5183 378.1 L154.5183 373.1 L157.5183 378.1 L154.5183 383.1 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="101.4697" xml:space="preserve" y="319.6599" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">6b. candidates = List of VC(with ZKP) candidates</text>
@@ -294,7 +294,7 @@
     </g>
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-84,-49)" stroke-linecap="butt">
       <path fill="none" d="M576.5 716.6265 L638.5 716.6265 L638.5 737.5106 Q623 731.5437 607.5 737.5106 Q592 743.4774 576.5 737.5106 Z" clip-path="url(#clipPath2)"/>
-      <text x="600.2607" xml:space="preserve" y="730.2281" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">VP</text>
+      <text x="592.1514" xml:space="preserve" y="730.2281" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">Proof</text>
     </g>
     <g text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,671,100.8948)" image-rendering="optimizeQuality">
       <image x="0" y="0" clip-path="url(#clipPath16)" width="37" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAuCAYAAACvWdDAAAACtUlEQVR4Xu3Xh2oc&#10;UQyFYaXY6b33jWMnpPfe6/s/UvShFUyWxIQtMYERHHZ2Fo/+eyTdO44YY4wx/u/Y&#10;NaMdiU6+O7UntXcg38lv/wxQIknXUvtSB1IHU4emn77vT61HQa4Urp2RCAyIY6mT&#10;qdOpM1OdSp1IHYmCBGcRSwdrIO5wAgyAS6lJ6kZqc6qN1NXUhShAcJyzmKWCNZCV&#10;c+FiVPLbqQepJ6mnUz1O3UvdTF1LnY1aBLClOeYhVskhpeKOhA9TL1JvUu9TH6Z6&#10;l3oVBXg3Cv586mhU2S1w4bA6D7NaDgHixuvUx9SX1NfUt6lcf44CBX0/Coxjh6Mc&#10;X8gtf+whmloPeTiHAEkM4sdv9D0KjnPAOKbPlL7LOHewul1StjtRSTg0CwRk9jsX&#10;lVPPbaXORS1QO8wdVqSXTNEkyqW3UcmGyQlkXzege59SL6PcsjC9tR5zlrAb3MQp&#10;nXHXvErSLg2BfgfVbhkGU2oalXDuhm8odrP9Zup5/Fq6Wagh2BCKu4+i3DbB+mop&#10;UFupZ7E91J+cWhqUGJbPrq1hjbrJ+hso90xpl88EHo8q31w9JbrRrW4S1egSWP3Q&#10;jT8JPGdNrMlduNHF7JbgWNFXml3CWbDhRLZLSmez3YzaQBfeEoZ95U3gelQZHCMc&#10;6J181qEGskfpQy5diQUnbxh9zLDdyW/FygiMY5L3UUOuAXOIq/anSVRftktzl66j&#10;3dJb/YYAzJnGBUcORwyATzA2S0PBoUnU9HqF0UsLu9ThQQ1mepz6k9StKDjjDkLv&#10;cJE7W1El4xAgbi/t1aWjwewxSqnHlNOY6zVbxkYU7OUodzjrzWAlQB0e6uHKYP/i&#10;gMTORpBk+zCtYCxgLVb8ni48XBJwEnJBcqXtfxrc89vK3NkuGrAh+9r9fw4zxhhj&#10;jDHGGGOMsQPxE46+QPOQQCuYAAAAAElFTkSuQmCC" height="46" preserveAspectRatio="none"/>
@@ -375,7 +375,7 @@
       <path d="M745.4817 733.6643 L757.6968 738.113 L754.4724 733.2547 L757.2417 728.1234 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <text x="564.7464" xml:space="preserve" y="787.0175" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">2b. payload = Generate VerifyOfferPayload</text>
       <text x="564.7464" xml:space="preserve" y="801.1503" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">3b. profile = Generate ProofRequestProfile</text>
-      <text x="564.7464" xml:space="preserve" y="815.2831" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">9c. Decrypt encVp</text>
+      <text x="564.7464" xml:space="preserve" y="815.2831" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">9c. Decrypt encProof</text>
       <text x="564.7464" xml:space="preserve" y="829.4159" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">9e. Verify Proof</text>
       <text x="564.7464" xml:space="preserve" y="843.5487" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">  - Using CL Signature, the Verifier check the Credentials's authenticity and Holder's ownership</text>
       <path fill="none" d="M1033.7987 460.3639 L1033.7987 573.0383 L642.75 573.0383 L642.75 645.4071" clip-path="url(#clipPath2)"/>
