@@ -410,10 +410,10 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M830.0952 570.5984 L966.5569 570.5984 L966.5569 451.1894 L1072.7743 451.1894" clip-path="url(#clipPath2)"/>
       <path d="M1083.7743 451.1894 L1071.7743 445.1894 L1071.7743 457.1894 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="950.7817" y="458.7349" clip-path="url(#clipPath2)" fill="white" width="121.7051" height="15.7773" stroke="none"/>
+      <rect x="963.6797" y="458.7349" clip-path="url(#clipPath2)" fill="white" width="95.9092" height="15.7773" stroke="none"/>
     </g>
     <g stroke-linecap="butt" font-size="10px" transform="matrix(1,0,0,1,-165,-59)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="952.7817" xml:space="preserve" y="470.4029" clip-path="url(#clipPath2)" stroke="none">Issue VC(with opt ZKP)</text>
+      <text x="965.6796" xml:space="preserve" y="470.4029" clip-path="url(#clipPath2)" stroke="none">Issue VC(opt ZKP)</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M707.1207 837.5641 L707.1207 651.3952" clip-path="url(#clipPath2)"/>
@@ -422,7 +422,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
       <text x="631.983" xml:space="preserve" y="751.1138" clip-path="url(#clipPath2)" stroke="none">Register wallet and user</text>
-      <text x="680.4459" xml:space="preserve" y="765.2466" clip-path="url(#clipPath2)" stroke="none">Issue VC</text>
+      <text x="649.9976" xml:space="preserve" y="765.2466" clip-path="url(#clipPath2)" stroke="none">Issue VC (opt ZKP)</text>
       <text x="639.3394" xml:space="preserve" y="779.3794" clip-path="url(#clipPath2)" stroke="none">Report lost and found</text>
       <text x="646.1099" xml:space="preserve" y="793.5122" clip-path="url(#clipPath2)" stroke="none">Cancel membership</text>
     </g>
@@ -635,19 +635,19 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M1504.8881 405.1834 L1340.7612 405.1834" clip-path="url(#clipPath2)"/>
       <path d="M1329.7612 405.1834 L1341.7612 411.1834 L1341.7612 399.1834 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="1380.4312" y="389.0506" clip-path="url(#clipPath2)" fill="white" width="73.7559" height="32.2656" stroke="none"/>
+      <rect x="1351.9605" y="389.0506" clip-path="url(#clipPath2)" fill="white" width="130.6973" height="32.2656" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
       <text x="1385.7125" xml:space="preserve" y="402.6521" clip-path="url(#clipPath2)" stroke="none">Offer data</text>
-      <text x="1382.4313" xml:space="preserve" y="416.7849" clip-path="url(#clipPath2)" stroke="none">to issue VC</text>
+      <text x="1353.9606" xml:space="preserve" y="416.7849" clip-path="url(#clipPath2)" stroke="none">to issue VC(opt ZKP)</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M1329.7244 626.7846 L1493.8853 626.7846" clip-path="url(#clipPath2)"/>
       <path d="M1504.8853 626.7846 L1492.8853 620.7846 L1492.8853 632.7846 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="1364.8189" y="610.6518" clip-path="url(#clipPath2)" fill="white" width="104.9805" height="32.2656" stroke="none"/>
+      <rect x="1342.4976" y="610.6518" clip-path="url(#clipPath2)" fill="white" width="149.623" height="32.2656" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="1366.819" xml:space="preserve" y="624.2534" clip-path="url(#clipPath2)" stroke="none">Take verified VP</text>
+      <text x="1344.4977" xml:space="preserve" y="624.2534" clip-path="url(#clipPath2)" stroke="none">Take verified VP or ZKP</text>
       <text x="1380.524" xml:space="preserve" y="638.3862" clip-path="url(#clipPath2)" stroke="none">from holder</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-165,-59)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
