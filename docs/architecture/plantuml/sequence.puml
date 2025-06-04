@@ -41,7 +41,7 @@ ca -> ca: Calculate serverToken
 
 ca -> tas ++: apiText("Request Issue Profile")
     tas -> iss ++: apiText("Generate Issue Profile")
-        iss -> iss: profile = Generate IssueProfile
+        iss -> iss: profile = Generate IssueProfile(opt ZKP)
     return {profile}
 return {profile}
 
@@ -49,11 +49,12 @@ ca -> wal ++: Request to issue VC\n{refId, profile, serverToken}
     wal -> tas ++: apiText("Request Issue VC")\n{refId, serverToken}
         tas -> iss ++: apiText("Issue VC") {refId}
             iss -> iss: * vc = Issue VC\
-                    \n* encVc = encrypt(vc)
+                    \n* encVc = encrypt(credInfo)\
+                    \n  - credInfo = {VC, ZKP}
         return {encVc}
     return {encVc}
-    wal -> wal: * vc = decrypt(encVc)\
-            \n* Store vc\
+    wal -> wal: * CredInfo = decrypt(encVc)\
+            \n* Store vc(opt ZKP)\
             \n* vcId = Extract VC id
 return {vcId}
 

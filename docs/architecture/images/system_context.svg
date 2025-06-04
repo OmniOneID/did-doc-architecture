@@ -37,7 +37,7 @@
         <path d="M555.0085 706.9156 L555.0085 725.4039 L796.9915 725.4039 L796.9915 706.9156 Z"/>
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath12">
-        <path d="M0 0 L0 60 L99 60 L99 0 Z"/>
+        <path d="M0 0 L0 60 L123 60 L123 0 Z"/>
       </clipPath>
       <clipPath clipPathUnits="userSpaceOnUse" id="clipPath13">
         <path d="M-30.5 -564.0636 L656.5 -564.0636 L656.5 150.9364 L-30.5 150.9364 L-30.5 -564.0636 Z"/>
@@ -132,40 +132,40 @@
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path d="M553.0009 413 L541.0009 407 L541.0009 419 Z" stroke="none" clip-path="url(#clipPath2)"/>
-      <rect x="391.8168" y="381" clip-path="url(#clipPath2)" fill="white" width="103" height="64" stroke="none"/>
+      <rect x="379.8168" y="381" clip-path="url(#clipPath2)" fill="white" width="127" height="64" stroke="none"/>
     </g>
-    <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55) translate(393,383)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" font-weight="bold" stroke-miterlimit="1.45">
+    <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55) translate(381,383)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" font-weight="bold" stroke-miterlimit="1.45">
       <text x="0" xml:space="preserve" y="12" clip-path="url(#clipPath12)" stroke="none">Use:</text>
       <text x="0" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="red" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Issue VC</text>
+      <text fill="red" x="12" xml:space="preserve" y="27" clip-path="url(#clipPath12)" stroke="none">Issue VC(opt ZKP)</text>
       <text x="0" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">   </text>
-      <text fill="green" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Present VP</text>
+      <text fill="green" x="12" xml:space="preserve" y="42" clip-path="url(#clipPath12)" stroke="none">Present VP or ZKP</text>
       <text x="0" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">   </text>
       <text fill="gray" x="12" xml:space="preserve" y="57" clip-path="url(#clipPath12)" stroke="none">Register User </text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M281 300 L543.4957 145.4384" clip-path="url(#clipPath2)"/>
       <path d="M552.9746 139.8571 L539.5897 140.7755 L545.6783 151.116 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="318.8544" y="231.0976" clip-path="url(#clipPath2)" fill="white" width="127.5332" height="18.1328" stroke="none"/>
+      <rect x="276.1483" y="239.4796" clip-path="url(#clipPath2)" fill="white" width="184.4746" height="18.1328" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="320.8544" xml:space="preserve" y="244.6991" clip-path="url(#clipPath2)" stroke="none">Request to issue VC</text>
+      <text x="278.1483" xml:space="preserve" y="253.0811" clip-path="url(#clipPath2)" stroke="none">Request to issue VC(opt ZKP)</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M676 190.8818 L676 342.0509" clip-path="url(#clipPath2)"/>
       <path d="M676 353.0509 L682 341.0509 L670 341.0509 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="605.5479" y="262.9018" clip-path="url(#clipPath2)" fill="white" width="140.9043" height="18.1328" stroke="none"/>
+      <rect x="577.0771" y="262.9018" clip-path="url(#clipPath2)" fill="white" width="197.8457" height="18.1328" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="red" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="red" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="607.5479" xml:space="preserve" y="276.5034" clip-path="url(#clipPath2)" stroke="none">Offer data to issue VC</text>
+      <text x="579.0771" xml:space="preserve" y="276.5034" clip-path="url(#clipPath2)" stroke="none">Offer data to issue VC(opt ZKP)</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M676 472.9454 L676 624.1144" clip-path="url(#clipPath2)"/>
       <path d="M676 635.1144 L682 623.1144 L670 623.1144 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <rect x="584.7471" y="544.9654" clip-path="url(#clipPath2)" fill="white" width="182.5059" height="18.1328" stroke="none"/>
+      <rect x="562.4258" y="544.9654" clip-path="url(#clipPath2)" fill="white" width="227.1484" height="18.1328" stroke="none"/>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(51,153,102)" text-rendering="geometricPrecision" font-family="sans-serif" shape-rendering="geometricPrecision" stroke="rgb(51,153,102)" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="586.7471" xml:space="preserve" y="558.567" clip-path="url(#clipPath2)" stroke="none">Take verified VP from holder</text>
+      <text x="564.4258" xml:space="preserve" y="558.567" clip-path="url(#clipPath2)" stroke="none">Take verified VP or ZKP from holder</text>
     </g>
     <g stroke-linecap="butt" transform="matrix(1,0,0,1,-127,-55)" fill="rgb(153,153,153)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" stroke="rgb(153,153,153)" stroke-miterlimit="1.45">
       <path fill="none" d="M316.0348 463.2529 L573.6626 629.1603" clip-path="url(#clipPath2)"/>
