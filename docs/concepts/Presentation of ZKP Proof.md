@@ -137,3 +137,6 @@ def object ProofRequest: "proofRequest"
 ```
 
 - In this case, the user generates a Proof using Credentials that satisfy the conditions, and attributes with `restrictions` must be submitted to the server.
+
+## 4. Example of ZKP Proof Submission - Direct Mode
+![ZKP proofRequest](images/seq_present_zkp_proof_direct.svg)

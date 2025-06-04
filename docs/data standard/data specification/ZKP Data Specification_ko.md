@@ -225,8 +225,8 @@ def enum PREDICATE_TYPE: "predicate type"
 
 def enum ATTR_TYPE: "attribute type"
 {
-    "STRING": "문자형",
-    "NUMBER": "숫자형"
+    "String": "문자형",
+    "Number": "숫자형"
 }
 ```
 

@@ -137,3 +137,6 @@ def object ProofRequest: "proofRequest"
 ```
 
 - 이 경우 사용자는 해당 조건을 만족하는 Credential을 이용해 Proof를 생성하고, `restrictions`이 포함된 속성은 서버에 반드시 제출해야 한다.
+
+## 4. ZKP Proof 제출 - Direct 모드 예시
+![ZKP proofRequest](images/seq_present_zkp_proof_direct_ko.svg)
