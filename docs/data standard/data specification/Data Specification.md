@@ -590,6 +590,7 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "Issuance request information",
     "VerifyProfile": "Verification request information",
+    "ProofRequestProfile": "ZKP verification request information"
 }
 
 def enum OFFER_TYPE: "offer type"
@@ -598,7 +599,7 @@ def enum OFFER_TYPE: "offer type"
     "VerifyOffer": "Presentation offer information",
     "RestoreDidOffer": "DID restoration offer information",
     "ZkpIssueOffer"  : "Issuance offer information including ZKP",
-    "ZkpVerifyOffer" : "ZKP presentation offer information",
+    "VerifyProofOffer" : "ZKP presentation offer information"
 }
 
 def enum PRESENT_MODE: "VP presentation mode"
@@ -1310,7 +1311,6 @@ def object IssueProfile: "Issue Profile"
             - multibase              "value": "VC Schema encoded in multibase"
         }
 
-        //add sjkim
         - object "credentialOffer": "Credential Offer information"
         {    
             + nonce "nonce"                      : "nonce"
@@ -1433,8 +1433,6 @@ def object VerifyProfile: "Verify Profile"
 #### 4.5.3. ProofRequestProfile
 
 ```c#
-
-//add sjkim
 
 def object ProofRequestProfile: "ProofRequest Profile"
 {
