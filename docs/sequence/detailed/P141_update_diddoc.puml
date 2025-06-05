@@ -299,7 +299,7 @@ end note
     TAS -> TAS: Validate serverToken
     TAS -> TAS: Delete session information and end transaction
 
-return User Registration Completion Response
+return User DID Document Update Completion Response
 rnote right of CA #Lavender        
     **[M141_RES: User DID Document Update Completion Request]**
     body:

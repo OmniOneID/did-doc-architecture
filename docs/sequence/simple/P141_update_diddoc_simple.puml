@@ -1,0 +1,127 @@
+@startuml P141_update_diddoc_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P141: User DID Document Update</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box TAS Provider #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+||| 
+
+== P141-1: User DID Document Update Start Request ==
+CA -> TAS++: User DID Document Update Start Request
+rnote right of CA #Lavender        
+    **[M141_REQ: User DID Document Update Start Request]**
+end note
+
+TAS --> CA--: User DID Document Update Start Response
+rnote right of CA #Lavender        
+    **[M141_RES: User DID Document Update Start Response]**
+end note
+
+
+||| 
+== P141-2: ECDH Request ==
+CA -> TAS++ : ECDH Request
+rnote right of CA #Lavender
+    **[M141_REQ : ECDH Request]**
+end note
+
+TAS --> CA--: ECDH Response
+rnote right of CA #Lavender
+    **[M141_RES : ECDH Response]**
+end note
+
+||| 
+CA <--> TAS : Mutual Authentication and Key Exchange
+
+||| 
+== P141-3: Server Token Creation Request ==
+CA -> TAS++ : Server Token Creation Request
+rnote right of CA #Lavender
+    **[M141_REQ : Server Token Creation Request]**
+end note
+
+TAS --> CA--: Server Token Creation Response
+rnote right of CA #Lavender
+    **[M141_RES : Server Token Creation Response]**
+end note
+
+||| 
+CA --> WALLET : Transfer Server Token
+
+||| 
+== P141-4: User DID Document Update Request ==
+WALLET -> WALLET: Create User DID Document
+
+WALLET -> TAS++: User DID Document Update Request
+rnote right of WALLET #Lavender
+    **[M141_REQ : User DID Document Update Request]**
+    body:
+        User DID Document
+        Server Token
+end note
+
+TAS -> BC: Register User DID Document
+
+TAS --> WALLET--: User DID Document Update Response
+rnote right of WALLET #Lavender
+    **[M141_REQ : User DID Document Update Response]**
+end note
+
+
+||| 
+== P141-5: User DID Document Update Completion ==
+CA -> TAS++: User DID Document Update Completion Request
+rnote right of CA #Lavender        
+    **[M141_REQ: User DID Document Update Completion Request]**
+end note
+
+TAS --> CA--: User DID Document Update Completion Response
+rnote right of CA #Lavender        
+    **[M141_RES: User DID Document Update Completion Response]**
+end note
+
+||| 
+||| 
+@enduml
