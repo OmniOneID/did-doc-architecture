@@ -1,0 +1,135 @@
+@startuml P142_restore_diddoc_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P142 : 사용자 DID Document 복구</size>
+end title
+
+'=== 옵션 ===
+autonumber "<b>(#)</b>"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box TAS 사업자 #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+rnote across #white
+    TAS는 인가앱으로 DID Document 복구 Offer를 요청해야 하며, 인가앱은 이 과정에서 offerId를 획득해야 한다.
+    Offer 과정은 본 규격에서 다루지 않는다.
+end hnote
+
+== P142-1: 사용자 DID Document 복구 시작 요청 ==
+CA -> TAS++: 사용자  요청
+rnote right of CA #Lavender        
+    **[M142_REQ: 사용자 DID Document 복구 시작 요청]**
+end note
+
+TAS --> CA--: 사용자 DID Document 복구 시작 응답
+rnote right of CA #Lavender        
+    **[M142_RES: 사용자 DID Document 복구 시작 응답]**
+end note
+
+
+|||
+== P142-2: ECDH 요청  ==
+CA -> TAS++ : ECDH 요청
+rnote right of CA #Lavender
+    **[M142_REQ : ECDH 요청]**
+end note
+
+TAS --> CA--: ECDH 응답
+rnote right of CA #Lavender
+    **[M142_RES : ECDH 응답]**
+end note
+
+|||
+CA <--> TAS : 상호인증 및 키 교환
+
+|||
+== P142-3: 서버토큰 생성 요청  ==
+CA -> TAS++ : 서버토큰 생성 요청
+rnote right of CA #Lavender
+    **[M142_REQ : 서버토큰 생성 요청]**
+end note
+
+TAS --> CA--: 서버토큰 생성 응답
+rnote right of CA #Lavender
+    **[M142_RES : 서버토큰 생성 응답]**
+end note
+
+|||
+CA --> WALLET : 서버토큰 전달
+
+
+|||
+== P142-4: 사용자 DID Document 복구 요청  ==
+WALLET -> WALLET: DID Auth 데이터 준비
+
+WALLET -> TAS++: 사용자 DID Document 복구 요청
+rnote right of WALLET #Lavender
+    **[M142_REQ : 사용자 DID Document 복구 요청]**
+    body:
+        didAuth
+        서버토큰
+end note
+
+TAS -> TAS: DID Auth 검증
+
+TAS -> BC: 사용자 DID Document 활성화 상태 갱신
+
+TAS --> WALLET--: 사용자 DID Document 복구 응답
+rnote right of WALLET #Lavender
+    **[M142_REQ : 사용자 DID Document 복구 응답]**
+end note
+
+
+|||
+== P142-5: 사용자 DID Document 복구 완료  ==
+CA -> TAS++: 사용자 DID Document 복구 완료 요청
+rnote right of CA #Lavender        
+    **[M142_REQ: 사용자 DID Document 복구 완료 요청]**
+end note
+
+TAS --> CA--: 사용자 DID Document 복구 완료 응답
+rnote right of CA #Lavender        
+    **[M142_RES: 사용자 DID Document 복구 완료 응답]**
+end note
+
+|||
+|||
+@enduml
+

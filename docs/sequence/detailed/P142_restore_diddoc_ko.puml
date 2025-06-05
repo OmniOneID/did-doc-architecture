@@ -67,9 +67,9 @@ end note
     TAS -> TAS: did가 변경 가능한 상태인지 확인
     TAS -> TAS: authNonce = DID Auth용 nonce 생성
 
-return 사용자 DID Document 갱신 시작 응답
+return 사용자 DID Document 복구 시작 응답
 rnote right of CA #Lavender        
-    **[M142_RES: 사용자 DID Document 갱신 시작 응답]**
+    **[M142_RES: 사용자 DID Document 복구 시작 응답]**
     body : 
         txId
         authNonce
@@ -257,10 +257,10 @@ return OK
 
 
 |||
-== P142-5: 사용자 DID Document 갱신 완료  ==
-CA -> TAS++: 사용자 DID Document 갱신 완료 요청
+== P142-5: 사용자 DID Document 복구 완료  ==
+CA -> TAS++: 사용자 DID Document 복구 완료 요청
 rnote right of CA #Lavender        
-    **[M142_REQ: 사용자 DID Document 갱신 완료 요청]**
+    **[M142_REQ: 사용자 DID Document 복구 완료 요청]**
     body:
         messageId
         txId
@@ -272,7 +272,7 @@ end note
 
 return 사용자 등록 완료 응답
 rnote right of CA #Lavender        
-    **[M142_RES: 사용자 DID Document 갱신 완료 요청]**
+    **[M142_RES: 사용자 DID Document 복구 완료 요청]**
     body:
         txId
 end note

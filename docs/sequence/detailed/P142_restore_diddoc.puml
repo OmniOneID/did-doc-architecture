@@ -11,7 +11,7 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P141 : Restore DID Document Update</size>
+	<size:25>P142 : User DID Document Restore</size>
 end title
 
 '=== Options ===
@@ -50,15 +50,15 @@ end box
 |||
 
 rnote across #white
-    TAS must request a DID Document recovery offer from the certified app, and during this process, the certified app must obtain an offerId.
+    TAS must request a DID Document restore offer from the certified app, and during this process, the certified app must obtain an offerId.
     The offer process is not covered in this specification.
 end hnote
 
 
-== P142-1: User DID Document Recovery Start Request ==
-CA -> TAS++: User DID Document Recovery Start Request
+== P142-1: User DID Document Restore Start Request ==
+CA -> TAS++: User DID Document Restore Start Request
 rnote right of CA #Lavender        
-    **[M142_REQ: User DID Document Recovery Start Request]**
+    **[M142_REQ: User DID Document Restore Start Request]**
     body : 
         messageId
         offerId
@@ -68,9 +68,9 @@ end note
     TAS -> TAS: Check if the DID is in a modifiable state
     TAS -> TAS: authNonce = Generate nonce for DID Auth
 
-return User DID Document Update Start Response
+return User DID Document Restore Start Response
 rnote right of CA #Lavender        
-    **[M142_RES: User DID Document Update Start Response]**
+    **[M142_RES: User DID Document Restore Start Response]**
     body : 
         txId
         authNonce
@@ -191,9 +191,9 @@ CA -> CA: Decrypt (omitted) and prepare data\
         \n* Calculate serverToken
 
 |||
-== P142-4: User DID Document Recovery Request ==
+== P142-4: User DID Document Restore Request ==
 
-CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
+CA -> WALLET ++: User DID Document Restore Request\n{walletToken, serverToken}
     WALLET -> WALLET: Validate walletToken
 
     WALLET -> WALLET: Prepare DID Auth data\
@@ -205,9 +205,9 @@ CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
     USER -[#Blue]\ WALLET: User authentication
     WALLET -> WALLET: signAuth(didAuth)
 
-    WALLET -> TAS ++: User DID Document Recovery Request
+    WALLET -> TAS ++: User DID Document Restore Request
     rnote right of WALLET #Lavender
-        **[M142_REQ : User DID Document Recovery Request]**
+        **[M142_REQ : User DID Document Restore Request]**
         body:
             messageId
             txId
@@ -249,9 +249,9 @@ CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
             BC -> BC: Update
         return OK
 
-        return User DID Document Recovery Response
+        return User DID Document Restore Response
         rnote right of WALLET #Lavender
-            **[M142_REQ : User DID Document Recovery]**
+            **[M142_REQ : User DID Document Restore]**
             body:
                 txId
         end note
@@ -259,10 +259,10 @@ return OK
 
 
 |||
-== P142-5: User DID Document Update Completion ==
-CA -> TAS++: User DID Document Update Completion Request
+== P142-5: User DID Document Restore Completion ==
+CA -> TAS++: User DID Document Restore Completion Request
 rnote right of CA #Lavender        
-    **[M142_REQ: User DID Document Update Completion Request]**
+    **[M142_REQ: User DID Document Restore Completion Request]**
     body:
         messageId
         txId
@@ -272,9 +272,9 @@ end note
     TAS -> TAS: Validate serverToken
     TAS -> TAS: Delete session information and end transaction
 
-return User Registration Completion Response
+return User DID Document Restore Completion Response
 rnote right of CA #Lavender        
-    **[M142_RES: User DID Document Update Completion Request]**
+    **[M142_RES: User DID Document Restore Completion Request]**
     body:
         txId
 end note
