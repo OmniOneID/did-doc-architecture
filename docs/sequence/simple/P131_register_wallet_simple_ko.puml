@@ -94,6 +94,7 @@ TAS -> TAS: 월렛 DID Document 검증
 TAS -> BC: 월렛 DID Document 등록
 
 TAS --> WALLET--: 월렛 등록 응답
+WALLET -> WALLET: 월렛 정보 저장
 rnote right of CA #LightGray        
     **[M131_RES : 월렛 등록 응답]**
 end note

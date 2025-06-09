@@ -50,7 +50,7 @@ end box
 == 서명된 월렛 정보 요청  ==
 CA -> WALLET ++ : 서명된 Wallet 정보 요청 {월렛토큰}
 WALLET -> WALLET: 난수 생성
-WALLET -> WALLET : Wallet 정보 서명 (Wallet ID, 난수)
+WALLET -> WALLET : Wallet 정보 서명 (Wallet ID, 난수, deviceDid)
 WALLET --> CA--: 서명된 Wallet 정보 전달
 
 |||
