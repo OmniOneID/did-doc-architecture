@@ -1,0 +1,216 @@
+@startuml P311_submit_zkp_proof_en
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P311 : ZKP Proof Submission </size>
+end title
+
+'=== Options ===
+' Auto numbering: ex) "<b>000." => Display as 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide participant box at bottom of page
+'hide footbox
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**CA App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box Verification Server #AliceBlue
+    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Offer Request  ==
+
+rnote across #white    
+    The Offer stage does not define standard APIs, only payload data formats are specified.
+    How to deliver the Offer is outside the scope of this document.
+end note
+
+hnote over CA, SP #LimeGreen
+    Information obtained through Offer stage execution
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== P311-1 : ProofRequestProfile Request ==
+activate CA
+
+CA -> SP++ : ProofRequestProfile Request
+rnote right of CA #Lavender
+    **[M311_Req : ProofRequestProfile Request]**    
+    body : 
+        messageId
+        offerId
+        verifierTxId
+end note
+
+SP -> SP : Validate offerId
+
+SP -> SP : Prepare ProofRequestProfile related data\
+            \n* proofRequest = Generate ZKP proofRequest\
+            \n* (ReqE2e) reqE2e = Generate E2E request info
+SP <-> BC : Retrieve / Respond Verifier DID Doc
+
+rnote right of SP #MintCream    
+    **DidDoc** : $doc
+end note
+SP -> SP : Generate / Sign ProofRequestProfile
+rnote right of SP #MintCream    
+    **ProofRequestProfile** : $doc
+end note
+
+return
+rnote right of CA #Lavender
+    **[M311_Res : ProofRequestProfile Response]**
+    body : 
+        proofRequestProfile
+        verifierTxId
+end note
+
+== ProofRequestProfile Verification ==
+
+CA <-> BC : Retrieve / Respond Verifier DID Doc
+
+rnote right of CA #MintCream    
+    **DidDoc** : $doc
+end note
+
+CA -> CA : Verify ProofRequestProfile signature
+rnote right of CA #MintCream    
+    **ProofRequestProfile** : $doc
+end note
+
+== Wallet Token Generation ==
+
+rnote over WALLET, CA #LimeGreen
+    Wallet token generation {purpose = "PresentVp"}
+    * walletToken = wallet token
+end rnote
+
+== Query Available Credentials for Submission ==
+
+CA -> WALLET++ : Query available credentials for submission\n{walletToken, proofRequestProfile}
+
+WALLET -> WALLET : Validate walletToken
+WALLET -> WALLET : Verify proofRequestProfile.proof
+WALLET -> WALLET : Search credentials\
+        \n* Check attribute, predicate conditions\
+        \n* Generate available referents
+
+return {referent}
+
+CA -> CA : Display list of available credentials
+
+USER -[#Blue]-> CA : Select credential
+CA -> CA : credentialId = Selected credential ID
+
+USER -[#Blue]-> CA : Select submission claims (attributes, predicates)
+
+rnote over CA
+    Query credSchema from blockchain
+    Query credDef from blockchain
+end note
+
+CA <-> BC : Query / Respond CredentialSchema
+CA <-> BC : Query / Respond CredentialDefinition
+
+USER -[#Blue]-> CA : Consent to submission
+
+== P311-2 : ZKP Proof Submission and Verification ==
+
+CA -> WALLET++ : Proof submission request\n{walletToken, proofRequest, proofParams, selfAttributes}
+
+WALLET -> WALLET : Validate walletToken
+
+WALLET -> WALLET : Perform E2E ECDH\
+        \n* _, pubKeyE2E = Generate ECC key pair\
+        \n* e2eKey = Generate encryption key with E2E data in profile\
+        \n* iv = Generate IV\
+        \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+        \n* signKeyAgree(accE2e)
+
+WALLET -> WALLET : Generate proof\
+        \n* proof = CreateProof(proofReq, proofParam, selfAttrs)
+
+WALLET -> WALLET : Encrypt\
+        \n* encProof = enc(proof, e2eKey, iv)
+
+return {accE2e, encProof}
+
+CA -> SP++ : ZKP Proof verification request
+rnote right of CA #Lavender
+    **[M311_Req : ZKP Proof Submission]**    
+    body : 
+        messageId
+        verifierTxId
+        accE2e
+        encProof
+end note
+
+SP -> SP : Retrieve transaction code
+SP -> SP : Perform E2e ECDH\
+        \n* Verify accE2e.proof if present\
+        \n* e2eKey = Generate encryption key\
+        \n* iv = accE2e.iv
+        
+SP -> SP : Decrypt ZKP Proof\
+        \n* proof = decrypt(encProof, e2eKey, iv)
+
+rnote over SP
+    Query credSchema from blockchain
+    Query credDef from blockchain
+    * Verification based on proofs, aggregatedProof, requestedProof in Proof
+end note
+
+SP <-> BC : Query / Respond CredentialSchema
+SP <-> BC : Query / Respond CredentialDefinition
+
+SP -> SP : Verify ZKP Proof\
+        \n* Verify proof.proofs\
+        \n* Check consistency with ProofRequest\
+        \n* Verify zero-knowledge proof validity
+
+SP -> SP : Store Proof and provide service
+
+return
+rnote right of CA #Lavender
+    **[M311_Res : ZKP Proof Verification Response]**      
+        body : 
+            verifierTxId        
+end note
+
+|||
+|||
+@enduml

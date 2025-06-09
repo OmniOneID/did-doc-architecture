@@ -1,7 +1,6 @@
-
-@startuml P310_submit_vp
+@startuml P310_submit_vp_en
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Configuration
+' Settings
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 '=== Header and Footer ===
 header OPEN-DID Technical Specification
@@ -11,13 +10,13 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P310: VP Submission</size>
+	<size:25>P310 : VP Submission </size>
 end title
 
 '=== Options ===
-' Autonumbering: e.g., "<b>000." => Display a 3-digit number with leading zeros
+' Auto numbering: ex) "<b>000." => Display as 3-digit number with leading zeros
 autonumber "<b>(#)</b>"
-' Hide the participant box at the bottom of the page
+' Hide participant box at bottom of page
 'hide footbox
 
 '=== Participants ===
@@ -28,7 +27,7 @@ skinparam MinClassWidth 80
 
 box Mobile #OldLace
     participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
-    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+    participant "**CA App**" as CA <<App>> #WhiteSmoke    
 end box
 
 box Verification Server #AliceBlue
@@ -37,92 +36,90 @@ end box
 
 box Trust Repository
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
-end box
-
+end box 
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Constants
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-!$refdoc = "Refer to a separate document"
-!$doc = "Refer to data specification document"
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Content
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-
-== Offer 요청  ==
-
+== Offer Request  ==
 
 rnote across #white    
-    In the Offer stage, no standard API is defined; only the data format for the payload is specified.
-    How the Offer is transmitted is beyond the scope of this document.
+    The Offer stage does not define standard APIs, only payload data formats are specified.
+    How to deliver the Offer is outside the scope of this document.
 end note
 
-|||
-== P310-1: Request Profile ==
+== P310-1 : Profile Request ==
 activate CA
 
-CA -> SP++ : Request Profile
+CA -> SP++ : Profile Request
 rnote right of CA #Lavender
-    **[M310_Req: Request Profile]**    
-    body: 
+    **[M310_Req : Profile Request]**    
+    body : 
         messageId
         offerId
-        verifierTxId
+        txId (optional)
 end note
 
-SP -> SP: Validate offerId
+SP -> SP : Validate offerId
 
-SP -> SP: Prepare profile-related data\
+SP -> SP : Retrieve transaction and VpOffer
+SP -> SP : Prepare profile-related data\
             \n* verifierNonce = Generate nonce for submission\
-            \n* (ReqE2e) reqE2e = Create E2E request information
-SP <-> BC: Retrieve Verifier DID Doc
+            \n* (ReqE2e) reqE2e = Create E2E request information\
+            \n* keyPair = Generate E2E key pair\
+            \n* sessionKey = Store private key
+
+SP <-> BC : Retrieve / Respond Verifier DID Doc
 
 rnote right of SP #MintCream    
     **DidDoc** : $doc
 end note
-SP -> SP: Create / Sign Verify Profile
+
+SP -> SP : Generate / Sign Verify Profile
 rnote right of SP #MintCream    
     **VerifyProfile** : $doc
 end note
+
+SP -> SP : Store E2E information and VpProfile
 
 return
 rnote right of CA #Lavender
-    **[M310_Res: Profile Response]**
-    body: 
+    **[M310_Res : Profile Response]**
+    body : 
         verifyProfile
-        verifierTxId
+        txId
 end note
 
-
-|||
 == Profile Verification ==
 
-CA <-> BC: Retrieve Verifier DID Doc / Response
+CA <-> BC : Retrieve / Respond Verifier DID Doc
 
 rnote right of CA #MintCream    
     **DidDoc** : $doc
 end note
 
-CA -> CA: Verify VerifyProfile signature
+CA -> CA : Verify VerifyProfile signature
 rnote right of CA #MintCream    
     **VerifyProfile** : $doc
 end note
 
-CA -> CA: Check user-submitted information
+CA -> CA : Check user submission information
 
-
-|||
 == Wallet Token Generation ==
 
 rnote over WALLET, CA #white
-    Wallet Token Generation: Certified App -> Wallet
+    Wallet Token Generation : CA App -> Wallet
 end note
 
-|||
 == VP Generation ==
 
 CA -> WALLET++ : VP Generation Request \n{VerifyProfile, \nUser-selected submission information}
@@ -138,65 +135,66 @@ rnote right of WALLET #MintCream
 end note
 
 WALLET -> WALLET : Generate temporary key pair \nCreate session key
-WALLET -> WALLET : Encrypt VP \n(encVpProof)
+WALLET -> WALLET : Encrypt VP \n(encVp)
 rnote right of WALLET #MintCream    
-    encVpProof = multibase(enc(iv, VpProof, seskey))
+    encVp = multibase(enc(iv, VP, seskey))
 
-    * IV application may vary based on the KDF method
+    * IV application may vary based on KDF method
 end note
 
-WALLET -> WALLET : Generate VP message \n(VpMsg)
+WALLET -> WALLET : Generate AccE2e \n(AccE2e)
 rnote right of WALLET #MintCream    
-    **VpMsg** : $doc    
+    **AccE2e** : $doc
+    - publicKey, iv
+    - proof (optional)
 end note
 
-return VP Generation Request Response \n{VpMsg}
+return VP Generation Request Response \n{AccE2e, encVp}
 
+== P310-2 : VP Submission and Verification ==
 
-
-|||
-== P310-2: eVP Submission and Verification ==
-
-CA -> SP++ : eVP (Encrypted VP) Verification Request
+CA -> SP++ : VP Verification Request
 rnote right of CA #Lavender
-    **[M310_Req: eVP (Encrypted VP) Submission]**    
-    body: 
+    **[M310_Req : VP Submission]**    
+    body : 
         messageId
-        verifierTxId
+        txId
         accE2e
-        VpMsg(enc)
+        encVp
 end note
 
-SP -> SP: Retrieve transaction code
-SP -> SP: Perform E2E ECDH\
-        \n* If accE2e.proof exists, verify it\
+SP -> SP : Retrieve transaction code
+SP -> SP : Validate transaction and status
+SP -> SP : Perform E2E ECDH\
+        \n* Verify accE2e.proof if present\
         \n* e2eKey = Generate encryption key\
         \n* iv = accE2e.iv
         
-SP -> SP: Decrypt eVP\
+SP -> SP : Decrypt VP\
         \n* vp = decrypt(encVp, e2eKey, iv)
 
-SP -> SP: Check AuthType / nonce consistency
+SP -> SP : Check verifierNonce consistency
+SP -> SP : Check AuthType / nonce consistency
 
-SP <-> BC: Retrieve Holder / Issuer DID Doc
+SP <-> BC : Retrieve Holder / Issuer DID Doc
 rnote right of SP #MintCream    
     **DidDoc** : $doc
 end note
 
-SP -> SP: Verify VP signature\
+SP -> SP : Verify VP signature\
         \n* Verify vp.proof\
-        \n* Validate the lifecycle of the VC\
-        \n* Verify the issuer signature within the VC
+        \n* Validate VC lifecycle\
+        \n* Verify issuer signature within VC
+
+SP -> SP : Store VP data and complete transaction
         
 return
 rnote right of CA #Lavender
-    **[M310_Res: eVP Verification Response]**      
-        body: 
-            verifierTxId        
+    **[M310_Res : VP Verification Response]**      
+        body : 
+            txId        
 end note
-
 
 |||
 |||
 @enduml
-
