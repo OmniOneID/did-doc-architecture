@@ -1,4 +1,5 @@
-@startuml create_wallet_token
+
+@startuml retrieve_vc_list
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Configuration
@@ -11,13 +12,13 @@ end footer
 
 '=== Title ===
 title
-    <size:25>Create Wallet Token</size>
+    <size:25>Retrieve VC List</size>
 end title
 
-'=== Option ===
-' Autonumber: ex) "<b>000.</b>" => Display as a 3-digit number with leading zeros
+'=== Options ===
+'Automatic numbering: e.g., "<b>000." => displays as a 3-digit number with leading zeros
 autonumber "<b>(#)</b>"
-' Hide the participant box at the bottom of the page
+'Hide participant box at the bottom of the page
 'hide footbox
 
 '=== Participants ===
@@ -39,22 +40,20 @@ end box
 
 box Trust Repository
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
-end box
+end box 
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Constant
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-!$refdoc = "Refer to a separate document"
 !$doc = "Refer to the data specification document"
+!$refdoc = "Refer to a separate document"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Content
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-
-== Create Wallet Token ==
-
+== Wallet Token Generation ==
 activate CA
 
 CA -> WALLET++ : Request walletTokenSeed creation {purpose, pkgname, userId}
@@ -68,9 +67,9 @@ rnote right of WALLET #MintCream
 end note
 
 
-CA -> CAS : Request WalletTokenData (User Identification for user lookup)
+CA -> CAS++ : Request WalletTokenData (User Identification for user lookup)
 CAS -> CAS : WalletTokenData creation
-CA -> CA :  Return WalletTokenData
+CAS -> CA-- :  Return WalletTokenData
 rnote right of CA #MintCream
     **WalletTokenData** : Reference to Data Specification document
     seed|sha_pii|provider|nonce|Proof
@@ -117,11 +116,24 @@ CA -> WALLET++ : Request WalletToken creation \n{WalletTokenData}
     end note
 
 
+== Retrieve VC List ==
 
+CA -> WALLET++ : Retrieve VC List \n{Wallet Token}
+return {VC List}
 
+== Retrieve VC Status ==
 
+loop All VCs
+    CA -> BC++ : Retrieve VC Status \n{vcId}
 
+    return {VC Meta}
+
+    rnote right of CA #MintCream    
+        **VcMeta** : $doc
+    end note
+end loop
 
 |||
 |||
+
 @enduml

@@ -72,13 +72,13 @@ CAS -> CA : WalletTokenData 전달
 rnote right of CA #MintCream
     **WalletTokenData** : $doc
     seed|sha_pii|provider|nonce|Proof
-    Proof = sign(seed|sha_pii|provider|nonce|, CAP_PriKey)
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
 
-    CAP : 인가앱사업자 (인가앱서버)
+    CAS : 인가앱사업자 (인가앱서버)
 end note
 
 CA -> WALLET++ : WalletToken 생성 요청 \n{WalletTokenData}
-    WALLET -> BC++ : CAP DID Doc 조회
+    WALLET -> BC++ : CAS DID Doc 조회
     rnote right of WALLET #LightGray
         **[API_REQ : DID Doc 조회 요청]**
         did

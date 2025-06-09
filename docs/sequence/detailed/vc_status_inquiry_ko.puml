@@ -34,6 +34,10 @@ box 모바일 #OldLace
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
+box 서버 #AliceBlue
+    participant "**인가서버**" as CAS <<App>> #WhiteSmoke    
+end box
+
 box 신뢰저장소
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
 end box 
@@ -42,6 +46,7 @@ end box
 ' 상수
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !$doc = "데이터명세 문서 참조"
+!$refdoc = "별도 문서 참조"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 내용
@@ -51,31 +56,76 @@ end box
 == 월렛 토큰 생성 ==
 activate CA
 
-rnote over WALLET, CA #white
-    월렛 토큰 생성 : 인가앱 -> 월렛
+CA -> WALLET++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    WALLET -> WALLET : nonce 생성
+    WALLET -> WALLET : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
 end note
 
+CA -> CAS++ : WalletTokenData요청 {walletTokenSeed}
+CAS-> CAS : WalletTokenData 생성
+CAS -> CA-- : WalletTokenData 전달 
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS : 인가앱사업자 (인가앱서버)
+end note
+
+CA -> WALLET++ : WalletToken 생성 요청 \n{WalletTokenData}
+    WALLET -> BC++ : CAS DID Doc 조회
+    rnote right of WALLET #LightGray
+        **[API_REQ : DID Doc 조회 요청]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES : DID Doc 조회 응답]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : 서명 검증
+    WALLET -> WALLET : resultNonce 생성 (resultNonce)
+
+    WALLET -> WALLET : 월렛토큰 생성 {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : resultNonce 전달 적용
+
+    CA -> CA : 월렛토큰 생성 {hWalletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
 
 == VC 상태조회 ==
 
-CA -> WALLET++ : VC 리스트 조회 \n{월렛토큰}
-return
+CA -> WALLET++ : VC 목록 조회 \n{월렛토큰}
+return {VC 목록}
 
+loop 모든 VC
+    CA -> BC++ : VC 상태 조회 \n{vcId}
 
-CA -> BC++ : VC 상태 조회
-rnote right of CA #LightGray
-    **[API_REQ : VC 상태 조회 요청]**
-    vcid
-end note
-
-return
-rnote right of CA #LightGray
-    **[API_RES : VC 상태 조회 응답]**
-    VcMeta
-end note
-rnote right of CA #MintCream    
-    **VcMeta** : $doc
-end note
+    return {VC Meta}
+    rnote right of CA #MintCream    
+        **VcMeta** : $doc
+    end note
+end loop
 
 |||
 |||

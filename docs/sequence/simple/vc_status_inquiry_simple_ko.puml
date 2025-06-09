@@ -1,5 +1,5 @@
 
-@startuml update_vc_status_ko
+@startuml vc_status_inquiry_simple_ko
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 설정
@@ -12,7 +12,7 @@ end footer
 
 '=== 제목 ===
 title
-	<size:25>VC 상태변경</size>
+	<size:25>VC 상태조회</size>
 end title
 
 '=== 옵션 ===
@@ -27,12 +27,11 @@ skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box Issuer 관리자
-    actor "**Issuer Admin**" as ADMIN #WhiteSmoke
-end box
 
-box 발급 사업자 #AliceBlue
-    participant "**ISSUER**" as ISSUER <<WAS>> #WhiteSmoke
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
 box 신뢰저장소
@@ -42,29 +41,41 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 상수
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+!$doc = "데이터명세 문서 참조"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 내용
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-== VC 상태변경 ==
-rnote across #white
-    Admin은 관리자 사이트 또는 다른 인터페이스를 통해 ISSUER에게 VC 상태변경을 요청해야 함.
-    이 과정은 본 규격에서 다루지 않음. 
+== 월렛 토큰 생성 ==
+activate CA
+
+rnote over WALLET, CA #white
+    월렛 토큰 생성 : 인가앱 -> 월렛
 end note
 
-ADMIN -> ISSUER++: VC 상태변경 요청
 
-    ISSUER -> BC++: VC 메타데이터 조회\n{vcId}
-    BC -> ISSUER: VC 메타데이터\n{vcMeta}
-    ISSUER -> ISSUER: VC 상태변경 가능여부 확인
-    ISSUER -> BC: VC 상태변경 요청\n{vcId, vcStatus}
-    BC -> ISSUER--: VC 상태변경 완료
+== VC 상태조회 ==
 
-ISSUER --> ADMIN--: VC 상태변경 응답\n{txId}
+CA -> WALLET++ : VC 리스트 조회 \n{월렛토큰}
+return
 
+
+CA -> BC++ : VC 상태 조회
+rnote right of CA #LightGray
+    **[API_REQ : VC 상태 조회 요청]**
+    vcid
+end note
+
+return
+rnote right of CA #LightGray
+    **[API_RES : VC 상태 조회 응답]**
+    VcMeta
+end note
+rnote right of CA #MintCream    
+    **VcMeta** : $doc
+end note
 
 |||
 |||

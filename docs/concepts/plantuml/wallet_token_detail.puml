@@ -7,7 +7,7 @@ autonumber "<b>(#)</b>"
 
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
-participant "**인가앱 서비스**" as cap <<Server>>
+participant "**인가앱 서비스**" as cas <<Server>>
 
 activate ca
 
@@ -15,7 +15,7 @@ rnote over ca
     **[Pre-defined]**
     * PKG_NAME = 인가앱의 패키지명
 end rnote
-/ rnote over cap
+/ rnote over cas
     **[Pre-defined]**
     * PII = 인가앱 소유자의 개인식별자
 end rnote
@@ -38,16 +38,16 @@ return {seed}
 
 == 2. WalletTokenData ==
 
-ca -> cap ++: 월렛토큰 데이터 생성요청\n{seed}
-    cap -> cap: 데이터 준비\
+ca -> cas ++: 월렛토큰 데이터 생성요청\n{seed}
+    cas -> cas: 데이터 준비\
         \n* sha256_pii = multibase(sha256(PII))\
         \n* provider = 사업자 정보\
         \n* nonce = 난수 생성\
         \n* dataset = {seed, sha256_pii, provider, nonce}
-    cap -> cap: 인가앱 사업자 서명\
+    cas -> cas: 인가앱 사업자 서명\
         \n* priKey = Attestation 개인키\
         \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (WalletTokenData)wtd\
+    cas -> cas: (WalletTokenData)wtd\
         \n = {seed, sha256_pii, provider, nonce, proof}
 return {wtd}
 

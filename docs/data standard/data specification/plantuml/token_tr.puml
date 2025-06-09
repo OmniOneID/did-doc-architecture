@@ -7,7 +7,7 @@ autonumber "<b>(#)</b>"
 
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
-participant "**인가앱 사업자**" as cap <<Server>>
+participant "**인가앱 사업자**" as cas <<Server>>
 
 activate ca
 
@@ -15,7 +15,7 @@ rnote over ca
     **[Pre-defined]**
     * PKG_NAME = 인가앱의 패키지명
 end rnote
-/ rnote over cap
+/ rnote over cas
     **[Pre-defined]**
     * PII = 인가앱 소유자의 개인식별자
 end rnote
@@ -28,7 +28,7 @@ autonumber "<b>(#)</b>"
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**CApp**" as ca <<App>>
-participant "**CApp Provider**" as cap <<Server>>
+participant "**CApp Provider**" as cas <<Server>>
 
 activate ca
 
@@ -36,7 +36,7 @@ rnote over ca
     **[Pre-defined]**
     * PKG_NAME = CApp package name
 end rnote
-/ rnote over cap
+/ rnote over cas
     **[Pre-defined]**
     * PII = CApp owner's Personal Identifier
 end rnote
@@ -75,31 +75,31 @@ return {seed}
 
 == 2. WalletTokenData ==
 
-ca -> cap ++: 월렛토큰 데이터 생성요청\n{seed}
-    cap -> cap: 데이터 준비\
+ca -> cas ++: 월렛토큰 데이터 생성요청\n{seed}
+    cas -> cas: 데이터 준비\
         \n* sha256_pii = multibase(sha256(PII))\
         \n* provider = 사업자 정보\
         \n* nonce = 난수 생성\
         \n* dataset = {seed, sha256_pii, provider, nonce}
-    cap -> cap: 인가앱 사업자 서명\
+    cas -> cas: 인가앱 사업자 서명\
         \n* priKey = Attestation 개인키\
         \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (WalletTokenData)wtd\
+    cas -> cas: (WalletTokenData)wtd\
         \n = {seed, sha256_pii, provider, nonce, proof}
 return {wtd}
 
 == 2. WalletTokenData ==
 
-ca -> cap ++: Request Wallet Token Data\n{seed}
-    cap -> cap: Prepare data\
+ca -> cas ++: Request Wallet Token Data\n{seed}
+    cas -> cas: Prepare data\
         \n* sha256_pii = multibase(sha256(PII))\
         \n* provider = Provider information\
         \n* nonce = Generate nonce\
         \n* dataset = {seed, sha256_pii, provider, nonce}
-    cap -> cap: CApp Provider Signature\
+    cas -> cas: CApp Provider Signature\
         \n* priKey = Attestation private key\
         \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (WalletTokenData)wtd\
+    cas -> cas: (WalletTokenData)wtd\
         \n = {seed, sha256_pii, provider, nonce, proof}
 return {wtd}
 
@@ -150,7 +150,7 @@ autonumber "<b>(#)</b>"
 
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
-participant "**인가앱 사업자**" as cap <<Server>>
+participant "**인가앱 사업자**" as cas <<Server>>
 participant "**TAS**" as tas <<Server>>
 
 activate ca
@@ -178,7 +178,7 @@ autonumber "<b>(#)</b>"
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**CApp**" as ca <<App>>
-participant "**CApp Provider**" as cap <<Server>>
+participant "**CApp Provider**" as cas <<Server>>
 participant "**TAS**" as tas <<Server>>
 
 activate ca
@@ -200,7 +200,7 @@ end rnote
 
 == 1. SignedWalletInfo ==
 
-hnote over wal, cap #LimeGreen
+hnote over wal, cas #LimeGreen
     * walletToken = 월렛토큰 생성
 end hnote
 
@@ -221,7 +221,7 @@ return {swi}
 
 == 1. SignedWalletInfo ==
 
-hnote over wal, cap #LimeGreen
+hnote over wal, cas #LimeGreen
     * walletToken = Generate Wallet Token
 end hnote
 
@@ -242,31 +242,31 @@ return {swi}
 
 == 2. AttestedAppInfo ==
 
-ca -> cap ++: 서명된 앱정보 요청\n{APP_ID}
-    cap -> cap: 데이터 준비\
+ca -> cas ++: 서명된 앱정보 요청\n{APP_ID}
+    cas -> cas: 데이터 준비\
             \n* appId = APP_ID\
             \n* provider = 사업자 정보\
             \n* nonce = 난수 생성\
             \n* dataset = {appId, provider, nonce}
-    cap -> cap: 인가앱 사업자 서명\
+    cas -> cas: 인가앱 사업자 서명\
             \n* priKey = Attestation 개인키\
             \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (AttestedAppInfo)aai\
+    cas -> cas: (AttestedAppInfo)aai\
             \n = {appId, provider, nonce, proof}
 return {aai}
 
 == 2. AttestedAppInfo ==
 
-ca -> cap ++: Request Signed App Information\n{APP_ID}
-    cap -> cap: Prepare data\
+ca -> cas ++: Request Signed App Information\n{APP_ID}
+    cas -> cas: Prepare data\
             \n* appId = APP_ID\
             \n* provider = Provider information\
             \n* nonce = Generate nonce\
             \n* dataset = {appId, provider, nonce}
-    cap -> cap: CApp Provider Signature\
+    cas -> cas: CApp Provider Signature\
             \n* priKey = Attestation private key\
             \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (AttestedAppInfo)aai\
+    cas -> cas: (AttestedAppInfo)aai\
             \n = {appId, provider, nonce, proof}
 return {aai}
 

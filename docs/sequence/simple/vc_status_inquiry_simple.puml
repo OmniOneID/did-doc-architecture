@@ -1,21 +1,25 @@
-@startuml update_vc_status
+
+@startuml vc_status_inquiry_simple
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Settings
+' Configuration
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 '=== Header and Footer ===
 header OPEN-DID Technical Specification
 footer
-  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+    Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
 end footer
 
 '=== Title ===
 title
-	<size:25>VC Status Update</size>
+    <size:25>VC Status Inquiry</size>
 end title
 
 '=== Options ===
+'Automatic numbering: e.g., "<b>000." => displays as a 3-digit number with leading zeros
 autonumber "<b>(#)</b>"
+'Hide participant box at the bottom of the page
+'hide footbox
 
 '=== Participants ===
 skinparam ParticipantPadding 20
@@ -23,44 +27,57 @@ skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box Issuer Admin
-    actor "**Issuer Admin**" as ADMIN #WhiteSmoke
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
 end box
 
-box Issuing Provider #AliceBlue
-    participant "**ISSUER**" as ISSUER <<WAS>> #WhiteSmoke
-end box
-
-box Trusted Storage
+box Trust Repository
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
 end box 
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Constants
+' Constant
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+!$doc = "Refer to the data specification document"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Content
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-||| 
+|||
 
-== VC Status Update ==
-rnote across #white
-    The Admin must request the ISSUER to update the VC status via the admin site or another interface.
-    This process is not covered in this specification.
+== Wallet Token Generation ==
+activate CA
+
+rnote over WALLET, CA #white
+    Wallet Token Generation : CA -> Wallet
 end note
 
-ADMIN -> ISSUER++: Request to update VC status
 
-    ISSUER -> BC++: Request VC metadata\n{vcId}
-    BC -> ISSUER: Respond with VC metadata\n{vcMeta}
-    ISSUER -> ISSUER: Check if VC status update is allowed
-    ISSUER -> BC: Request VC status update\n{vcId, vcStatus}
-    BC -> ISSUER--: VC status update completed
+== VC Status Query ==
 
-ISSUER --> ADMIN--: Response to VC status update\n{txId}
+CA -> WALLET++ : Query VC List \n{Wallet Token}
+return
 
-||| 
-||| 
+CA -> BC++ : Query VC Status
+rnote right of CA #LightGray
+    **[API_REQ : VC Status Query Request]**
+    vcid
+end note
+
+return
+
+rnote right of CA #LightGray
+    **[API_RES : VC Status Query Response]**
+    VcMeta
+end note
+rnote right of CA #MintCream    
+    **VcMeta** : $doc
+end note
+
+|||
+|||
+
 @enduml
