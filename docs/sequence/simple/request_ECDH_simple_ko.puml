@@ -1,0 +1,111 @@
+@startuml request_ECDH_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>ECDH 요청</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box 서버 #AliceBlue
+    participant "**인가서버**" as CAS <<App>> #WhiteSmoke    
+end box
+
+box TAS 사업자 #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== ECDH 요청 ==
+
+activate CA
+
+CA -> CA: ECDH 데이터 준비 및 서명\
+            \n* (ReqEcdh)reqEcdh\
+            \n   = ECDH 요청 생성
+
+opt KeyAgreement 서명 ON
+    CA -> WALLET ++: KeyAgreement 서명 요청\n{reqEcdh}
+    return {signedReqEcdh}
+end
+
+CA -> TAS++ : ECDH 요청
+rnote right of CA #Lavender
+    **[REQ : ECDH 요청]**
+    body : 
+        messageId
+        txId
+        reqEcdh
+end note
+
+    opt KeyAgreement 서명 ON
+        TAS -> TAS: reqEcdh.proof 서명 검증
+    end
+
+    TAS -> TAS: ECDH 수행\
+                \n* sesKey = 세션키\
+                \n* (AccEcdh)accEcdh\
+                \n   = ECDH 수락 생성
+
+    opt KeyAgreement 서명  ON
+        TAS -> TAS: signKeyAgree(accEcdh)
+    end
+
+return ECDH 응답
+rnote right of CA #Lavender
+    **[RES : ECDH 응답]**
+    body : 
+        txId
+        accEcdh
+end note
+
+opt KeyAgreement 서명  ON
+    CA -> CA: accEcdh.proof 서명 검증
+end
+
+CA -> CA: ECDH 수행\n* sesKey = 세션키
+
+|||
+|||
+@enduml
+
