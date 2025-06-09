@@ -154,6 +154,9 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
                 \n* issuerNonce = 발급용 nonce 생성\
                 \n* (ReqE2e)reqE2e = E2E 요청정보 생성\
                 \n* 기타 데이터는 생략
+                opt ZKP 포함인 경우
+                    vf -> vf : CredentialOffer생성
+                end
          vf <-> BC: Issuer DID Doc 조회 / 응답
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
@@ -188,7 +191,10 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
     wal -> wal: 발급 요청정보 생성 및 암호화\
             \n* (ReqVc)reqVc 생성\
             \n* encReqVc = enc(data, e2eKey, iv)
-
+            opt ZKP 포함인 경우
+                wal -> wal : cfedDef 블록체인 조회, mastersecret 생성/관리됨
+                wal -> wal : credentialRequest 생성, reqVc에 포함
+            end
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: serverToken 검증
         tas -> tas: DID Auth 검증\
@@ -210,7 +216,16 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
                 end note
-            vf -> vf: vc = **VC 발급 or 재발급**            
+            vf -> vf: vc = **VC 발급 or 재발급**
+                opt ZKP 포함인 경우
+                    vf -> vf : vc -> credInfo
+                    note right of vf
+                        credInfo = {
+                            vc = {...},
+                            credential = {...}
+                        }
+                    end note
+                end
             vf -> BC: vcMeta 생성 / 등록
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
@@ -224,7 +239,11 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
 
     wal -> wal: encVc 복호화\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+            \n credInfo = {vc={..}, credential={..}}
+            opt ZKP 포함인 경우
+                wal -> wal : credential 검증 및 저장
+            end
     wal -> wal: 이슈어 서명 검증 및 저장
     wal -> wal: vcId = VC id 추출
 return {vcId}

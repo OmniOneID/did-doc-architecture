@@ -54,7 +54,6 @@ end note
 
 == Request Signed Wallet Information ==
 CA -> WALLET ++ : Request Signed Wallet Information {walletToken}
-    WALLET -> WALLET: Validate walletToken
     WALLET -> WALLET: Generate nonce
     WALLET -> WALLET: Sign Wallet Information\
                 \n* (SignedWalletInfo)walletInfo = {\
@@ -147,11 +146,14 @@ end note
 |||
 == Issue Server Token ==
 CA -> CA: Decrypt encStd\
-    \n tmp = debase(encStd)\
-    \n* std = dec(tmp, sesKey, iv)
+    \n encStd = decodeMultibase(encStd)\
+    \n mergedNonce = clientNonce|serverNonce\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n sharedSecret = dec(secretKey, mergedNonce)\
+    \n* std = dec(encStd, sharedSecret, iv) 
 
 CA -> CA: Calculate serverToken\
-    \n serverToken = sha256(std)
+    \n hServerToken = sha256(std)
 
 |||
 |||
