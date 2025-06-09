@@ -160,6 +160,9 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
                 \n* issuerNonce = Generate nonce for issuance\
                 \n* (ReqE2e)reqE2e = Create E2E request information\
                 \n* Other data is omitted
+                opt include ZKP 
+                    vf -> vf : Generate CredentialOffer
+                end
         vf <-> BC: Query/Retrieve Issuer DID Doc
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
@@ -195,6 +198,10 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
     wal -> wal: Generate and encrypt issuance request information\
             \n* Generate (ReqVc)reqVc\
             \n* encReqVc = enc(data, e2eKey, iv)
+            opt include ZKP 
+                wal -> wal : inquery cfedDef from trust repository, Create/Manage Master Secrets
+                wal -> wal : Generate credentialRequest include in reqVc
+            end
 
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: Validate serverToken
@@ -217,7 +224,16 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
                 end note
-            vf -> vf: vc = **Issue or Reissue VC**            
+            vf -> vf: vc = **Issue or Reissue VC**  
+                 opt include ZKP
+                    vf -> vf : vc -> credInfo
+                    note right of vf
+                        credInfo = {
+                            vc = {...},
+                            credential = {...}
+                        }
+                    end note
+                end          
             vf -> BC: Generate/Register vcMeta
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
@@ -231,7 +247,10 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
 
     wal -> wal: Decrypt encVc\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+              opt include ZKP
+                wal -> wal : verify/save credential
+            end
     wal -> wal: Verify issuer signature and store VC
     wal -> wal: vcId = Extract VC ID
 return {vcId}

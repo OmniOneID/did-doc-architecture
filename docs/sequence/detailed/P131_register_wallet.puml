@@ -73,10 +73,6 @@ rnote right of WALLET #LightGray
 end note
 
 ||| 
-== Wallet Creation ==
-WALLET -> WALLET: Wallet Initialization
-
-||| 
 == Wallet DID Document Creation ==
 WALLET -> WALLET: Generate Wallet Key (Device Key)
 
@@ -134,6 +130,9 @@ end note
         \n* walletProviderDid (Wallet Provider DID)
 
 return Wallet Registration Response
+
+WALLET -> WALLET : Save walletId, Device DidDoc
+
 rnote right of WALLET #LightGray        
     **[M131_RES: Wallet Registration Response]**
     body : 

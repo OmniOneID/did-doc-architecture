@@ -53,7 +53,6 @@ end note
 
 == 서명된 월렛 정보 요청  ==
 CA -> WALLET ++ : 서명된 Wallet 정보 요청 {walletToken}
-    WALLET -> WALLET: walletToken 검증
     WALLET -> WALLET: nonce 생성
     WALLET -> WALLET: Wallet 정보 서명\
                 \n* (SignedWalletInfo)walletInfo= {\
@@ -70,14 +69,12 @@ rnote across #white
     인가앱은 로그인 또는 유사한 과정을 통해 인가앱 서버와 이미 세션을 맺고 있어야 한다.
     그러나 이 과정의 구체적인 내용은 본 규격에서 다루지 않는다.
 end note
-
 CA -> CAS ++ : 서명된 앱 정보 요청
 rnote right of CA #LightGray        
     **[API_REQ : 서명된 앱 정보 요청]**
     query:
         appId
 end note
-
     CAS -> CAS : nonce 생성
     CAS -> CAS : 앱 정보 서명\
             \n* (AttestedAppInfo)caAppInfo= {\
@@ -144,11 +141,14 @@ end note
 |||
 == 서버토큰 생성  ==
 CA -> CA: encStd 복호화\
-    \n tmp = debase(encStd)\
-    \n* std = dec(tmp, sesKey, iv)
+    \n encStd = decodeMultibase(encStd)\
+    \n mergedNonce = clientNonce|serverNonce\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n sharedSecret = dec(secretKey, mergedNonce)\
+    \n* std = dec(encStd, sharedSecret, iv) 
 
 CA -> CA: 서버토큰 계산\
-    \n serverToken = sha256(std)
+    \n hServerToken = sha256(std)
 
 |||
 |||
