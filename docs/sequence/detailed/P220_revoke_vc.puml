@@ -159,7 +159,11 @@ ca -> wal ++: Request Revoke VC\n{walletToken, serverToken, vcId,\
         return {result}
     return {result}
 return {result}
-
+ca -> wal: request delete VC {walletToken, vcId}
+wal -> wal: delete VC
+opt include ZKP
+    wal -> wal: delete ZKP Credential
+end
 
 |||
 == P220-5: Confirm Revoke VC ==

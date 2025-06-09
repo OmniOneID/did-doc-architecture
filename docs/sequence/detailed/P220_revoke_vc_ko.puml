@@ -155,6 +155,11 @@ ca -> wal ++: VC 폐기 요청\n{walletToken, serverToken, vcId,\
         return {result}
     return {result}
 return {result}
+ca -> wal: VC 삭제 요청 {walletToken, vcId}
+wal -> wal: VC 삭제
+opt ZKP 포함인 경우
+    wal -> wal: ZKP Credential 삭제
+end
 
 == P220-5 : Confirm Issue VC ==
 
