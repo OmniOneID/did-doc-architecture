@@ -1,0 +1,160 @@
+@startuml request_ECDH
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+    Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+    <size:25>Request ECDH</size>
+end title
+
+'=== Option ===
+' Autonumber: ex) "<b>000.</b>" => Display as a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box Server #AliceBlue
+    participant "**Certified Server**" as CAS <<App>> #WhiteSmoke    
+end box
+
+box TAS Provider #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constant
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "Refer to a separate document"
+!$doc = "Refer to the data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+
+== Request ECDH ==
+
+activate CA
+
+CA -> CA: Prepare ECDH data and sign\
+return {Holder DID}
+CA -> CA: Generate Client Nonce
+CA -> CA: Generate DH Key Pair
+CA -> CA: Prepare ECDH Request\
+            \n* (ReqEcdh)reqEcdh\
+            \n   = Create ECDH request
+
+rnote right of CA #MintCream
+    **ReqEcdh** : $doc  
+    client|clientNonce|curve|publicKey|candidate
+end note
+
+opt KeyAgreement Signature ON
+    CA -> WALLET ++: Request KeyAgreement Signature\n{reqEcdh}
+        WALLET -> WALLET: signKeyAgree(reqEcdh)
+        note right
+            During the actual call:
+            * The certified app provides the hash of the original text and the keyId
+            * The wallet responds with only the signature value
+        end note
+    return {reqEcdh}
+    rnote right of WALLET #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof  
+        Proof = KeyAgreeProof
+    end note
+end
+
+
+
+CA -> TAS++ : ECDH Request
+rnote right of CA #Lavender
+    **[REQ : ECDH Request]**
+    body : 
+        messageId
+        txId
+        reqEcdh
+end note
+
+    opt KeyAgreement Signature ON
+        TAS -> TAS: Verify reqEcdh.proof signature
+    end
+
+    TAS -> TAS : Validate reqEcdh format
+    TAS -> TAS : Generate Server Nonce
+    TAS -> TAS : Generate mergedNonce
+    rnote right of TAS #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    TAS -> TAS: Generate DH Key Pair
+
+    TAS -> TAS: Perform ECDH\
+                \n* sesKey = Session Key\
+
+    rnote right of TAS #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    TAS -> TAS: Generate ECDH Accept Data\
+                \n* (AccEcdh)accEcdh
+    rnote right of TAS #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
+    opt KeyAgreement Signature ON
+        TAS -> TAS: signKeyAgree(accEcdh)
+    end
+
+return ECDH Response
+rnote right of CA #Lavender
+    **[RES : ECDH Response]**
+    body : 
+        txId
+        accEcdh
+end note
+
+opt KeyAgreement Signature ON
+    CA -> CA: Verify accEcdh.proof signature
+end
+CA -> CA : Validate accEcdh format
+CA -> CA : Generate mergedNonce
+rnote right of CA #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
+CA -> CA: Perform ECDH\n* sesKey = Session Key
+
+rnote right of CA #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
+
+|||
+|||
+@enduml
