@@ -7,7 +7,7 @@ autonumber "<b>(#)</b>"
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**Certified App**" as ca <<App>>
-participant "**Certified App Service**" as cap <<Server>>
+participant "**Certified App Service**" as cas <<Server>>
 
 activate ca
 
@@ -15,7 +15,7 @@ rnote over ca
     **[Pre-defined]**
     * PKG_NAME = Package name of the Certified App
 end rnote
-/ rnote over cap
+/ rnote over cas
     **[Pre-defined]**
     * PII = Personal Identifier of the Certified App Owner
 end rnote
@@ -38,16 +38,16 @@ return {seed}
 
 == 2. WalletTokenData ==
 
-ca -> cap ++: Request to generate Wallet Token Data\n{seed}
-    cap -> cap: Data preparation\
+ca -> cas ++: Request to generate Wallet Token Data\n{seed}
+    cas -> cas: Data preparation\
         \n* sha256_pii = multibase(sha256(PII))\
         \n* provider = Provider information\
         \n* nonce = Generate random number\
         \n* dataset = {seed, sha256_pii, provider, nonce}
-    cap -> cap: CApp provider signature\
+    cas -> cas: CApp provider signature\
         \n* priKey = Attestation private key\
         \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (WalletTokenData)wtd\
+    cas -> cas: (WalletTokenData)wtd\
         \n = {seed, sha256_pii, provider, nonce, proof}
 return {wtd}
 

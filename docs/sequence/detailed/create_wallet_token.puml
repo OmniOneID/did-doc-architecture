@@ -60,10 +60,10 @@ activate CA
 CA -> WALLET++ : Request walletTokenSeed creation {purpose, pkgname, userId}
     WALLET -> WALLET : Create nonce 
     WALLET -> WALLET : Create walletTokenSeed, VaildUntil time
-return {TmpToken}
+return {walletTokenSeed}
 rnote right of WALLET #MintCream
-    **TmpToken** : Reference to Data Specification document
-    TmpToken = 
+    **walletTokenSeed** : Reference to Data Specification document
+    walletTokenSeed = 
         (nonce | vaildUntil | purpose | pkgname | userId)
 end note
 
@@ -74,14 +74,14 @@ CA -> CA :  Return WalletTokenData
 rnote right of CA #MintCream
     **WalletTokenData** : Reference to Data Specification document
     seed|sha_pii|provider|nonce|Proof
-    Proof = sign(seed|sha_pii|provider|nonce|, CAP_PriKey)
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
 
-    CAP: CApp Provider (CApp Server)
+    CAS: CApp Provider (CApp Server)
 end note
 
 
 CA -> WALLET++ : Request WalletToken creation \n{WalletTokenData}
-    WALLET -> BC++ : Retrieve CAP DID Document
+    WALLET -> BC++ : Retrieve CAS DID Document
     rnote right of WALLET #LightGray
         **[API_REQ :Request to Retrieve DID Document]**
         did

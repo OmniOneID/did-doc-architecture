@@ -5,14 +5,14 @@ end title
 
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
-participant "**인가앱 서비스**" as cap <<Server>>
+participant "**인가앱 서비스**" as cas <<Server>>
 participant "**TA**" as ta <<Server>>
 autonumber "<b>(#)</b>"
 
 ca -> wal++: SignedWalletInfo 요청 
 wal --> ca--: SignedWalletInfo 전달
-ca -> cap++: AttestedAppInfo 요청
-cap --> ca--: AttestedAppInfo 전달
+ca -> cas++: AttestedAppInfo 요청
+cas --> ca--: AttestedAppInfo 전달
 ca -> ca: ServerTokenSeed 생성 (SignedWalletInfo, AttestedAppInfo)
 ca -> ta++: ServerToken 생성 요청 (ServerTokenSeed)
 ta -> ta: ServerTokenData 생성 (ServerTokenSeed)

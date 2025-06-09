@@ -5,13 +5,13 @@ end title
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**Certified App**" as ca <<App>>
-participant "**Certified App Service**" as cap <<Server>>
+participant "**Certified App Service**" as cas <<Server>>
 autonumber "<b>(#)</b>"
 
 ca -> wal++: Request WalletTokenSeed 
 wal --> ca--: Transmit WalletTokenSeed
-ca -> cap++: Request WalletTokenData (WalletTokenSeed)
-cap --> ca--: Transmit WalletTokenData
+ca -> cas++: Request WalletTokenData (WalletTokenSeed)
+cas --> ca--: Transmit WalletTokenData
 ca -> wal++: Request WalletToken Creation (WalletTokenData)
 wal -> wal: Generate Nonce
 wal -> wal: Generate WalletToken by combining WalletTokenData and Nonce (WalletTokenData, Nonce)

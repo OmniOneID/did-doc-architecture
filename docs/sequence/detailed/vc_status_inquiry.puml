@@ -34,6 +34,10 @@ box Mobile #OldLace
     participant "**Certified App**" as CA <<App>> #WhiteSmoke    
 end box
 
+box Server #AliceBlue
+    participant "**Certified Server**" as CAS <<App>> #WhiteSmoke    
+end box
+
 box Trust Repository
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
 end box 
@@ -42,6 +46,7 @@ end box
 ' Constant
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !$doc = "Refer to the data specification document"
+!$refdoc = "Refer to a separate document"
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Content
@@ -51,31 +56,82 @@ end box
 == Wallet Token Generation ==
 activate CA
 
-rnote over WALLET, CA #white
-    Wallet Token Generation : CA -> Wallet
+CA -> WALLET++ : Request walletTokenSeed creation {purpose, pkgname, userId}
+    WALLET -> WALLET : Create nonce 
+    WALLET -> WALLET : Create walletTokenSeed, VaildUntil time
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : Reference to Data Specification document
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
 end note
+
+
+CA -> CAS++ : Request WalletTokenData (User Identification for user lookup)
+CAS -> CAS : WalletTokenData creation
+CAS -> CA-- :  Return WalletTokenData
+rnote right of CA #MintCream
+    **WalletTokenData** : Reference to Data Specification document
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS: CApp Provider (CApp Server)
+end note
+
+
+CA -> WALLET++ : Request WalletToken creation \n{WalletTokenData}
+    WALLET -> BC++ : Retrieve CAS DID Document
+    rnote right of WALLET #LightGray
+        **[API_REQ :Request to Retrieve DID Document]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES : Response to DID Document Retrieval]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : Signature Verification
+    WALLET -> WALLET : Generate resultNonce (resultNonce)
+
+    WALLET -> WALLET : Create WalletToken {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : Apply resultNonce transmission
+
+    CA -> CA : Create WalletToken {walletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
 
 
 == VC Status Query ==
 
 CA -> WALLET++ : Query VC List \n{Wallet Token}
-return
+return {VC List}
 
-CA -> BC++ : Query VC Status
-rnote right of CA #LightGray
-    **[API_REQ : VC Status Query Request]**
-    vcid
-end note
+loop All VCs
+    CA -> BC++ : Query VC Status \n{vcId}
 
-return
 
-rnote right of CA #LightGray
-    **[API_RES : VC Status Query Response]**
-    VcMeta
-end note
-rnote right of CA #MintCream    
-    **VcMeta** : $doc
-end note
+    return {VC Meta}
+
+
+    rnote right of CA #MintCream    
+        **VcMeta** : $doc
+    end note
+end loop
 
 |||
 |||
