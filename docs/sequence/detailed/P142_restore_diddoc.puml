@@ -30,6 +30,10 @@ box Mobile #OldLace
     participant "**Certified App**" as CA <<App>> #WhiteSmoke    
 end box
 
+box Server #AliceBlue
+    participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
+end box
+
 box TAS Provider #AliceBlue
     participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
 end box
@@ -181,11 +185,111 @@ hnote over CA, WALLET #LimeGreen
     * walletToken = Wallet token
 end hnote
 
-CA -> CA: * (AttestedAppInfo)caAppInfo\
-        \n   = Generate signed app information
+== Wallet Token Generation ==
 
-CA -> CA: Generate server token seed\
-        \n* (ServerTokenSeed)seed = {\
+activate CA
+
+CA -> WALLET++ : Request to generate walletTokenSeed {purpose, pkgname, userId}
+    WALLET -> WALLET : Generate nonce
+    WALLET -> WALLET : Generate walletTokenSeed with expiration
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | validUntil | purpose | pkgname | userId)
+end note
+
+CA -> CAS : Request WalletTokenData {walletTokenSeed}
+CAS -> CAS : Generate WalletTokenData
+CAS -> CA : Return WalletTokenData
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed | sha_pii | provider | nonce | Proof  
+    Proof = sign(seed | sha_pii | provider | nonce, CAS_PriKey)
+
+    CAS: Authorized App Provider (Authorization App Server)
+end note
+
+CA -> WALLET++ : Request to generate WalletToken \n{WalletTokenData}
+    WALLET -> BC++ : Query CAS DID Document
+    rnote right of WALLET #LightGray
+        **[API_REQ: DID Document Query Request]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES: DID Document Query Response]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : Verify signature
+    WALLET -> WALLET : Generate resultNonce (resultNonce)
+
+    WALLET -> WALLET : Generate wallet token {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : Apply and return resultNonce
+
+    CA -> CA : Generate wallet token {hWalletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== Request for Signed Wallet Information ==
+CA -> WALLET++ : Request signed wallet information {walletToken}
+    WALLET -> WALLET : Generate nonce
+    WALLET -> WALLET : Sign wallet information\
+                \n* (SignedWalletInfo) walletInfo = {\
+                \n      walletId,\
+                \n      did,\
+                \n      nonce,\
+                \n      proof\
+                \n    }
+return {walletInfo}
+
+|||
+== Request for Signed App Information ==
+rnote across #white
+    The authorization app must have already established a session with the authorization app server through login or a similar process.
+    However, the details of that process are beyond the scope of this specification.
+end note
+CA -> CAS++ : Request for signed app information
+rnote right of CA #LightGray        
+    **[API_REQ: Request for Signed App Information]**
+    query:
+        appId
+end note
+    CAS -> CAS : Generate nonce
+    CAS -> CAS : Sign app information\
+            \n* (AttestedAppInfo) caAppInfo = {\
+            \n      appId,\
+            \n      provider,\
+            \n      nonce,\
+            \n      proof\
+            \n    }
+return Signed App Information Response {caAppInfo}
+rnote right of CA #LightGray        
+    **[API_RES: Signed App Information Response]**
+    body:
+        attestedAppInfo
+end note
+
+|||
+== Server Token Data Generation Request ==
+
+CA -> CA : Generate server token seed\
+        \n* (ServerTokenSeed) seed = {\
         \n     purpose = "RestoreDid",\
         \n     walletInfo,\
         \n     caAppInfo\
