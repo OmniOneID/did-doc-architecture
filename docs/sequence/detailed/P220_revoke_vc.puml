@@ -65,39 +65,100 @@ return {issuerNonce, authType}
 |||
 == P220-2: Request ECDH ==
 
-ca -> ca: Prepare ECDH Data and Sign\
-        \n* (ReqEcdh)reqEcdh\
-        \n   = Generate ECDH Request
+ca -> wal: Retrieve DID
+return {Holder DID}
+ca -> ca: Generate Client Nonce
+ca -> ca: Generate DH Key Pair
+ca -> ca: Prepare ECDH Request\
+            \n* (ReqEcdh)reqEcdh\
+            \n   = Create ECDH request
+
+rnote right of ca #MintCream
+    **ReqEcdh** : $doc  
+    client|clientNonce|curve|publicKey|candidate
+end note
 
 opt KeyAgreement Signature ON
     ca -> wal ++: Request KeyAgreement Signature\n{reqEcdh}
         wal -> wal: signKeyAgree(reqEcdh)
         note right
             During the actual call:
-            * The certified app sends the hash of the original message and keyId
-            * The wallet only responds with the signature value
+            * The certified app provides the hash of the original text and the keyId
+            * The wallet responds with only the signature value
         end note
     return {reqEcdh}
+    rnote right of wal #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof  
+        Proof = KeyAgreeProof
+    end note
 end
 
-ca -> tas ++: Request ECDH\n{reqEcdh}
+
+
+ca -> tas++ : ECDH Request
+rnote right of ca #Lavender
+    **[REQ : ECDH Request]**
+    body : 
+        messageId
+        txId
+        reqEcdh
+end note
+
     opt KeyAgreement Signature ON
         tas -> tas: Verify reqEcdh.proof signature
     end
-    tas -> tas: Perform ECDH\
-            \n* sesKey = Session Key\
-            \n* (AccEcdh)accEcdh\
-            \n   = Generate ECDH Acceptance
 
+    tas -> tas : Validate reqEcdh format
+    tas -> tas : Generate Server Nonce
+    tas -> tas : Generate mergedNonce
+    rnote right of tas #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    tas -> tas: Generate DH Key Pair
+
+    tas -> tas: Perform ECDH\
+                \n* sesKey = Session Key\
+
+    rnote right of tas #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    tas -> tas: Generate ECDH Accept Data\
+                \n* (AccEcdh)accEcdh
+    rnote right of tas #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
     opt KeyAgreement Signature ON
         tas -> tas: signKeyAgree(accEcdh)
     end
 
-return {accEcdh}
+return ECDH Response
+rnote right of ca #Lavender
+    **[RES : ECDH Response]**
+    body : 
+        txId
+        accEcdh
+end note
+
 opt KeyAgreement Signature ON
     ca -> ca: Verify accEcdh.proof signature
 end
+ca -> ca : Validate accEcdh format
+ca -> ca : Generate mergedNonce
+rnote right of ca #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 ca -> ca: Perform ECDH\n* sesKey = Session Key
+
+rnote right of ca #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
+
 
 
 |||
