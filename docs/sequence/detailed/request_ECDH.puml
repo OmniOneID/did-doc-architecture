@@ -61,7 +61,7 @@ end box
 
 activate CA
 
-CA -> CA: Prepare ECDH data and sign\
+CA -> WALLET: Retrieve DID
 return {Holder DID}
 CA -> CA: Generate Client Nonce
 CA -> CA: Generate DH Key Pair

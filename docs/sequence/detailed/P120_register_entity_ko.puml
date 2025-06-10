@@ -71,9 +71,17 @@ end note
 
 |||
 == P120-2 : ECDH 요청 ==
-ENT -> ENT: ECDH 데이터 준비 및 서명\
+ENT -> ENT: DID 조회
+ENT -> ENT: Client Nonce 생성
+ENT -> ENT: 임시키쌍 생성
+ENT -> ENT: ECDH 데이터 준비\
             \n* (ReqEcdh)reqEcdh\
             \n   = ECDH 요청 생성
+
+rnote right of ENT #MintCream
+    **ReqEcdh** : $doc
+    client|clientNonce|curve|publicKey|ENTndidate
+end note
 
 ENT -> TAS++ : ECDH 요청
 rnote right of ENT #Lavender
@@ -84,14 +92,28 @@ rnote right of ENT #Lavender
         reqEcdh
 end note
 
-    TAS -> TAS: reqEcdh.proof 서명 검증
+    TAS -> TAS : reqEcdh 정합성 확인
+    TAS -> TAS : Server Nonce 생성
+    TAS -> TAS : mergedNonce 생성
+    rnote right of TAS #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    TAS -> TAS: 임시키쌍 생성
 
     TAS -> TAS: ECDH 수행\
                 \n* sesKey = 세션키\
-                \n* (AccEcdh)accEcdh\
-                \n   = ECDH 수락 생성
 
-    TAS -> TAS: signKeyAgree(accEcdh)
+    rnote right of TAS #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    TAS -> TAS: ECDH 수락 데이터 생성\
+                \n* (AccEcdh)accEcdh
+    rnote right of TAS #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
 
 return ECDH 응답
 rnote right of ENT #Lavender
@@ -101,7 +123,18 @@ rnote right of ENT #Lavender
         accEcdh
 end note
 
+ENT -> ENT : accEcdh 정합성 확인
+ENT -> ENT : mergedNonce 생성
+rnote right of ENT #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 ENT -> ENT: ECDH 수행\n* sesKey = 세션키
+
+rnote right of ENT #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
 
 |||
 == P120-3 : Entity 등록 요청 ==
