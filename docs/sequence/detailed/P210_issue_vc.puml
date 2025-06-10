@@ -32,8 +32,8 @@ skinparam MinClassWidth 80
 
 actor "**User**" as user
 box Mobile #OldLace
-    participant "**Certified App**" as ca <<App>>
     participant "**Wallet**" as wal <<Wallet>>
+    participant "**Certified App**" as ca <<App>>
 end box
 participant "**TAS**" as tas <<Server>>
 participant "**Issuer**" as vf <<Server>>

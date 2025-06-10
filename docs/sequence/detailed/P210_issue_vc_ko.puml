@@ -33,8 +33,8 @@ skinparam MinClassWidth 80
 
 actor "**사용자**" as user
 box 모바일 #OldLace
-    participant "**인가앱**" as ca <<App>>
     participant "**월렛**" as wal <<Wallet>>
+    participant "**인가앱**" as ca <<App>>
 end box
 participant "**TAS**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
