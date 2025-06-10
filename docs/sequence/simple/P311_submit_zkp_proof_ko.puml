@@ -1,4 +1,4 @@
-@startuml VP_submit_simple_ko
+@startuml ZKP_submit_simple_ko
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 설정
@@ -11,7 +11,7 @@ end footer
 
 '=== 제목 ===
 title
-	<size:25>VP 제출</size>
+	<size:25>ZKP Proof 제출</size>
 end title
 
 '=== 옵션 ===
@@ -31,9 +31,10 @@ skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
+actor "**사용자**" as user
 box 모바일 #OldLace
-    participant "**월렛**" as wal <<Wallet>>
     participant "**인가앱**" as ca <<App>>
+    participant "**월렛**" as wal <<Wallet>>
 end box
 participant "**검증 사업자**" as vf <<Server>>
 
@@ -48,44 +49,60 @@ rnote across #white
     Offer를 어떤 방식으로 전달할지는 본 문서의 범위 밖이다.
 end note
 
-== P310-1 : Profile 요청 ==
+hnote over ca, vf #LimeGreen
+    Offer 단계 수행으로 아래 정보 획득
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== P311-1 : 증명요청 프로파일 요청 ==
 
 activate ca
 
-ca -> vf ++: Profile 요청
+ca -> vf ++: 증명요청 프로파일 요청
     vf <-> BC: Verifier DID Doc 조회 / 응답
-return verifyProfile
+return proofRequestProfile
 
-== Profile 검증 ==
+== ProofRequestProfile 검증 ==
 
 ca <-> BC: Verifier DID Doc 조회 / 응답
-ca -> ca: VerifyProfile 서명 검증
-ca -> ca: 사용자 제출 정보 확인
+ca -> ca: ProofRequestProfile 서명 검증
 
 == 월렛 토큰 생성 ==
 
-rnote over wal, ca #white
-    월렛 토큰 생성 : 인가앱 -> 월렛
-end note
+hnote over ca, wal #LimeGreen
+    * purpose = "PresentVp"
+    * walletToken = 월렛토큰
+end hnote
 
-== VP 생성 ==
+== 제출가능 Credential 조회 ==
 
-ca -> wal ++: VP 생성 요청
-    wal -> wal: VP 생성
-    wal -> wal: 사용자 인증
-    wal -> wal: VP 서명 생성
-    wal -> wal: VP 암호화
-    wal -> wal: AccE2e 생성
-return AccE2e, encVp
+ca -> wal ++: 제출가능 credential 조회
+    wal -> wal: credential 검색
+return referent
 
-== P310-2 : VP 제출 및 검증 ==
+ca -> ca: 제출가능 credential 목록 출력
 
-ca -> vf ++: VP 검증 요청
-    vf -> vf: VP 복호화
-    vf -> vf: nonce 및 AuthType 검증
-    vf <-> BC: Holder / Issuer DID Doc 조회
-    vf -> vf: VP 서명 검증
-    vf -> vf: VP 저장 및 거래 완료 처리
+user -[#Blue]-> ca: credential 선택
+
+user -[#Blue]-> ca: 제출 클레임(attributes, predicates) 선택
+
+ca <-> BC: CredentialSchema 조회 / 응답
+ca <-> BC: CredentialDefinition 조회 / 응답
+
+user -[#Blue]-> ca: 제출 동의
+
+== P311-2 : ZKP Proof 제출 ==
+
+ca -> wal ++: Proof 제출 요청
+    wal -> wal: ZKP Proof 생성
+    user -[#Blue]\ wal: 사용자 인증
+    wal -> wal: Proof 암호화
+return encProof
+
+ca -> vf ++: ZKP Proof 검증 요청
+    vf -> vf: Proof 복호화 및 검증
+    vf <-> BC: CredentialSchema 조회 / 응답
+    vf <-> BC: CredentialDefinition 조회 / 응답
 return OK
 
 deactivate ca
