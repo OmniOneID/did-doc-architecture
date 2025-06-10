@@ -1,5 +1,5 @@
 
-@startuml P220_revoke_vc_ko
+@startuml P220_revoke_vc_simple_ko
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 설정

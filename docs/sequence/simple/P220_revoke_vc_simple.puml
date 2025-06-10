@@ -1,6 +1,6 @@
 
 
-@startuml P220_revoke_vc
+@startuml P220_revoke_simple_vc
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Settings
