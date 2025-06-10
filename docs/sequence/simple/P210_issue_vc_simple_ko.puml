@@ -130,12 +130,25 @@ end note
 
 == P210-6 : VC 발급 요청 ==
 CA -> WALLET++: VC 발급 요청 
+    opt ZKP 포함인 경우
+        WALLET -> WALLET : inquery credDef from trust repository, Create/Manage Master Secrets
+        WALLET -> WALLET : Generate credentialRequest include in reqVc
+    end
     WALLET -> TAS++: VC 발급 요청
         rnote right of CA #Lavender
             **[M210_REQ : VC 발급 요청]**
         end note
         TAS -> ISSUER++: VC 발급 요청
             ISSUER -> ISSUER: VC 발급
+            opt ZKP 포함인 경우
+                ISSUER -> ISSUER : vc -> credInfo
+                note right of ISSUER
+                    credInfo = {
+                        vc = {...},
+                        credential = {...}
+                    }
+                end note
+            end
             ISSUER -> BC: VC Meta 등록
             ISSUER -> ISSUER: VC<sub>enc</sub>=VC E2E 암호화
         return VC<sub>enc</sub> 응답
@@ -143,8 +156,11 @@ CA -> WALLET++: VC 발급 요청
     rnote right of CA #Lavender
         **[M210_RES : VC 응답]**
     end note
-    WALLET -> WALLET: VC=VC<sub>enc</sub> E2E 복호화
+    WALLET -> WALLET: CredInfo=VC<sub>enc</sub> E2E 복호화
     WALLET -> WALLET: VC 저장
+    opt ZKP 포함인 경우
+        WALLET -> WALLET : Credential 검증 및 저장
+    end
 return 결과
 
 == P210-7 : VC 발급 완료 ==

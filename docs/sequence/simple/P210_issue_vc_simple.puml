@@ -129,12 +129,26 @@ end note
 
 == P210-6 : Issue VC Request ==
 CA -> WALLET++: Issue VC request 
+opt ZKP 포함인 경우
+            WALLET -> WALLET : credDef 블록체인 조회, mastersecret 생성/관리됨
+            WALLET -> WALLET : credentialRequest 생성, reqVc에 포함
+        end
     WALLET -> TAS++: Issue VC request
         rnote right of CA #Lavender
             **[M210_REQ : Issue VC request]**
         end note
         TAS -> ISSUER++: Issue VC request
+        
             ISSUER -> ISSUER: Issue VC
+            opt include ZKP
+                ISSUER -> ISSUER : vc -> credInfo
+                note right of ISSUER
+                    credInfo = {
+                        vc = {...},
+                        credential = {...}
+                    }
+                end note
+            end
             ISSUER -> BC: Register VC Meta
             ISSUER -> ISSUER: VC<sub>enc</sub>=VC E2E encryption
         return VC<sub>enc</sub> response
@@ -142,8 +156,11 @@ CA -> WALLET++: Issue VC request
     rnote right of CA #Lavender
         **[M210_RES : VC response]**
     end note
-    WALLET -> WALLET: VC=VC<sub>enc</sub> E2E decryption
+    WALLET -> WALLET: CredInfo = VC<sub>enc</sub> E2E decryption
     WALLET -> WALLET: Store VC
+    opt include ZKP
+        WALLET -> WALLET : verify and save Credential
+    end
 return Result
 
 == P210-7 : Issue VC Completion ==

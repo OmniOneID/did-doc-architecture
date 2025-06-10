@@ -199,7 +199,7 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
             \n* Generate (ReqVc)reqVc\
             \n* encReqVc = enc(data, e2eKey, iv)
             opt include ZKP 
-                wal -> wal : inquery cfedDef from trust repository, Create/Manage Master Secrets
+                wal -> wal : inquery credDef from trust repository, Create/Manage Master Secrets
                 wal -> wal : Generate credentialRequest include in reqVc
             end
 

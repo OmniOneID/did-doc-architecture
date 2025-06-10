@@ -192,7 +192,7 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
             \n* (ReqVc)reqVc 생성\
             \n* encReqVc = enc(data, e2eKey, iv)
             opt ZKP 포함인 경우
-                wal -> wal : cfedDef 블록체인 조회, mastersecret 생성/관리됨
+                wal -> wal : credDef 블록체인 조회, mastersecret 생성/관리됨
                 wal -> wal : credentialRequest 생성, reqVc에 포함
             end
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
