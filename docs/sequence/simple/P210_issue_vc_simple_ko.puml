@@ -122,6 +122,10 @@ CA -> TAS++: Issue Profile 요청
         **[M210_REQ : Issue Profile 요청]**
     end note
     TAS -> ISSUER++: Issue Profile 요청
+    ISSUER -> ISSUER: Issue Profile 생성
+    opt ZKP 포함인 경우
+        ISSUER -> ISSUER: ZKP Credential Offer 생성
+    end
     return Issue Profile 응답
 return Issue Profile 응답
 rnote right of CA #Lavender
@@ -139,18 +143,23 @@ CA -> WALLET++: VC 발급 요청
             **[M210_REQ : VC 발급 요청]**
         end note
         TAS -> ISSUER++: VC 발급 요청
-            ISSUER -> ISSUER: VC 발급
+            ISSUER -> ISSUER: vc: VC 발급 또는 재발급
+            opt VC 재발급인 경우
+                ISSUER -> BC: 기존 VC 폐기
+            end
             opt ZKP 포함인 경우
-                ISSUER -> ISSUER : vc -> credInfo
+                ISSUER -> ISSUER: credential: ZKP Credential 발급
+            end
+            ISSUER -> BC: VC Meta 등록
+            ISSUER -> ISSUER : credInfo 생성
                 note right of ISSUER
                     credInfo = {
                         vc = {...},
-                        credential = {...}
+                        credential = {...} // ZKP 포함인 경우
                     }
                 end note
-            end
-            ISSUER -> BC: VC Meta 등록
-            ISSUER -> ISSUER: VC<sub>enc</sub>=VC E2E 암호화
+
+            ISSUER -> ISSUER: VC<sub>enc</sub>=credInfo E2E 암호화
         return VC<sub>enc</sub> 응답
     return VC<sub>enc</sub> 응답
     rnote right of CA #Lavender

@@ -376,22 +376,26 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
                     **DidDoc** : $doc
                 end note
             vf -> vf: vc = **Issue or Reissue VC**  
+                opt In Case of VC reissuance
+                    vf -> BC: Revoke existing VC 
+                end
                  opt include ZKP
-                    vf -> vf : vc -> credInfo
-                    note right of vf
-                        credInfo = {
-                            vc = {...},
-                            credential = {...}
-                        }
-                    end note
+                    vf -> vf: credential = Issue ZKP Credential
                 end          
             vf -> BC: Generate/Register vcMeta
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
                 end note
+            vf -> vf : generate credInfo
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // include ZKP
+                    }
+                end note
             vf -> vf: Encrypt vc\
                     \n* iv = Generate IV\
-                    \n* tmp = enc(vc, e2eKey, iv)\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
                     \n* encVc = multibase(tmp)
         return {encVc, iv}
     return {encVc, iv}

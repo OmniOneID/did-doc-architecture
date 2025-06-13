@@ -370,22 +370,26 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
                     **DidDoc** : $doc
                 end note
             vf -> vf: vc = **VC 발급 or 재발급**
+            opt VC 재발급인 경우
+                vf -> BC: 기존 VC 폐기 요청
+            end
                 opt ZKP 포함인 경우
-                    vf -> vf : vc -> credInfo
-                    note right of vf
-                        credInfo = {
-                            vc = {...},
-                            credential = {...}
-                        }
-                    end note
+                vf -> vf: credential = ZKP Credential 발급
                 end
             vf -> BC: vcMeta 생성 / 등록
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
                 end note
+                vf -> vf : credInfo 생성
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // ZKP 포함시
+                    }
+                end note
             vf -> vf: vc 암호화\
                     \n* iv = IV 생성\
-                    \n* tmp = enc(vc, e2eKey, iv)\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
                     \n* encVc = multibase(tmp)
         return {encVc, iv}
     return {encVc, iv}
