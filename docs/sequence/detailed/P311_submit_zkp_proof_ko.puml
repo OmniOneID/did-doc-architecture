@@ -130,7 +130,8 @@ WALLET -> WALLET : credential 검색\
         \n* 이용가능한 referent 생성
 
 return {referent}
-
+CA <-> BC : VC Meta 조회
+CA -> CA : 제출 할 VC 폐기 유무 확인
 CA -> CA : 제출가능 credential 목록 출력
 
 USER -[#Blue]-> CA : credential 선택

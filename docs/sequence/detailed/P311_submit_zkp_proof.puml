@@ -130,7 +130,8 @@ WALLET -> WALLET : Search credentials\
         \n* Generate available referents
 
 return {referent}
-
+CA <-> BC : Query / Respond VC Meta
+CA -> CA : Check credential status
 CA -> CA : Display list of available credentials
 
 USER -[#Blue]-> CA : Select credential
