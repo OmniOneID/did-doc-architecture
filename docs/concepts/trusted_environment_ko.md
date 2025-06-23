@@ -25,7 +25,7 @@
 
 ## 신뢰환경 아키텍처
 
-![Trusted Environment Architecture](images/trusted_environment_architecture.svg)
+![Trusted Environment Architecture](images/trusted_environment_architecture_ko.svg)
 
 - **신뢰체인 구성**: 위원회의 동의에 따라 신뢰환경을 설계 및 구성
 - **신뢰 저장소 → TAS 권한 위임**
