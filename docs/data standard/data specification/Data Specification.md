@@ -19,13 +19,14 @@ Data Specification
 ==
 
 - Subject: Structure and Requirements of Major Data
-- Author: Kang Young-ho
-- Date: 2024-09-03
+- Author: OpenSource Development Team
+- Date: 2025-05-09
 - Version: v1.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2024-09-03 | Initial version |
+| v2.0.0 | 2025-05-09 | Add ZKP data |
 
 <div style="page-break-after: always;"></div>
 
@@ -427,13 +428,6 @@ The composition is the same as `identifier` but is limited to 20 characters. It 
 
 #### 2.4.4. walletServiceId
 
-월렛 종류별 구현체를 식별하기 위한 고유 식별자이다.
-월렛 사업자는 월렛 서비스를 구현한 후 목록 사업자에 이를 등록하여야 하며,
-해당 월렛 서비스를 이용할 수 있는 인가앱의 목록도 등록하여야 한다.
-월렛 서비스 등록 시 목록 사업자가 `walletServiceId` 타입의 식별자를 할당한다.
-
-생성규칙은 목록 사업자가 정의하며, 별도의 제약조건은 본 문서에서 정의하지 않는다.
-
 
 It is a unique identifier used to identify the implementation of a wallet for each wallet type. 
 After implementing a wallet service, the wallet provider must register it with the listing provider, 
@@ -596,6 +590,7 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "Issuance request information",
     "VerifyProfile": "Verification request information",
+    "ProofRequestProfile": "ZKP verification request information"
 }
 
 def enum OFFER_TYPE: "offer type"
@@ -603,6 +598,8 @@ def enum OFFER_TYPE: "offer type"
     "IssueOffer" : "Issuance offer information",
     "VerifyOffer": "Presentation offer information",
     "RestoreDidOffer": "DID restoration offer information",
+    "ZkpIssueOffer"  : "Issuance offer information including ZKP",
+    "VerifyProofOffer" : "ZKP presentation offer information"
 }
 
 def enum PRESENT_MODE: "VP presentation mode"
@@ -1314,6 +1311,32 @@ def object IssueProfile: "Issue Profile"
             - multibase              "value": "VC Schema encoded in multibase"
         }
 
+        - object "credentialOffer": "Credential Offer information"
+        {    
+            + nonce "nonce"                      : "nonce"
+            + schema-identifier "schemaId"       : "CredentialSchema identifier"
+            + definition-identifier "credDefId"  : "CredentialDefinition identifier"
+            + object "keyCorrectnessProof"       : "KeyCorrectnessProof"
+            {
+                + string "c"           : "hash"
+                + string "xzCap"       : "xzCap"
+                + object "xrCap"       : "xrCap", min_extend(1)
+                {
+                    /* 
+                    ... Example (order must be preserved)
+                    - string "zkpsex"
+                    - string "zkpasort"
+                    - string "zkpaddr"
+                    - string "zkpbirth"
+                    .
+                    .
+                    */
+                    + string $attributeName : "Commitment value for each attribute", min_extend(1)
+                    + string "masterSecret" : "Commitment value for the user's master secret" 
+                }
+            }
+        }
+	
         + object "process": "issuance procedure"
         {
             + array(url) "endpoints"  : "list of issuance API endpoints"
@@ -1328,6 +1351,8 @@ def object IssueProfile: "Issue Profile"
     + AssertProof "proof": "issuer signature for the profile"
 }
 ```
+- `~/profile/credentialOffer`: Created by the issuer before issuing a Credential to the user  
+  (See ZKP Data Specification #4.2: CredentialOffer)
 
 #### 4.5.2. VerifyProfile
 
@@ -1403,6 +1428,54 @@ def object VerifyProfile: "Verify Profile"
         - If unspecified, all Issuers are allowed
 - `~/profile/process/endpoints`: List of verifier API endpoints for VP submission
     - If the submission mode is "Direct", endpoints are mandatory
+
+
+#### 4.5.3. ProofRequestProfile
+
+```c#
+
+def object ProofRequestProfile: "ProofRequest Profile"
+{
+    //--------------------------------------------------------------------------
+    // Profile Metadata
+    //--------------------------------------------------------------------------
+    + uuid         "id"         : "profile id"
+    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
+    + string       "title"      : "profile title"
+    - string       "description": "profile description", default(""), emptiable(true)
+    - LogoImage    "logo"       : "logo image for presentation"
+    + ENCODING     "encoding"   : "encoding", default("UTF-8")
+    + LANGUAGE     "language"   : "language code"
+
+
+    //--------------------------------------------------------------------------
+    // Profile Contents
+    //--------------------------------------------------------------------------
+    + object "profile": "profile contents"
+    {
+        + ProviderDetail "verifier": "verifier information"
+
+        + object "proofRequest" : "ProofRequest information" 
+        {
+            + string "name"                  : "proofs name"
+            + string "version"               : "version"
+            + nonce  "nonce"                 : "nonce"
+            - object "requestedAttributes"   : "AttributeInfo", min_extend(1)
+            - object "requestedPredicates"   : "PredicateInfo", min_extend(1)
+        }
+
+        + ReqE2e           "reqE2e"       : "E2E request information (no proof)"
+
+    }
+
+    //--------------------------------------------------------------------------
+    // Proof
+    //--------------------------------------------------------------------------
+    + AssertProof "proof": "verifier signature for the profile"
+}
+```
+- `~/profile/proofRequest`: Defines the proof requirements requested by the verifier from the prover (user)  
+  (See ZKP Data Specification #4.5: ProofRequest)
 
 ### 4.6. OpenDID Implementation
 

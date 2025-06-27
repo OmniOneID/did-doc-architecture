@@ -122,3 +122,5 @@ This function is requested by Issuer.
 Revocation of VC (Verifiable Credential).
 <br>
 This function is requested by Issuer.
+
+> *ZKP(Zero-Knowledge Proof)-based credential follow the data structure and trust model of VC(Verifiable Credential), and are operated in accordance with the VC's lifecycle management policies. Therefore, ZKP credential also follow the same lifecycle stages as VC.

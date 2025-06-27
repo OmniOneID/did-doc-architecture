@@ -20,11 +20,12 @@ VC Issuance
 
 - Subject: Explanation of VC Issuance Concept
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2025-05-27
+- Version: v2.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v2.0.0  | 2025-05-27 | VcPlan Data Format Modification |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -199,6 +200,12 @@ def object VcPlan: "VC plan information"
     {
         + url                    "id"  : "VC Schema URL"
         + CREDENTIAL_SCHEMA_TYPE "type": "VC Schema format type"
+    }
+
+    - object "credentialDefinition": "ZKP Credential Definition information"
+    {
+        + string                 "id"  : "ZKP Credential Definition ID"
+        + string                 "schemaId": "ZKP Credential Schema ID"
     }
 
     + object "option": "option settings"

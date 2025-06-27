@@ -1,6 +1,6 @@
 # PII
 
-- Subject: Mange of PII
+- Subject: Manage of PII
 - Author: OpenSource Development Team
 - Date: 2024-10-18
 - Version: v1.0.0

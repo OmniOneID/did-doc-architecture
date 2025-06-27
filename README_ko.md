@@ -57,12 +57,16 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 이를 통해 프로젝트 전반에 걸쳐 일관된 규칙과 프로토콜을 적용합니다.
 
 자세한 내용은 다음 문서를 참조하세요:
-1. [Concepts](docs/concepts): OpenDID의 주요 개념을 설명합니다.
-2. [Security](docs/security): 보안 모델과 관련된 사항을 다룹니다. OpenDID 플랫폼이 보안 위협으로부터 어떻게 보호되는지 설명합니다.
+1. 개념(Concepts): OpenDID의 주요 개념을 설명합니다.
+2. 보안(Security): 보안 모델과 관련된 사항을 다룹니다. OpenDID 플랫폼이 보안 위협으로부터 어떻게 보호되는지 설명합니다.
 <!--3. [Protocol](docs/protocol): OpenDID에서 사용하는 통신 프로토콜에 대한 설명입니다. 네트워크 간의 상호작용 방식을 다룹니다.-->
 
   
 ## 5. DID Repository 목록
+
+#### Demo
+
+1. [did-demo-app](https://github.com/OmniOneID/did-demo-app)
 
 #### Document
 
@@ -78,15 +82,17 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
+1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
 
 #### Mobile SDK 
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
+1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
 
 #### Server Application 
 
-1. [did-fabric-contact](https://github.com/OmniOneID/did-fabric-contract)
+1. [did-besu-contact](https://github.com/OmniOneID/did-besu-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
@@ -94,6 +100,8 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
 1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
+1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 
 #### Mobile Application 
 
@@ -139,4 +147,4 @@ did-doc-architecture
 Contributing 및 pull request 제출 절차에 대한 자세한 내용은 [CONTRIBUTING.md](CONTRIBUTING.md)와 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) 를 참조하세요.
 
 ## 8. License
-[Apache 2.0](LICENSE)
+[Apache 2.0](https://github.com/OmniOneID/did-doc-architecture/blob/main/LICENSE)

@@ -57,12 +57,16 @@ OpenDID standards are designed to promote interoperability, enhance security, an
 These standards apply consistent rules and protocols throughout the project.
 
 For more information, refer to the following documents:
-1. [Concepts](docs/concepts): Explains the key concepts of OpenDID.
-2. [Security](docs/security): Covers security-related topics, explaining how the OpenDID platform is protected from security threats.
+1. Concepts: Explains the key concepts of OpenDID.
+2. Security: Covers security-related topics, explaining how the OpenDID platform is protected from security threats.
 <!--3. [Protocol](docs/protocol): Describes the communication protocols used by OpenDID and how interaction between DID networks is handled.-->
 
 
 ## 5. DID Repository List
+
+#### Demo
+
+1. [did-demo-app](https://github.com/OmniOneID/did-demo-app)
 
 #### Document
 
@@ -78,15 +82,17 @@ For more information, refer to the following documents:
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
+1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
 
 #### Mobile SDK 
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
+1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
 
 #### Server Application 
 
-1. [did-fabric-contact](https://github.com/OmniOneID/did-fabric-contract)
+1. [did-besu-contact](https://github.com/OmniOneID/did-besu-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
@@ -94,6 +100,8 @@ For more information, refer to the following documents:
 1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
 1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
+1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 
 #### Mobile Application 
 
@@ -140,4 +148,4 @@ did-doc-architecture
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## 8. License
-[Apache 2.0](LICENSE)
+[Apache 2.0](https://github.com/OmniOneID/did-doc-architecture/blob/main/LICENSE)

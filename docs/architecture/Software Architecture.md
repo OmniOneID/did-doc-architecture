@@ -18,7 +18,7 @@ puppeteer:
 Software Architecture
 ==
 
-- Topic: Explanation of Software Architecture using the C4 model  
+- Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
 - Date: 2024-09-03  
 - Version: v1.0.0  
@@ -28,6 +28,8 @@ Table of Contents
 ---
 
 <!-- TOC tocDepth:2..4 chapterDepth:2..6 -->
+- [Software Architecture](#software-architecture)
+  - [Table of Contents](#table-of-contents)
   - [1. Overview](#1-overview)
     - [1.1. C4 Model](#11-c4-model)
     - [1.2. Reference Documents](#12-reference-documents)
@@ -108,7 +110,7 @@ The Digital ID Platform consists of the following key components:
 - **Verifiable Data Registry (Trust Repository)**: A blockchain-based storage system that manages decentralized identifiers (DIDs) and Verifiable Credentials (VCs).
 - **User**: An individual who receives and verifies identity cards.
 
-The government issues identity cards based on **Verifiable Credentials (VC)** at the user’s request through the **Issuing System**. Users then present their identity information using VC-based identity cards to the **Verification System** as requested by **Service Providers**.
+The government issues identity cards based on Verifiable Credentials (VC) and those utilizing Zero-Knowledge Proofs (ZKP) at the user’s request through the **Issuing System**. Users then present their identity information using VC-based identity cards to the **Verification System** as requested by Service Providers.
 
 All participants must generate **DIDs** to join the Digital ID Platform and register them in the **Trust Repository** through the **Trust System**.
 
@@ -129,8 +131,9 @@ The System Context Diagram illustrates the overall context of the system, depict
 The diagram highlights the core features of OpenDID: **User Registration**, **VC Issuance**, and **VP Presentation**.
 
 1. **User Registration**: Every Holder must complete the registration process, which involves creating a DID and registering the DID Document in the Trust Repository through OpenDID’s Trust System.
-2. **VC Issuance**: When a Holder requests a VC through Issuer Legacy, the system sends the necessary data to OpenDID, which generates the VC and provides it to the Holder.
-3. **VP Presentation**: When a Holder receives a VP request from Verifier Legacy, they generate a VP and submit it to OpenDID. OpenDID verifies the VP and forwards it to Verifier Legacy, which confirms the Holder’s identity to provide services.
+2. **VC Issuance**: When a Holder requests a VC through Issuer Legacy, the system sends the necessary data to OpenDID, which generates the VC—optionally utilizing Zero-Knowledge Proofs (ZKP)—and provides it to the Holder.
+
+3. **VP Presentation**: When a Holder receives a VP request from Verifier Legacy, they generate a Verifiable Presentation (VP) and submit it to OpenDID, or selectively disclose identity information using Zero-Knowledge Proofs (ZKP). OpenDID verifies the VP and forwards it to Verifier Legacy, which confirms the Holder’s identity and provides the requested services.
 
 The core functions of OpenDID include:
 - Lifecycle management of DID Documents that form the trust chain.
@@ -252,7 +255,7 @@ The Core group contains the essential components for operating the Digital ID sy
 
 - Trust Repository:
     - A blockchain-based storage system that prevents hacking and tampering.
-    - Stores DID Documents and VC metadata.
+    - Stores DID Documents, VC metadata, and schemas and definitions used for Zero-Knowledge Proofs (ZKP).
 - Trust Agent:
     - Authorized by the Digital Identity Committee to operate the trust chain and perform the following tasks:
         - Registering DID Documents.
@@ -331,8 +334,8 @@ The Supplements group includes auxiliary or temporary functions:
 
 - User Service:
     - Provides APIs for CApps to access the Trust Repository.
-    - Required only when HyperLedger Fabric (HLF) is used as the blockchain.
-        - HLF uses certificate-based access control, which does not distinguish between read and write permissions.
+    - Required only when HyperLedger Besu is used as the blockchain.
+        - HyperLedger Besu used by OpenDID enforces access control but does not support separate permissions for read and write access.
         - User Service can receive certificates to provide read-only access for detailed access control.
 - CLI Tool for Wallet:
     - A wallet tool for entities like Issuers and Verifiers.
@@ -372,6 +375,8 @@ The OpenDID SDK is used across all containers and includes the following types:
 |                        | • Generate DID key pairs<br>                        |       |
 |                        | • Sign and verify using DID keys<br>               |       |
 |                        | • Key exchange                                     |       |
+| Server ZKP SDK         | • Generate key pair for ZKP Issuer signing<br>     |        |
+|                        | • Issue and verify ZKPs (Zero-Knowledge Proofs)    |        |
 | Client Wallet SDK      | • Manage client wallets (lock/unlock)<br>          | For DID and VC management |
 |                        | • Create, store, and retrieve DID Documents<br>    |       |
 |                        | • Store and retrieve VCs                           |       |
@@ -691,6 +696,18 @@ This diagram depicts a scenario where a service app acts as the intermediary for
 
 ![](images/vp_app2app_indirect.svg)
 
+■ Example: ZKP QR-MPM + Direct mode
+
+The illustration below shows an example of Direct mode, where information is submitted directly to the Verifier Service using the QR-MPM transmission medium.
+
+![](images/zkp_qrmpm_direct.svg)
+
+■ Example: ZKP App2App + Indirect mode
+
+The following diagram illustrates a scenario of Indirect mode, where the response device is a service app, and the service app handles the VerifyProfile request and Zero-Knowledge Proof (ZKP) submission on behalf of the user.
+In Direct mode, the service app only delivers the VerifyOfferPayload, while the rest is performed directly by the authorization app.
+
+![](images/zkp_app2app_indirect.svg)
 
 <div style="page-break-after: always;"></div>
 
@@ -703,8 +720,8 @@ A Certified App (CApp) is a mobile application built using the OpenDID SDK (avai
 | Module     | Functionality            | Notes |
 | ---------- | ------------------------ | ----- |
 | DID Module | • Identity-related features |      |
-| VC Module  | • VC issuance and status updates | |
-| VP Module  | • VP submission          |      |
+| VC Module  | • VC issuance and status updates (opt ZKP| |
+| VP Module  | • VP or ZKP submission          |      |
 
 These modules are conceptual categories. In practice, software modules may be more diverse and interconnected. Only file-based wallets are considered for the client wallet in this case.
 

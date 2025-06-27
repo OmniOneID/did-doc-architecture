@@ -96,7 +96,7 @@ TAS --> WALLET--: Wallet Registration Response
 rnote right of CA #LightGray        
     **[M131_RES: Wallet Registration Response]**
 end note
-
+WALLET -> WALLET: Save Wallet Infomation
 
 WALLET --> CA--: Wallet Creation Response
 

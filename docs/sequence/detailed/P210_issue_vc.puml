@@ -32,10 +32,13 @@ skinparam MinClassWidth 80
 
 actor "**User**" as user
 box Mobile #OldLace
-    participant "**Certified App**" as ca <<App>>
     participant "**Wallet**" as wal <<Wallet>>
+    participant "**Certified App**" as ca <<App>>
 end box
-participant "**TAS**" as tas <<Server>>
+box Server #AliceBlue
+    participant "**CAS**" as cas <<WAS>> #WhiteSmoke
+end box
+participant "**tas**" as tas <<Server>>
 participant "**Issuer**" as vf <<Server>>
 
 box Trust Repository
@@ -52,8 +55,8 @@ end hnote
 
 rnote over ca, vf
     (Optional process)
-    KYC may be performed before requesting the Issue Profile so that the TAS can obtain a personal identification number.
-    The certified app may also perform KYC and pass the personal identification number to the TAS.
+    KYC may be performed before requesting the Issue Profile so that the tas can obtain a personal identification number.
+    The certified app may also perform KYC and pass the personal identification number to the tas.
     
     * pii = Personal Identification Number
 end rnote
@@ -66,7 +69,7 @@ activate ca
 ca -> tas ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
     tas -> tas: * Validate VC plan\n* Identify issuing issuer
     note right
-        Identification of the issuing issuer is done by checking the TAS DB or
+        Identification of the issuing issuer is done by checking the tas DB or
         information stored in internal settings.
     end note
     tas -> vf ++: Inspect Proposal\n{vcPlanId[, issuer, offerId]}
@@ -78,39 +81,85 @@ return {refId}
 |||
 == P210-2 : Request ECDH ==
 
-ca -> ca: Prepare ECDH Data and Sign\
-        \n* (ReqEcdh)reqEcdh\
-        \n   = Generate ECDH Request
+ca -> wal: Retrieve DID
+return {Holder DID}
+ca -> ca: Generate Client Nonce
+ca -> ca: Generate DH Key Pair
+ca -> ca: Prepare ECDH Request\
+            \n* (ReqEcdh)reqEcdh\
+            \n   = Create ECDH request
+
+rnote right of ca #MintCream
+    **ReqEcdh** : $doc  
+    client|clientNonce|curve|publicKey|candidate
+end note
 
 opt KeyAgreement Signature ON
     ca -> wal ++: Request KeyAgreement Signature\n{reqEcdh}
         wal -> wal: signKeyAgree(reqEcdh)
         note right
             During the actual call:
-            * The certified app sends the hash of the original message and keyId
-            * The wallet only responds with the signature value
+            * The certified app provides the hash of the original text and the keyId
+            * The wallet responds with only the signature value
         end note
     return {reqEcdh}
+    rnote right of wal #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof  
+        Proof = KeyAgreeProof
+    end note
 end
 
-ca -> tas ++: Request ECDH\n{reqEcdh}
+
+
+ca -> tas++ : ECDH Request
     opt KeyAgreement Signature ON
         tas -> tas: Verify reqEcdh.proof signature
     end
-    tas -> tas: Perform ECDH\
-            \n* sesKey = Session Key\
-            \n* (AccEcdh)accEcdh\
-            \n   = Generate ECDH Acceptance
 
+    tas -> tas : Validate reqEcdh format
+    tas -> tas : Generate Server Nonce
+    tas -> tas : Generate mergedNonce
+    rnote right of tas #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    tas -> tas: Generate DH Key Pair
+
+    tas -> tas: Perform ECDH\
+                \n* sesKey = Session Key\
+
+    rnote right of tas #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    tas -> tas: Generate ECDH Accept Data\
+                \n* (AccEcdh)accEcdh
+    rnote right of tas #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
     opt KeyAgreement Signature ON
         tas -> tas: signKeyAgree(accEcdh)
     end
 
-return {accEcdh}
+return ECDH Response
+
 opt KeyAgreement Signature ON
     ca -> ca: Verify accEcdh.proof signature
 end
+ca -> ca : Validate accEcdh format
+ca -> ca : Generate mergedNonce
+rnote right of ca #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 ca -> ca: Perform ECDH\n* sesKey = Session Key
+
+rnote right of ca #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
 
 |||
 == P210-3 : Request Create Token ==
@@ -121,10 +170,112 @@ hnote over ca, wal #LimeGreen
     * walletToken = Wallet token
 end hnote
 
-ca -> ca: * (AttestedAppInfo)caAppInfo\
-        \n   = Generate signed app information
-ca -> ca: Generate server token seed\
-        \n* (ServerTokenSeed)seed = {\
+== Wallet Token Generation ==
+
+activate ca
+
+ca -> wal++ : Request to generate walletTokenSeed {purpose, pkgname, userId}
+    wal -> wal : Generate nonce
+    wal -> wal : Generate walletTokenSeed with expiration
+return {walletTokenSeed}
+rnote right of wal #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | validUntil | purpose | pkgname | userId)
+end note
+
+ca -> cas : Request WalletTokenData {walletTokenSeed}
+cas -> cas : Generate WalletTokenData
+cas -> ca : Return WalletTokenData
+rnote right of ca #MintCream
+    **WalletTokenData** : $doc
+    seed | sha_pii | provider | nonce | Proof  
+    Proof = sign(seed | sha_pii | provider | nonce, CAS_PriKey)
+
+    CAS: Authorized App Provider (Authorization App Server)
+end note
+
+ca -> wal++ : Request to create WalletToken \n{WalletTokenData}
+    wal -> BC++ : Query CAS DID Document
+    rnote right of wal #LightGray
+        **[API_REQ: DID Document Query Request]**
+        did
+    end note
+
+    return
+    rnote right of wal #LightGray
+        **[API_RES: DID Document Query Response]**
+        DidDoc
+    end note
+    rnote right of wal #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    wal -> wal : Verify signature
+    wal -> wal : Generate resultNonce (resultNonce)
+
+    wal -> wal : Create wallet token {walletToken}
+    rnote right of wal #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of wal : resultNonce delivered and applied
+
+    ca -> ca : Create wallet token {hWalletToken}
+    rnote right of ca #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== Request for Signed Wallet Information ==
+ca -> wal++ : Request signed Wallet information {walletToken}
+    wal -> wal : Generate nonce
+    wal -> wal : Sign wallet information\
+                \n* (SignedWalletInfo) walletInfo = {\
+                \n      walletId,\
+                \n      did,\
+                \n      nonce,\
+                \n      proof\
+                \n    }
+return {walletInfo}
+
+|||
+== Request for Signed App Information ==
+rnote across #white
+    The authorization app must have already established a session with the authorization app server
+    through login or a similar process. However, the specifics of this process are beyond the scope
+    of this specification.
+end note
+ca -> cas++ : Request for signed app information
+rnote right of ca #LightGray        
+    **[API_REQ: Request for Signed App Information]**
+    query:
+        appId
+end note
+    cas -> cas : Generate nonce
+    cas -> cas : Sign app information\
+            \n* (AttestedAppInfo) caAppInfo = {\
+            \n      appId,\
+            \n      provider,\
+            \n      nonce,\
+            \n      proof\
+            \n    }
+return Signed App Information Response {caAppInfo}
+rnote right of ca #LightGray        
+    **[API_RES: Signed App Information Response]**
+    body:
+        attestedAppInfo
+end note
+
+|||
+== Server Token Data Generation Request ==
+
+ca -> ca : Generate server token seed\
+        \n* (ServerTokenSeed) seed = {\
         \n     purpose = "IssueVc",\
         \n     walletInfo,\
         \n     caAppInfo\
@@ -160,6 +311,9 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
                 \n* issuerNonce = Generate nonce for issuance\
                 \n* (ReqE2e)reqE2e = Create E2E request information\
                 \n* Other data is omitted
+                opt include ZKP 
+                    vf -> vf : Generate CredentialOffer
+                end
         vf <-> BC: Query/Retrieve Issuer DID Doc
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
@@ -195,6 +349,10 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
     wal -> wal: Generate and encrypt issuance request information\
             \n* Generate (ReqVc)reqVc\
             \n* encReqVc = enc(data, e2eKey, iv)
+            opt include ZKP 
+                wal -> wal : inquery credDef from trust repository, Create/Manage Master Secrets
+                wal -> wal : Generate credentialRequest include in reqVc
+            end
 
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: Validate serverToken
@@ -217,21 +375,38 @@ ca -> wal ++: VC Issuance Request\n{walletToken, serverToken,\
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
                 end note
-            vf -> vf: vc = **Issue or Reissue VC**            
+            vf -> vf: vc = **Issue or Reissue VC**  
+                opt In Case of VC reissuance
+                    vf -> BC: Revoke existing VC 
+                end
+                 opt include ZKP
+                    vf -> vf: credential = Issue ZKP Credential
+                end          
             vf -> BC: Generate/Register vcMeta
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
                 end note
+            vf -> vf : generate credInfo
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // include ZKP
+                    }
+                end note
             vf -> vf: Encrypt vc\
                     \n* iv = Generate IV\
-                    \n* tmp = enc(vc, e2eKey, iv)\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
                     \n* encVc = multibase(tmp)
         return {encVc, iv}
     return {encVc, iv}
 
     wal -> wal: Decrypt encVc\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+            \n credInfo = {vc={..}, credential={..}}
+              opt include ZKP
+                wal -> wal : verify/save credential
+            end
     wal -> wal: Verify issuer signature and store VC
     wal -> wal: vcId = Extract VC ID
 return {vcId}
@@ -246,6 +421,5 @@ ca -> tas ++: Confirm Issue VC\n{vcId}
     return OK
 return OK
 
-|||
 |||
 @enduml

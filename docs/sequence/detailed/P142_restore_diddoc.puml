@@ -11,7 +11,7 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P141 : Restore DID Document Update</size>
+	<size:25>P142 : User DID Document Restore</size>
 end title
 
 '=== Options ===
@@ -28,6 +28,10 @@ actor "**User**" as USER
 box Mobile #OldLace
     participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
     participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box Server #AliceBlue
+    participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
 box TAS Provider #AliceBlue
@@ -50,15 +54,15 @@ end box
 |||
 
 rnote across #white
-    TAS must request a DID Document recovery offer from the certified app, and during this process, the certified app must obtain an offerId.
+    TAS must request a DID Document restore offer from the certified app, and during this process, the certified app must obtain an offerId.
     The offer process is not covered in this specification.
 end hnote
 
 
-== P142-1: User DID Document Recovery Start Request ==
-CA -> TAS++: User DID Document Recovery Start Request
+== P142-1: User DID Document Restore Start Request ==
+CA -> TAS++: User DID Document Restore Start Request
 rnote right of CA #Lavender        
-    **[M142_REQ: User DID Document Recovery Start Request]**
+    **[M142_REQ: User DID Document Restore Start Request]**
     body : 
         messageId
         offerId
@@ -68,9 +72,9 @@ end note
     TAS -> TAS: Check if the DID is in a modifiable state
     TAS -> TAS: authNonce = Generate nonce for DID Auth
 
-return User DID Document Update Start Response
+return User DID Document Restore Start Response
 rnote right of CA #Lavender        
-    **[M142_RES: User DID Document Update Start Response]**
+    **[M142_RES: User DID Document Restore Start Response]**
     body : 
         txId
         authNonce
@@ -79,20 +83,36 @@ end note
 
 |||
 == P142-2: ECDH Request  ==
-CA -> CA: Prepare ECDH Data and Sign\
+CA -> WALLET: Retrieve DID
+return {Holder DID}
+CA -> CA: Generate Client Nonce
+CA -> CA: Generate DH Key Pair
+CA -> CA: Prepare ECDH Request\
             \n* (ReqEcdh)reqEcdh\
-            \n   = Generate ECDH Request
+            \n   = Create ECDH request
+
+rnote right of CA #MintCream
+    **ReqEcdh** : $doc  
+    client|clientNonce|curve|publicKey|candidate
+end note
 
 opt KeyAgreement Signature ON
-    CA -> WALLET ++: KeyAgreement Signature Request\n{reqEcdh}
+    CA -> WALLET ++: Request KeyAgreement Signature\n{reqEcdh}
         WALLET -> WALLET: signKeyAgree(reqEcdh)
         note right
             During the actual call:
-            * The certified app sends the hash of the original and the keyId
-            * The wallet only responds with the signature value
+            * The certified app provides the hash of the original text and the keyId
+            * The wallet responds with only the signature value
         end note
     return {reqEcdh}
+    rnote right of WALLET #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof  
+        Proof = KeyAgreeProof
+    end note
 end
+
+
 
 CA -> TAS++ : ECDH Request
 rnote right of CA #Lavender
@@ -107,12 +127,29 @@ end note
         TAS -> TAS: Verify reqEcdh.proof signature
     end
 
+    TAS -> TAS : Validate reqEcdh format
+    TAS -> TAS : Generate Server Nonce
+    TAS -> TAS : Generate mergedNonce
+    rnote right of TAS #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    TAS -> TAS: Generate DH Key Pair
+
     TAS -> TAS: Perform ECDH\
                 \n* sesKey = Session Key\
-                \n* (AccEcdh)accEcdh\
-                \n   = Generate ECDH Acceptance
 
-    opt KeyAgreement Signature ONx
+    rnote right of TAS #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    TAS -> TAS: Generate ECDH Accept Data\
+                \n* (AccEcdh)accEcdh
+    rnote right of TAS #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
+    opt KeyAgreement Signature ON
         TAS -> TAS: signKeyAgree(accEcdh)
     end
 
@@ -127,8 +164,18 @@ end note
 opt KeyAgreement Signature ON
     CA -> CA: Verify accEcdh.proof signature
 end
-
+CA -> CA : Validate accEcdh format
+CA -> CA : Generate mergedNonce
+rnote right of CA #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 CA -> CA: Perform ECDH\n* sesKey = Session Key
+
+rnote right of CA #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
 
 |||
 == P142-3: Server Token Generation Request  ==
@@ -138,11 +185,111 @@ hnote over CA, WALLET #LimeGreen
     * walletToken = Wallet token
 end hnote
 
-CA -> CA: * (AttestedAppInfo)caAppInfo\
-        \n   = Generate signed app information
+== Wallet Token Generation ==
 
-CA -> CA: Generate server token seed\
-        \n* (ServerTokenSeed)seed = {\
+activate CA
+
+CA -> WALLET++ : Request to generate walletTokenSeed {purpose, pkgname, userId}
+    WALLET -> WALLET : Generate nonce
+    WALLET -> WALLET : Generate walletTokenSeed with expiration
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | validUntil | purpose | pkgname | userId)
+end note
+
+CA -> CAS : Request WalletTokenData {walletTokenSeed}
+CAS -> CAS : Generate WalletTokenData
+CAS -> CA : Return WalletTokenData
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed | sha_pii | provider | nonce | Proof  
+    Proof = sign(seed | sha_pii | provider | nonce, CAS_PriKey)
+
+    CAS: Authorized App Provider (Authorization App Server)
+end note
+
+CA -> WALLET++ : Request to generate WalletToken \n{WalletTokenData}
+    WALLET -> BC++ : Query CAS DID Document
+    rnote right of WALLET #LightGray
+        **[API_REQ: DID Document Query Request]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES: DID Document Query Response]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : Verify signature
+    WALLET -> WALLET : Generate resultNonce (resultNonce)
+
+    WALLET -> WALLET : Generate wallet token {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : Apply and return resultNonce
+
+    CA -> CA : Generate wallet token {hWalletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== Request for Signed Wallet Information ==
+CA -> WALLET++ : Request signed wallet information {walletToken}
+    WALLET -> WALLET : Generate nonce
+    WALLET -> WALLET : Sign wallet information\
+                \n* (SignedWalletInfo) walletInfo = {\
+                \n      walletId,\
+                \n      did,\
+                \n      nonce,\
+                \n      proof\
+                \n    }
+return {walletInfo}
+
+|||
+== Request for Signed App Information ==
+rnote across #white
+    The authorization app must have already established a session with the authorization app server through login or a similar process.
+    However, the details of that process are beyond the scope of this specification.
+end note
+CA -> CAS++ : Request for signed app information
+rnote right of CA #LightGray        
+    **[API_REQ: Request for Signed App Information]**
+    query:
+        appId
+end note
+    CAS -> CAS : Generate nonce
+    CAS -> CAS : Sign app information\
+            \n* (AttestedAppInfo) caAppInfo = {\
+            \n      appId,\
+            \n      provider,\
+            \n      nonce,\
+            \n      proof\
+            \n    }
+return Signed App Information Response {caAppInfo}
+rnote right of CA #LightGray        
+    **[API_RES: Signed App Information Response]**
+    body:
+        attestedAppInfo
+end note
+
+|||
+== Server Token Data Generation Request ==
+
+CA -> CA : Generate server token seed\
+        \n* (ServerTokenSeed) seed = {\
         \n     purpose = "RestoreDid",\
         \n     walletInfo,\
         \n     caAppInfo\
@@ -191,9 +338,9 @@ CA -> CA: Decrypt (omitted) and prepare data\
         \n* Calculate serverToken
 
 |||
-== P142-4: User DID Document Recovery Request ==
+== P142-4: User DID Document Restore Request ==
 
-CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
+CA -> WALLET ++: User DID Document Restore Request\n{walletToken, serverToken}
     WALLET -> WALLET: Validate walletToken
 
     WALLET -> WALLET: Prepare DID Auth data\
@@ -205,9 +352,9 @@ CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
     USER -[#Blue]\ WALLET: User authentication
     WALLET -> WALLET: signAuth(didAuth)
 
-    WALLET -> TAS ++: User DID Document Recovery Request
+    WALLET -> TAS ++: User DID Document Restore Request
     rnote right of WALLET #Lavender
-        **[M142_REQ : User DID Document Recovery Request]**
+        **[M142_REQ : User DID Document Restore Request]**
         body:
             messageId
             txId
@@ -249,9 +396,9 @@ CA -> WALLET ++: User DID Document Recovery Request\n{walletToken, serverToken}
             BC -> BC: Update
         return OK
 
-        return User DID Document Recovery Response
+        return User DID Document Restore Response
         rnote right of WALLET #Lavender
-            **[M142_REQ : User DID Document Recovery]**
+            **[M142_REQ : User DID Document Restore]**
             body:
                 txId
         end note
@@ -259,10 +406,10 @@ return OK
 
 
 |||
-== P142-5: User DID Document Update Completion ==
-CA -> TAS++: User DID Document Update Completion Request
+== P142-5: User DID Document Restore Completion ==
+CA -> TAS++: User DID Document Restore Completion Request
 rnote right of CA #Lavender        
-    **[M142_REQ: User DID Document Update Completion Request]**
+    **[M142_REQ: User DID Document Restore Completion Request]**
     body:
         messageId
         txId
@@ -272,9 +419,9 @@ end note
     TAS -> TAS: Validate serverToken
     TAS -> TAS: Delete session information and end transaction
 
-return User Registration Completion Response
+return User DID Document Restore Completion Response
 rnote right of CA #Lavender        
-    **[M142_RES: User DID Document Update Completion Request]**
+    **[M142_RES: User DID Document Restore Completion Request]**
     body:
         txId
 end note

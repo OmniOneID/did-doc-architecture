@@ -42,7 +42,7 @@ Wallet Token은 App이 Wallet에 접근할 수 있게 하는 Token으로 Wallet�
 #### Wallet Token 발급 과정
 아래는 Wallet Token 발급 과정을 요약하여 그린 다이어그램입니다.
 
-![proc_wallet_token](.//images/proc_wallet_token.svg)
+![proc_wallet_token](./images/proc_wallet_token.svg)
 
 1. 인가앱은 Wallet에 WalletTokenSeed를 요청합니다.
 2. Wallet은 WalletTokenSeed를 생성하여 인가앱으로 전달합니다.

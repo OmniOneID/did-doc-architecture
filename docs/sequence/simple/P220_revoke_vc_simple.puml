@@ -1,6 +1,6 @@
 
 
-@startuml P220_revoke_vc
+@startuml P220_revoke_simple_vc
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Settings
@@ -102,6 +102,9 @@ CA -> WALLET++: Revoke VC request
             ISSUER -> BC: Update VC Status
         return Result
     return Result
+    opt include ZKP
+        WALLET -> WALLET: delete ZKP Credential
+    end
     rnote right of CA #Lavender
         **[M220_RES : Result]**
     end note

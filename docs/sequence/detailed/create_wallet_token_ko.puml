@@ -33,7 +33,9 @@ box 모바일 #OldLace
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
-
+box 서버 #AliceBlue
+    participant "**인가서버**" as CAS <<App>> #WhiteSmoke    
+end box
 
 box 신뢰저장소
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
@@ -50,36 +52,33 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-
 == 월렛 토큰 생성 ==
 
 activate CA
 
-CA -> WALLET++ : tmpToken 생성 요청 {purpose, pkgname, userId}
-    WALLET -> WALLET : nonce 생성 
-    WALLET -> WALLET : tmpToken 생성 (TmpToken), 유효시간
-return {TmpToken}
+CA -> WALLET++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    WALLET -> WALLET : nonce 생성
+    WALLET -> WALLET : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
 rnote right of WALLET #MintCream
-    **TmpToken** : $doc
-    TmpToken = 
-        (nonce | expTime | purpose | pkgname | userId)
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
 end note
 
-group 인가앱서버에서 생성
-    CA -> CA : TmpToken와, userId(id로 유저조회)로 서명 생성
+CA -> CAS : WalletTokenData요청 {walletTokenSeed}
+CAS-> CAS : WalletTokenData 생성
+CAS -> CA : WalletTokenData 전달 
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
 
-    CA -> CA : 월렛 토큰 요청 데이터 생성 \n(ReqWalletToken) 
-    rnote right of CA #MintCream
-        **ReqWalletToken** : $doc
-        TmpToken | pii | Proof
-        Proof = sign(TmpToken | pii, CAP_PriKey)
+    CAS : 인가앱사업자 (인가앱서버)
+end note
 
-        CAP : 인가앱사업자 (인가앱서버)
-    end note
-end
-
-CA -> WALLET++ : WalletToken 생성 요청 \n{ReqWalletToken}
-    WALLET -> BC++ : CAP DID Doc 조회
+CA -> WALLET++ : WalletToken 생성 요청 \n{WalletTokenData}
+    WALLET -> BC++ : CAS DID Doc 조회
     rnote right of WALLET #LightGray
         **[API_REQ : DID Doc 조회 요청]**
         did
@@ -99,25 +98,20 @@ CA -> WALLET++ : WalletToken 생성 요청 \n{ReqWalletToken}
 
     WALLET -> WALLET : 월렛토큰 생성 {walletToken}
     rnote right of WALLET #MintCream
-        **walletToken**
-        walletToken =
-            sha256(ReqWalletToken | resultNonce)
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
     end note
 
     return {resultNonce}
-    note right of WALLET : resultNonce 전달 적용 (4/18 전무님 검토사항)
+    note right of WALLET : resultNonce 전달 적용
 
-    CA -> CA : 월렛토큰 생성 {walletToken}
+    CA -> CA : 월렛토큰 생성 {hWalletToken}
     rnote right of CA #MintCream
-        **walletToken**
-        walletToken = 
-            sha256(ObjReqWalletToken | resultNonce)
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
     end note
-
-
-
-
-
 
 |||
 |||

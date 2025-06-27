@@ -331,6 +331,7 @@ vf -> vf: Create Issue Offer\
         \n* vcPlanId = VC Plan id\
         \n* issuer = Issuer DID\
         \n* validUntil = Set Validity Period
+note right: Whether ZKP is included is identified through the type (OFFER_TYPE)
 vf -> vf: Map Offer to User\
         \n* offerId ~ userId
 vf -> vf: Create Offer Payload\
@@ -508,6 +509,7 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
         vf -> vf: Prepare profile-related data\
                 \n* issuerNonce = Generate nonce for issuance\
                 \n* (ReqE2e)reqE2e = Create E2E request information\
+                \n* If ZKP is included, generate a CredentialOffer and insert it under the IssueProfile\
                 \n* Other data omitted
         vf -> vf: (IssueProfile)profile = Create profile
     return {profile}
@@ -515,6 +517,11 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
 return {authNonce, profile}
 
 == 5. Request Issue VC ==
+
+rnote over ca, wal
+    Check the credDef on the blockchain
+    Master secret is created/managed upon the first WalletApi call
+end rnote
 
 ca -> wal ++: Request VC Issuance\n{walletToken, serverToken,\
         \n   refId, authNonce, profile}
@@ -536,8 +543,13 @@ ca -> wal ++: Request VC Issuance\n{walletToken, serverToken,\
             \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
             \n* signKeyAgree(accE2e)
     wal -> wal: Generate and encrypt issuance request information\
+            \n* Create credReqMeta\
             \n* Create (ReqVc)reqVc\
             \n* encReqVc = enc(data, e2eKey, iv)
+            note right
+                If ZKP is included
+                Include credentialRequest within reqVc
+            end note
 
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: Verify serverToken
@@ -557,6 +569,17 @@ ca -> wal ++: Request VC Issuance\n{walletToken, serverToken,\
                     \n* Check profile.id match\
                     \n* Check profile.issuerNonce match
             vf -> vf: vc = **Issue or re-issue VC**
+            note right
+                If ZKP is included
+                * vc → credInfo
+                but the encrypted naming is encVc
+                credInfo contains both vc and credential
+                
+                credInfo = {
+                  vc = {..},
+                  credential = {..}
+                }
+            end note
             vf -> vf: Encrypt vc\
                     \n* iv = Generate IV\
                     \n* tmp = enc(vc, e2eKey, iv)\
@@ -566,7 +589,8 @@ ca -> wal ++: Request VC Issuance\n{walletToken, serverToken,\
 
     wal -> wal: Decrypt encVc\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
+            \n* credential = dec(tmp, e2eKey, iv)
+    wal -> wal: Verify (meta) and store the credential
     wal -> wal: Verify issuer signature and store
     wal -> wal: Extract vcId = VC id
 return {vcId}
@@ -790,4 +814,98 @@ ca -> vf ++: Request Verify\n{accE2e, encVp}
 return OK
 @enduml
 
+--------------------------------------------------------------------------------
+
+@startuml seq_present_zkp_proof_direct
+title
+    <size:25>ZKP Proof Submission - Direct Mode</size>
+end title
+
+autonumber "<b>(#)</b>"
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**Authorization App**" as ca <<App>>
+    participant "**Wallet**" as wal <<Wallet>>
+end box
+participant "**Verifier**" as vf <<Server>>
+
+hnote over ca, vf #LimeGreen
+    Information obtained through Offer phase:
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== 1. Request Proof Request Profile ==
+
+activate ca
+
+ca -> vf ++: Request Proof Request Profile\n{offerId}
+    vf -> vf: Validate offerId
+    vf -> vf: Prepare Proof Request Profile data\
+            \n* proofRequest = Generate ZKP proofRequest\
+            \n* reqE2e = Generate E2E request info\
+            \n* Other data omitted
+    vf -> vf: (ProofRequestProfile)proofRequestProfile = Create Proof Request Profile
+return {proofRequestProfile}
+
+hnote over ca, wal #LimeGreen
+    Generate wallet token {purpose = "PresentVp"}
+    * walletToken = wallet token
+end hnote
+
+ca -> wal ++: Query available credentials\n{walletToken, proofRequestProfile}
+    wal -> wal: Validate walletToken
+    wal -> wal: Validate proofRequestProfile.proof
+
+    wal -> wal: Search for credentials\
+            \n* Match attributes\
+            \n* Generate usable referent list
+
+return {referent}
+
+ca -> ca: Display list of available credentials
+
+user -[#Blue]\ ca: Select a credential
+ca -> ca: credentialId = Selected credential ID
+
+user -[#Blue]\ ca: Select claims to submit (attributes, predicates)
+rnote over ca
+Query credSchema on blockchain  
+Query credDef on blockchain
+end rnote
+
+user -[#Blue]\ ca: Consent to submission
+
+== 2. Request Verify Proof ==
+
+ca -> wal ++: Request Proof Submission\n{walletToken, proofRequest, proofParams, selfAttributes}
+    wal -> wal: Validate walletToken
+    wal -> wal: Perform E2E ECDH\
+            \n* _, pubKeyE2E = Generate ECC key pair\
+            \n* e2eKey = Create encryption key using profile E2E data\
+            \n* iv = Generate IV\
+            \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+            \n* signKeyAgree(accE2e)
+    wal -> wal: Generate proof\
+            \n* proof = CreateProof(proofReq, proofParam, selfAttrs)
+    wal -> wal: Encrypt proof\
+            \n* encProof = enc(proof, e2eKey, iv)
+return {accE2e, encProof}
+
+ca -> vf ++: Request Verify Proof\n{accE2e, encProof}
+    vf -> vf: Perform E2E ECDH\
+        \n* If accE2e.proof exists, verify\
+        \n* e2eKey = Generate encryption key\
+        \n* iv = accE2e.iv
+    vf -> vf: Decrypt encProof\
+        \n* proof = dec(debase(encProof), e2eKey, iv)
+    vf -> vf: Verify Proof
+        rnote over vf
+        Query credSchema on blockchain  
+        Query credDef on blockchain  
+        * Verify based on proofs, aggregatedProof, requestedProof in Proof
+        end rnote
+    vf -> vf: Save proof and provide service
+return OK
+@enduml
 

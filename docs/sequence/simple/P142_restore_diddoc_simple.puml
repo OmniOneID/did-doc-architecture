@@ -1,0 +1,132 @@
+@startuml P142_restore_diddoc_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P142: User DID Document Restore</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box TAS Provider #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+||| 
+rnote across #white
+    TAS must request a DID Document restore offer from the certified app, and during this process, the certified app must obtain an offerId.
+    The offer process is not covered in this specification.
+end hnote
+
+== P142-1: User DID Document Restore Start Request ==
+CA -> TAS++: User DID Document Restore Start Request
+rnote right of CA #Lavender        
+    **[M142_REQ: User DID Document Restore Start Request]**
+end note
+
+TAS --> CA--: User DID Document Restore Start Response
+rnote right of CA #Lavender        
+    **[M142_RES: User DID Document Restore Start Response]**
+end note
+
+
+||| 
+== P142-2: ECDH Request ==
+CA -> TAS++ : ECDH Request
+rnote right of CA #Lavender
+    **[M142_REQ : ECDH Request]**
+end note
+
+TAS --> CA--: ECDH Response
+rnote right of CA #Lavender
+    **[M142_RES : ECDH Response]**
+end note
+
+||| 
+CA <--> TAS : Mutual Authentication and Key Exchange
+
+||| 
+== P142-3: Server Token Creation Request ==
+CA -> TAS++ : Server Token Creation Request
+rnote right of CA #Lavender
+    **[M142_REQ : Server Token Creation Request]**
+end note
+
+TAS --> CA--: Server Token Creation Response
+rnote right of CA #Lavender
+    **[M142_RES : Server Token Creation Response]**
+end note
+
+||| 
+CA --> WALLET : Transfer Server Token
+
+||| 
+== P142-4: User DID Document Restore Request ==
+WALLET -> WALLET: Prepare DID Auth data
+
+WALLET -> TAS++: User DID Document Restore Request
+rnote right of WALLET #Lavender
+    **[M142_REQ : User DID Document Restore Request]**
+    body:
+        didAuth
+        Server Token
+end note
+
+TAS -> TAS: Validate DID Auth
+TAS -> BC: Update User DID Document to Active Status
+
+TAS --> WALLET--: User DID Document Restore Response
+rnote right of WALLET #Lavender
+    **[M142_REQ : User DID Document Restore Response]**
+end note
+
+
+||| 
+== P142-5: User DID Document Restore Completion ==
+CA -> TAS++: User DID Document Restore Completion Request
+rnote right of CA #Lavender        
+    **[M142_REQ: User DID Document Restore Completion Request]**
+end note
+
+TAS --> CA--: User DID Document Restore Completion Response
+rnote right of CA #Lavender        
+    **[M142_RES: User DID Document Restore Completion Response]**
+end note
+
+||| 
+||| 
+@enduml

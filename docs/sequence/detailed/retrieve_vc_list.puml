@@ -1,0 +1,139 @@
+
+@startuml retrieve_vc_list
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+    Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+    <size:25>Retrieve VC List</size>
+end title
+
+'=== Options ===
+'Automatic numbering: e.g., "<b>000." => displays as a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+'Hide participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box Server #AliceBlue
+    participant "**Certified Server**" as CAS <<App>> #WhiteSmoke    
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constant
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$doc = "Refer to the data specification document"
+!$refdoc = "Refer to a separate document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Wallet Token Generation ==
+activate CA
+
+CA -> WALLET++ : Request walletTokenSeed creation {purpose, pkgname, userId}
+    WALLET -> WALLET : Create nonce 
+    WALLET -> WALLET : Create walletTokenSeed, VaildUntil time
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : Reference to Data Specification document
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
+end note
+
+
+CA -> CAS++ : Request WalletTokenData (User Identification for user lookup)
+CAS -> CAS : WalletTokenData creation
+CAS -> CA-- :  Return WalletTokenData
+rnote right of CA #MintCream
+    **WalletTokenData** : Reference to Data Specification document
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS: CApp Provider (CApp Server)
+end note
+
+
+CA -> WALLET++ : Request WalletToken creation \n{WalletTokenData}
+    WALLET -> BC++ : Retrieve CAS DID Document
+    rnote right of WALLET #LightGray
+        **[API_REQ :Request to Retrieve DID Document]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES : Response to DID Document Retrieval]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : Signature Verification
+    WALLET -> WALLET : Generate resultNonce (resultNonce)
+
+    WALLET -> WALLET : Create WalletToken {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : Apply resultNonce transmission
+
+    CA -> CA : Create WalletToken {walletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+
+== Retrieve VC List ==
+
+CA -> WALLET++ : Retrieve VC List \n{Wallet Token}
+return {VC List}
+
+== Retrieve VC Status ==
+
+loop All VCs
+    CA -> BC++ : Retrieve VC Status \n{vcId}
+
+    return {VC Meta}
+
+    rnote right of CA #MintCream    
+        **VcMeta** : $doc
+    end note
+end loop
+
+|||
+|||
+
+@enduml

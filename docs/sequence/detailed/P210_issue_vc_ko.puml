@@ -33,9 +33,14 @@ skinparam MinClassWidth 80
 
 actor "**사용자**" as user
 box 모바일 #OldLace
-    participant "**인가앱**" as ca <<App>>
     participant "**월렛**" as wal <<Wallet>>
+    participant "**인가앱**" as ca <<App>>
 end box
+
+box 인가앱 사업자 #AliceBlue
+    participant "**CAS**" as cas <<WAS>> #WhiteSmoke
+end box
+
 participant "**TAS**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
 
@@ -52,20 +57,20 @@ end hnote
 
 rnote over ca, vf
     (선택적 수행)
-    Request Issue Profile 이전에 KYC 수행하여 TAS가 개인식별번호 획득
-    인가앱이 KYC 수행하여 TAS에 개인식별번호를 넘겨줄 수도 있음
+    Request Issue Profile 이전에 KYC 수행하여 tas가 개인식별번호 획득
+    인가앱이 KYC 수행하여 tas에 개인식별번호를 넘겨줄 수도 있음
     
     * pii = 개인식별번호
 end rnote
 
-== P210-1 : Propose Issue VC ==
+== P210-1 : VC 발급 시작 요청 ==
 
 activate ca
 
 ca -> tas ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
     tas -> tas: * VC plan 유효성 확인\n* 발급이슈어 식별
     note right
-        발급이슈어 식별은 TAS DB 또는
+        발급이슈어 식별은 tas DB 또는
         내부 설정에 저장된 정보를 확인
     end note
     tas -> vf ++: Inspect Propose\n{vcPlanId[, issuer, offerId]}
@@ -74,11 +79,21 @@ ca -> tas ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
     return {refId}
 return {refId}
 
-== P210-2 : Request ECDH ==
+== P210-2 : ECDH 요청 ==
 
-ca -> ca: ECDH 데이터 준비 및 서명\
-        \n* (ReqEcdh)reqEcdh\
-        \n   = ECDH 요청 생성
+ca -> wal: holder DID 조회
+
+return {Holder DID}
+ca -> ca: Client Nonce 생성
+ca -> ca: 임시키쌍 생성
+ca -> ca: ECDH 데이터 준비\
+            \n* (ReqEcdh)reqEcdh\
+            \n   = ECDH 요청 생성
+
+rnote right of ca #MintCream
+    **ReqEcdh** : $doc
+    client|clientNonce|curve|publicKey|candidate
+end note
 
 opt KeyAgreement 서명 ON
     ca -> wal ++: KeyAgreement 서명 요청\n{reqEcdh}
@@ -89,28 +104,64 @@ opt KeyAgreement 서명 ON
             * 월렛은 서명값만 응답
         end note
     return {reqEcdh}
+    rnote right of wal #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof
+        Proof = KeyAgreeProof
+    end note
 end
 
-ca -> tas ++: Request ECDH\n{reqEcdh}
+ca -> tas++ : ECDH 요청
     opt KeyAgreement 서명 ON
         tas -> tas: reqEcdh.proof 서명 검증
     end
-    tas -> tas: ECDH 수행\
-            \n* sesKey = 세션키\
-            \n* (AccEcdh)accEcdh\
-            \n   = ECDH 수락 생성
 
+    tas -> tas : reqEcdh 정합성 확인
+    tas -> tas : Server Nonce 생성
+    tas -> tas : mergedNonce 생성
+    rnote right of tas #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    tas -> tas: 임시키쌍 생성
+
+    tas -> tas: ECDH 수행\
+                \n* sesKey = 세션키\
+
+    rnote right of tas #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    tas -> tas: ECDH 수락 데이터 생성\
+                \n* (AccEcdh)accEcdh
+    rnote right of tas #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
     opt KeyAgreement 서명  ON
         tas -> tas: signKeyAgree(accEcdh)
     end
 
-return {accEcdh}
-opt KeyAgreement 서명 ON
+return ECDH 응답
+
+opt KeyAgreement 서명  ON
     ca -> ca: accEcdh.proof 서명 검증
 end
+ca -> ca : accEcdh 정합성 확인
+ca -> ca : mergedNonce 생성
+rnote right of ca #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 ca -> ca: ECDH 수행\n* sesKey = 세션키
 
-== P210-3 : Request Create Token ==
+rnote right of ca #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
+
+
+== P210-3 : 토큰 생성요청  ==
 
 hnote over ca, wal #LimeGreen
     * purpose = "IssueVc"
@@ -118,8 +169,110 @@ hnote over ca, wal #LimeGreen
     * walletToken = 월렛토큰
 end hnote
 
-ca -> ca: * (AttestedAppInfo)caAppInfo\
-        \n   = 서명된 앱정보 생성
+== 월렛 토큰 생성 ==
+
+activate ca
+
+ca -> wal++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    wal -> wal : nonce 생성
+    wal -> wal : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
+rnote right of wal #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
+end note
+
+ca -> cas : WalletTokenData요청 {walletTokenSeed}
+cas-> cas : WalletTokenData 생성
+cas -> ca : WalletTokenData 전달 
+rnote right of ca #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS : 인가앱사업자 (인가앱서버)
+end note
+
+ca -> wal++ : WalletToken 생성 요청 \n{WalletTokenData}
+    wal -> BC++ : CAS DID Doc 조회
+    rnote right of wal #LightGray
+        **[API_REQ : DID Doc 조회 요청]**
+        did
+    end note
+
+    return
+    rnote right of wal #LightGray
+        **[API_RES : DID Doc 조회 응답]**
+        DidDoc
+    end note
+    rnote right of wal #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    wal -> wal : 서명 검증
+    wal -> wal : resultNonce 생성 (resultNonce)
+
+    wal -> wal : 월렛토큰 생성 {walletToken}
+    rnote right of wal #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of wal : resultNonce 전달 적용
+
+    ca -> ca : 월렛토큰 생성 {hWalletToken}
+    rnote right of ca #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== 서명된 월렛 정보 요청  ==
+ca -> wal ++ : 서명된 Wallet 정보 요청 {walletToken}
+    wal -> wal: nonce 생성
+    wal -> wal: Wallet 정보 서명\
+                \n* (SignedWalletInfo)walletInfo= {\
+                \n      walletId,\
+                \n      did,\
+                \n      nonce,\
+                \n      proof\
+                \n      }
+return {walletInfo}
+
+|||
+== 서명된 앱 정보 요청  ==
+rnote across #white
+    인가앱은 로그인 또는 유사한 과정을 통해 인가앱 서버와 이미 세션을 맺고 있어야 한다.
+    그러나 이 과정의 구체적인 내용은 본 규격에서 다루지 않는다.
+end note
+ca -> cas ++ : 서명된 앱 정보 요청
+rnote right of ca #LightGray        
+    **[API_REQ : 서명된 앱 정보 요청]**
+    query:
+        appId
+end note
+    cas -> cas : nonce 생성
+    cas -> cas : 앱 정보 서명\
+            \n* (AttestedAppInfo)caAppInfo= {\
+            \n      appId,\
+            \n      provider,\
+            \n      nonce,\
+            \n      proof\
+            \n      }
+return 서명된 앱 정보 응답{caAppInfo}
+rnote right of ca #LightGray        
+    **[API_REQ : 서명된 앱 정보 응답]**
+    body:
+        attestedAppInfo
+end note
+
+|||
+== 서버토큰 데이터 생성 요청  ==
+
+
 ca -> ca: 서버토큰시드 생성\
         \n* (ServerTokenSeed)seed = {\
         \n     purpose = "IssueVc",\
@@ -143,7 +296,7 @@ return {iv, encStd}
 ca -> ca: 복호화(생략) 및 데이터 준비\
         \n* serverToken 계산
 
-== P210-4 : Request Issue Profile ==
+== P210-4 : VC 발급 프로파일 요청 ==
 
 ca -> tas ++: Request Issue Profile\n{serverToken}
     tas -> tas: 권한확인 및 holder 식별\
@@ -154,6 +307,9 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
                 \n* issuerNonce = 발급용 nonce 생성\
                 \n* (ReqE2e)reqE2e = E2E 요청정보 생성\
                 \n* 기타 데이터는 생략
+                opt ZKP 포함인 경우
+                    vf -> vf : CredentialOffer생성
+                end
          vf <-> BC: Issuer DID Doc 조회 / 응답
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
@@ -163,7 +319,7 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
     tas -> tas: * authNonce = DID Auth용 nonce 생성
 return {authNonce, profile}
 
-== P210-5 : Request Issue VC ==
+== P210-5 : VC 발급 요청 ==
 
 ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
         \n   refId, authNonce, profile}
@@ -188,7 +344,10 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
     wal -> wal: 발급 요청정보 생성 및 암호화\
             \n* (ReqVc)reqVc 생성\
             \n* encReqVc = enc(data, e2eKey, iv)
-
+            opt ZKP 포함인 경우
+                wal -> wal : credDef 블록체인 조회, mastersecret 생성/관리됨
+                wal -> wal : credentialRequest 생성, reqVc에 포함
+            end
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: serverToken 검증
         tas -> tas: DID Auth 검증\
@@ -210,26 +369,43 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
                 rnote right of vf #MintCream    
                     **DidDoc** : $doc
                 end note
-            vf -> vf: vc = **VC 발급 or 재발급**            
+            vf -> vf: vc = **VC 발급 or 재발급**
+            opt VC 재발급인 경우
+                vf -> BC: 기존 VC 폐기 요청
+            end
+                opt ZKP 포함인 경우
+                vf -> vf: credential = ZKP Credential 발급
+                end
             vf -> BC: vcMeta 생성 / 등록
                 rnote right of vf #MintCream    
                     **vcMeta** : $doc
                 end note
+                vf -> vf : credInfo 생성
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // ZKP 포함시
+                    }
+                end note
             vf -> vf: vc 암호화\
                     \n* iv = IV 생성\
-                    \n* tmp = enc(vc, e2eKey, iv)\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
                     \n* encVc = multibase(tmp)
         return {encVc, iv}
     return {encVc, iv}
 
     wal -> wal: encVc 복호화\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+            \n credInfo = {vc={..}, credential={..}}
+            opt ZKP 포함인 경우
+                wal -> wal : credential 검증 및 저장
+            end
     wal -> wal: 이슈어 서명 검증 및 저장
     wal -> wal: vcId = VC id 추출
 return {vcId}
 
-== P210-6 : Confirm Issue VC ==
+== P210-6 : 발급 완료 응답 ==
 
 ca -> tas ++: Confirm Issue VC\n{vcId}
     tas -> vf ++: Complete VC\n{vcId}

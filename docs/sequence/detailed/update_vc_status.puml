@@ -1,71 +1,66 @@
 @startuml update_vc_status
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Configuration
+' Settings
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 '=== Header and Footer ===
 header OPEN-DID Technical Specification
 footer
-    Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
 end footer
 
 '=== Title ===
 title
-    <size:25>VC Status Change</size>
+	<size:25>VC Status Update</size>
 end title
 
 '=== Options ===
-'Automatic numbering: e.g., "<b>000." => displays as a 3-digit number with leading zeros
 autonumber "<b>(#)</b>"
-'Hide participant box at the bottom of the page
-'hide footbox
 
-'=== Panticipants ===
+'=== Participants ===
 skinparam ParticipantPadding 20
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box Issuing Server #AliceBlue
-    participant "**ISSUER**" as ISSUER <<WAS>> #WhiteSmoke
-end box
-/' 
-box Storage Communication Server #AliceBlue
-    participant "**TSS**" as TSS <<WAS>> #WhiteSmoke
-end box 
-'/
-box Trust Storage
-    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+box Issuer Admin
+    actor "**Issuer Admin**" as ADMIN #WhiteSmoke
 end box
 
+box Issuing Provider #AliceBlue
+    participant "**ISSUER**" as ISSUER <<WAS>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Constant
+' Constants
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Content
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-|||
+||| 
 
-== VC Status Change ==
-activate ISSUER
-
-ISSUER -> ISSUER : Verify VC status change
-
-ISSUER -> BC++ : Update VC metadata
-rnote right of ISSUER #LightGray
-    **[API_REQ : Request VC metadata update]**
-    SignVcMeta
-end note
-    'TSS -> BC++ : VC Register VC metadata
-    'return
-
-return
-rnote right of ISSUER #LightGray
-    **[API_RES : Response to VC metadata update]**
+== VC Status Update ==
+rnote across #white
+    The Admin must request the ISSUER to update the VC status via the admin site or another interface.
+    This process is not covered in this specification.
 end note
 
-|||
-|||
+ADMIN -> ISSUER++: Request to update VC status
+
+    ISSUER -> BC++: Request VC metadata\n{vcId}
+    BC -> ISSUER: Respond with VC metadata\n{vcMeta}
+    ISSUER -> ISSUER: Check if VC status update is allowed
+    ISSUER -> BC: Request VC status update\n{vcId, vcStatus}
+    BC -> ISSUER--: VC status update completed
+
+ISSUER --> ADMIN--: Response to VC status update\n{txId}
+
+||| 
+||| 
 @enduml

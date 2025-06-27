@@ -19,9 +19,9 @@ Profile format
 
 - Subject
     - Profile Structure Definition
-- Author: Kang Youngho
-- Date: 2024-09-03
-- Version: v1.0.0
+- Author: OpenSource Development Team
+- Date: 2025-05-09
+- Version: v2.0.0
 
 Revision History
 ---
@@ -29,6 +29,7 @@ Revision History
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2024-09-03 | Initial version |
+| v2.0.0 | 2025-05-09 | Add ZKP data     |
 
 
 <div style="page-break-after: always;"></div>
@@ -50,6 +51,10 @@ Table of Contents
   - [4.1. Verify Profile Structure](#41-verify-profile-structure)
     - [4.1.1. `VerifyProfile` object](#411-verifyprofile-object)
   - [4.2. Verify Profile Example](#42-verify-profile-example)
+- [5. ProofRequest Profile](#5-proofrequest-profile)
+    - [5.1. ProofRequest Profile Structure](#51-proofrequest-profile-structure)
+        - [5.1.1. `ProofRequestProfile` object](#511-proofrequestprofile-object)
+    - [5.2. ProofRequest Profile Example](#52-proofrequest-profile-example)    
 
 <!-- /TOC -->
 
@@ -182,6 +187,31 @@ def object IssueProfile: "Issue Profile"
             - multibase              "value": "VC Schema encoded in multibase"
         }
 
+        - object "credentialOffer": "Credential Offer information"
+        {    
+            + nonce "nonce"                      : "nonce"
+            + schema-identifier "schemaId"       : "CredentialSchema identifier"
+            + definition-identifier "credDefId"  : "CredentialDefinition identifier"
+            + object "keyCorrectnessProof"       : "KeyCorrectnessProof"
+            {
+                + string "c"           : "hash"
+                + string "xzCap"       : "xzCap"
+                + object "xrCap"       : "xrCap", min_extend(1)
+                {
+                    /* 
+                    ... Example (order must be preserved)
+                    - string "zkpsex"
+                    - string "zkpasort"
+                    - string "zkpaddr"
+                    - string "zkpbirth"
+                    .
+                    .
+                    */
+                    + string $attributeName : "Commitment value for each attribute", min_extend(1)
+                    + string "masterSecret" : "Commitment value for the user's master secret" 
+                }
+            }
+        }
         + object "process": "issuance method"
         {
             + array(url) "endpoints"  : "list of issuance API endpoints"
@@ -201,6 +231,8 @@ def object IssueProfile: "Issue Profile"
     - `value`: VC Schema encoded in multibase (Base64 recommended)
         - Used when a client cannot download the VC Schema
         - Be cautious of Profile size as it may become large depending on the Profile transmission method (e.g., QR code)
+- `~/profile/credentialOffer`: Created by the issuer before issuing a Credential to the user  
+  (See ZKP Data Specification #4.2: CredentialOffer)
 - `~/profile/process`
     - `endpoints`: Service endpoint part excluding the path portion of the issuance API
     - `reqE2e`: Key exchange request information for E2E encryption
@@ -228,6 +260,21 @@ def object IssueProfile: "Issue Profile"
             "id": "https://woosan.ac.kr/schema/student_id_v2.json",
             "type": "OsdSchemaCredential"
         },
+        // Additional depending on whether ZKP is included
+        "credentialOffer":{
+            "nonce": "1068995366822249097155600",
+            "schemaId": "did:example:woosanuniv:2:student_id:1.0",
+            "credDefId": "did:example:woosanuniv:3:CL:did:example:woosanuniv:2:student_id:1.0:Tag1",
+            "keyCorrectnessProof": {
+               "c": "61980984485776724933402455877937134233912022625919280439072090002286297246205",
+               "xzCap": "108...850",
+               "xrCap": {
+                  "zkpname": "453...106",
+                  "zkpbirth": "187...442",
+                  "masterSecret": "211...206"
+               }
+            }
+
         "process": {
             "endpoints": ["https://woosan.ac.kr/issue"],
             "reqE2e": {
@@ -294,16 +341,6 @@ def object VerifyProfile: "Verify Profile"
         {
             + array(object) "credentialSchemas": "claims and issuers per acceptable VC Schema"
             {
-                + url                    "id"            : "VC Schema URL"
-                + CREDENTIAL_SCHEMA_TYPE "type"          : "VC Schema format type"
-                - multibase              "value"         : "VC Schema encoded in multibase"
-                - array(claimCode)       "displayClaims" : "list of claims to be shown on the user's screen"
-                    , emptiable(false)
-                - array(claimCode)       "requiredClaims": "list of mandatory claims to be submitted"
-                    , emptiable(false)
-                - array(did)             "allowedIssuers": "list of allowed issuer DIDs"
-                    , emptiable(false)
-
                 // VC Schema information
                 + url                    "id"        : "VC Schema URL"
                 + CREDENTIAL_SCHEMA_TYPE "type"      : "VC Schema format type"
@@ -403,6 +440,126 @@ def object VerifyProfile: "Verify Profile"
             "authType": 6
         }
     },
+    "proof": {
+        "type": "Secp256r1Signature2018",
+        "created": "2024-04-29T11:27:30Z",
+        "verificationMethod": "did:example:myshopping?versionId=1#assert",
+        "proofPurpose": "assertionMethod",
+        "proofValue": "zDgYdYMUYHURJLD7xdnWRiqWCEY5u5fKzZs6Z...MzLHoPiPQ9sSVfRrs1D"
+    }
+}
+```
+
+## 5. ProofRequest Profile
+
+The ProofRequest Profile is a structured data bundle through which the Verifier conveys the requirements for a Zero-Knowledge Proof (ZKP)-based verification to the Holder. This profile specifies the necessary conditions for generating a ZKP proof and includes the following information.
+
+
+| Category    | Details                                                                                                          |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| Verify Info | • Name, DID, Reference URL  |
+| ProofRequest      | • Name of the proof request <br>• Attributes the Holder must disclose explicitlyt<br>• Predicates the Holder must satisfy (e.g., ≥, ≤) |
+| ZKP Proof Submission Method | • Information related to encrypted submission (recipient public key, nonce, algorithm, etc.) |
+
+
+### 5.1. ProofRequest Profile Structure
+
+#### 5.1.1. `ProofRequestProfile` object
+
+```c#
+def object ProofRequestProfile: "ProofRequest Profile"
+{
+    //--------------------------------------------------------------------------
+    // Profile Metadata
+    //--------------------------------------------------------------------------
+    + uuid         "id"         : "profile id"
+    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
+    + string       "title"      : "profile title"
+    - string       "description": "profile description", default(""), emptiable(true)
+    - LogoImage    "logo"       : "logo image for presentation"
+    + ENCODING     "encoding"   : "encoding", default("UTF-8")
+    + LANGUAGE     "language"   : "language code"
+
+    //--------------------------------------------------------------------------
+    // Profile Contents
+    //--------------------------------------------------------------------------
+    + object "profile": "profile contents"
+    {
+        + ProviderDetail "verifier": "verifier information"
+
+        + object "proofRequest" : "ProofRequest information" 
+        {
+            + string "name"                  : "proofs name"
+            + string "version"               : "version"
+            + nonce  "nonce"                 : "nonce"
+            - object "requestedAttributes"   : "AttributeInfo", min_extend(1)
+            - object "requestedPredicates"   : "PredicateInfo", min_extend(1)
+        }
+
+        + ReqE2e           "reqE2e"       : "E2E request information (without proof)"
+    }
+
+    //--------------------------------------------------------------------------
+    // Proof
+    //--------------------------------------------------------------------------
+    + AssertProof "proof": "verifier's signature for the profile"
+}
+```
+
+- `~/profile/proofRequest`: Defines the proof requirements requested by the verifier from the prover (user)  
+  (See ZKP Data Specification #4.5: ProofRequest)
+
+### 5.2. ProofRequest Profile Example
+
+```json
+{
+    "id": "d1f26925-6743-4609-9932-e909dda0299f",
+    "type": "VerifyProfile",
+    "title": "MyShopping Student ID Verification",
+    "description": "Discounts are not available if personal identifier submission is not agreed.",
+    "encoding": "UTF-8",
+    "language": "ko",
+    "profile": {
+        "verifier": {
+            "did": "did:example:myshopping",
+            "certVcRef": "https://myshopping.com/cert-vc/1",
+            "name": "MyShopping",
+            "ref": "https://myshopping.com"
+        },
+        "proofRequest": {
+            "name": "myShopping",
+            "nonce": "1068995366822249097155600",
+            "requestedAttributes": {
+            "attributeReferent1": {
+                "name": "zkpname",
+                "restrictions": [
+                {
+                    "credDefId": "did:example:woosanuniv:3:CL:did:example:woosanuniv:2:student_id:1.0:Tag1"
+                }
+                ]
+            }
+            },
+            "requestedPredicates": {
+            "predicateReferent1": {
+                "name": "zkpbirth",
+                "pType": "LE",
+                "pValue": 20200103,
+                "restrictions": [
+                {
+                    "credDefId": "did:example:woosanuniv:3:CL:did:example:woosanuniv:2:student_id:1.0:Tag1"
+                }
+                ]
+            }
+            }
+		},
+        "reqE2e": {
+            "nonce": "uTX0SWpBnrG-gvkQg1MzUFQ",
+            "curve": "Secp256r1",
+            "publicKey": "zpuheLvAneYCdu3hjpdqF9BotnEpM2v7BmidRq5QBLKej",
+            "cipher": "AES-256-CBC",
+            "padding": "PKCS5"
+        },
+    },  
     "proof": {
         "type": "Secp256r1Signature2018",
         "created": "2024-04-29T11:27:30Z",

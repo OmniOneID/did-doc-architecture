@@ -7,7 +7,7 @@ autonumber "<b>(#)</b>"
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**Certified App**" as ca <<App>>
-participant "**Certified App Service**" as cap <<Server>>
+participant "**Certified App Service**" as cas <<Server>>
 participant "**TA**" as tas <<Server>>
 
 activate ca
@@ -29,7 +29,7 @@ end rnote
 
 == 1. SignedWalletInfo ==
 
-hnote over wal, cap #LimeGreen
+hnote over wal, cas #LimeGreen
     * walletToken = Generate wallet token
 end hnote
 
@@ -50,16 +50,16 @@ return {swi}
 
 == 2. AttestedAppInfo ==
 
-ca -> cap ++: Request Signed App Info\n{APP_ID}
-    cap -> cap: Prepare Data\
+ca -> cas ++: Request Signed App Info\n{APP_ID}
+    cas -> cas: Prepare Data\
             \n* appId = APP_ID\
             \n* provider = Provider Information\
             \n* nonce = Generate random number\
             \n* dataset = {appId, provider, nonce}
-    cap -> cap: Certified App Provider Signature\
+    cas -> cas: Certified App Provider Signature\
             \n* priKey = Attestation private key\
             \n* proof = signAssert(dataset, priKey)
-    cap -> cap: (AttestedAppInfo)aai\
+    cas -> cas: (AttestedAppInfo)aai\
             \n = {appId, provider, nonce, proof}
 return {aai}
 

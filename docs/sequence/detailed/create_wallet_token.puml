@@ -33,6 +33,10 @@ box Mobile #OldLace
     participant "**Certified App**" as CA <<App>> #WhiteSmoke    
 end box
 
+box Server #AliceBlue
+    participant "**Certified Server**" as CAS <<App>> #WhiteSmoke    
+end box
+
 box Trust Repository
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
 end box
@@ -53,31 +57,31 @@ end box
 
 activate CA
 
-CA -> WALLET++ : Request tmpToken creation {purpose, pkgname, userId}
+CA -> WALLET++ : Request walletTokenSeed creation {purpose, pkgname, userId}
     WALLET -> WALLET : Create nonce 
-    WALLET -> WALLET : Create tmpToken (TmpToken), expiration time
-return {TmpToken}
+    WALLET -> WALLET : Create walletTokenSeed, VaildUntil time
+return {walletTokenSeed}
 rnote right of WALLET #MintCream
-    **TmpToken** : Reference to Data Specification document
-    TmpToken = 
-        (nonce | expTime | purpose | pkgname | userId)
+    **walletTokenSeed** : Reference to Data Specification document
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
 end note
 
-group Created by CApp Server
-    CA -> CA : Create signature with tmpToken and User ID (User Identification for user lookup)
 
-    CA -> CA : Create Wallet Token Request data \n(ReqWalletToken) 
-    rnote right of CA #MintCream
-        **ReqWalletToken** : Reference to Data Specification document
-        TmpToken | PII | Proof
-        Proof = sign(TmpToken | PII, CAP_PrivateKey)
+CA -> CAS : Request WalletTokenData (User Identification for user lookup)
+CAS -> CAS : WalletTokenData creation
+CA -> CA :  Return WalletTokenData
+rnote right of CA #MintCream
+    **WalletTokenData** : Reference to Data Specification document
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
 
-        CAP: CApp Provider (CApp Server)
-    end note
-end
+    CAS: CApp Provider (CApp Server)
+end note
 
-CA -> WALLET++ : Request WalletToken creation \n{ReqWalletToken}
-    WALLET -> BC++ : Retrieve CAP DID Document
+
+CA -> WALLET++ : Request WalletToken creation \n{WalletTokenData}
+    WALLET -> BC++ : Retrieve CAS DID Document
     rnote right of WALLET #LightGray
         **[API_REQ :Request to Retrieve DID Document]**
         did
@@ -97,19 +101,19 @@ CA -> WALLET++ : Request WalletToken creation \n{ReqWalletToken}
 
     WALLET -> WALLET : Create WalletToken {walletToken}
     rnote right of WALLET #MintCream
-        **walletToken**
-        walletToken =
-            sha256(ReqWalletToken | resultNonce)
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
     end note
 
     return {resultNonce}
-    note right of WALLET : Apply resultNonce transmission (4/18 reviewed by Senior Executive)
+    note right of WALLET : Apply resultNonce transmission
 
     CA -> CA : Create WalletToken {walletToken}
     rnote right of CA #MintCream
-        **walletToken**
-        walletToken = 
-            sha256(ObjReqWalletToken | resultNonce)
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
     end note
 
 

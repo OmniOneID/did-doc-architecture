@@ -62,7 +62,7 @@ end note
 
 CA -> CAS ++ : Request Signed App Information
 CAS -> CAS : Generate Random Number
-CAS -> CAS : Sign App Information (Certified App ID, Random Number)
+CAS -> CAS : Sign App Information (Certified App ID, Random Number, Device DID)
 CAS --> CA--: Return Signed App Information
 
 ||| 

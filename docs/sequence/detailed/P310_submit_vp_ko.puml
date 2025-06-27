@@ -1,4 +1,3 @@
-
 @startuml P310_submit_vp_ko
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 설정
@@ -26,8 +25,6 @@ skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-
-
 box 모바일 #OldLace
     participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
@@ -36,7 +33,6 @@ end box
 box 검증서버 #AliceBlue
     participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
 end box
-
 
 box 신뢰저장소
     participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
@@ -54,7 +50,6 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-
 == Offer 요청  ==
 
 rnote across #white    
@@ -65,38 +60,43 @@ end note
 == P310-1 : Profile 요청 ==
 activate CA
 
-
 CA -> SP++ : Profile 요청(Request Profile)
 rnote right of CA #Lavender
     **[M310_Req : Profile 요청]**    
     body : 
         messageId
         offerId
-        verifierTxId
+        txId (선택)
 end note
 
 SP -> SP : offerId 유효성 검사
 
+SP -> SP : transaction 및 VpOffer 조회
 SP -> SP : Profile 관련 데이터 준비\
             \n* verifierNonce = 제출용 nonce 생성\
-            \n* (ReqE2e) reqE2e = E2E 요청 정보 생성
-SP <-> BC : Verifier DID Doc 조회 / 응답
+            \n* (ReqE2e) reqE2e = E2E 요청 정보 생성\
+            \n* keyPair = E2E 키쌍 생성\
+            \n* sessionKey = 개인키 저장
 
+SP <-> BC : Verifier DID Doc 조회 / 응답
 
 rnote right of SP #MintCream    
     **DidDoc** : $doc
 end note
+
 SP -> SP : Verify Profile 생성 / 서명
 rnote right of SP #MintCream    
     **VerifyProfile** : $doc
 end note
+
+SP -> SP : E2E 정보 및 VpProfile 저장
 
 return
 rnote right of CA #Lavender
     **[M310_Res : Profile 응답]**
     body : 
         verifyProfile
-        veirifierTxId
+        txId
 end note
 
 == Profile 검증 ==
@@ -114,13 +114,11 @@ end note
 
 CA -> CA : 사용자 제출 정보 확인
 
-
 == 월렛 토큰 생성 ==
 
 rnote over WALLET, CA #white
     월렛 토큰 생성 : 인가앱 -> 월렛
 end note
-
 
 == VP 생성 ==
 
@@ -137,44 +135,44 @@ rnote right of WALLET #MintCream
 end note
 
 WALLET -> WALLET : 임시키 쌍 생성 \n세션키 생성
-WALLET -> WALLET : VP 암호화 \n(encVpProof)
+WALLET -> WALLET : VP 암호화 \n(encVp)
 rnote right of WALLET #MintCream    
-    encVpProof = multibase(enc(iv, VpProof, seskey))
-
+    encVp = multibase(enc(iv, VP, seskey))
     * iv 적용은 KDF 방식에 따라 변경
 end note
 
-WALLET -> WALLET : VP 메시지 생성 \n(VpMsg)
+WALLET -> WALLET : AccE2e 생성 \n(AccE2e)
 rnote right of WALLET #MintCream    
-    **VpMsg** : $doc    
+    **AccE2e** : $doc
+    - publicKey, iv
+    - proof (선택)
 end note
 
+return VP 생성 요청 응답 \n{AccE2e, encVp}
 
-return VP 생성 요청 응답 \n{VpMsg}
+== P310-2 : VP 제출 및 검증 ==
 
-
-
-== P310-2 : eVP 제출 및 검증 ==
-
-CA -> SP++ : eVP(암호화 Vp) 검증 요청
+CA -> SP++ : VP 검증 요청
 rnote right of CA #Lavender
-    **[M310_Req : eVP(암호화 Vp) 제출]**    
+    **[M310_Req : VP 제출]**    
     body : 
         messageId
-        verifierTxId
+        txId
         accE2e
-        VpMsg(enc)
+        encVp
 end note
 
 SP -> SP : 거래코드 조회
+SP -> SP : transaction 및 상태 검증
 SP -> SP : E2e ECDH 수행\
         \n* accE2e.proof가 있으면 검증\
         \n* e2eKey = 암호화키 생성\
-        \n* iv = accE2e.iv\
+        \n* iv = accE2e.iv
         
-SP -> SP : eVP 복호화\
+SP -> SP : VP 복호화\
         \n* vp = decrypt(encVp, e2eKey, iv)\
 
+SP -> SP : verifierNonce 일치여부 확인
 SP -> SP : AuthType / nonce 일치여부 확인
 
 SP <-> BC : Holder / Issuer DID Doc 조회
@@ -185,18 +183,17 @@ end note
 SP -> SP : VP 서명 검증\
         \n* vp.proof 검증\
         \n* VC 생애주기 유효성 확인\
-        \n* VC 내 Issuer 서명 검증\
-        
+        \n* VC 내 Issuer 서명 검증
 
+SP -> SP : VP 데이터 저장 및 거래 완료 처리
+        
 return
 rnote right of CA #Lavender
-    **[M310_Res : eVP 검증 응답]**      
+    **[M310_Res : VP 검증 응답]**      
         body : 
-            verifierTxId        
+            txId        
 end note
-
 
 |||
 |||
 @enduml
-
