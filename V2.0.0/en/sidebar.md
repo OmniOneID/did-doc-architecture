@@ -51,7 +51,7 @@
     - [Commit Message Guidelines](/V2.0.0/docs/rules/git_code_commit_rule.md)
 - Security
     - [MitM](/V2.0.0/docs/security/MitM.md)
-    - [Zero-knowledge proof](/V2.0.0/docs/security/ZKP.md)
+    - [Zero-Knowledge Proof](/V2.0.0/docs/security/ZKP.md)
     - [Authentication and Secure Channel Creation](/V2.0.0/docs/security/authentication.md)
 - ETC
   - [README](/V2.0.0/README.md)
