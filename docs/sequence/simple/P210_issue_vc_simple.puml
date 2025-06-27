@@ -1,5 +1,5 @@
 
-@startuml P210_issue_vc
+@startuml P210_issue_vc_simple
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' Settings
@@ -92,6 +92,7 @@ CA -> TAS++: Issue VC start request
         **[M210_REQ : Issue VC start request]**
     end note
     TAS -> ISSUER++: Issue VC start request
+    
     return Issue VC start response
 return Issue VC start response
 rnote right of CA #Lavender
@@ -121,7 +122,12 @@ CA -> TAS++: Issue Profile Request
         **[M210_REQ : Issue Profile Request]**
     end note
     TAS -> ISSUER++: Issue Profile Request
+    ISSUER -> ISSUER: Generate Issue Profile
+    opt Include ZKP Credential
+        ISSUER -> ISSUER: Generate ZKP Credential Offer
+    end 
     return Issue Profile Response
+    
 return Issue Profile Response
 rnote right of CA #Lavender
     **[M210_RES : VC issuance start response]**
@@ -129,21 +135,41 @@ end note
 
 == P210-6 : Issue VC Request ==
 CA -> WALLET++: Issue VC request 
+opt include ZKP
+            WALLET -> WALLET : Fetch credDef from the blockchain and generate/manage the master secret
+            WALLET -> WALLET : Generate credentialRequest and include it in reqVcㄴ
+        end
     WALLET -> TAS++: Issue VC request
         rnote right of CA #Lavender
             **[M210_REQ : Issue VC request]**
         end note
         TAS -> ISSUER++: Issue VC request
-            ISSUER -> ISSUER: Issue VC
+            ISSUER -> ISSUER: vc: Issue or Reissue VC
+            opt In Case of VC reissuance
+                ISSUER -> BC: Revoke existing VC 
+            end
+            opt include ZKP
+                ISSUER -> ISSUER: credential: Issue ZKP Credential
+            end
             ISSUER -> BC: Register VC Meta
-            ISSUER -> ISSUER: VC<sub>enc</sub>=VC E2E encryption
+            ISSUER -> ISSUER : generate credeInfo
+                note right of ISSUER
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // Include ZKP
+                    }
+                end note
+            ISSUER -> ISSUER: VC<sub>enc</sub>=credInfo E2E encryption
         return VC<sub>enc</sub> response
     return VC<sub>enc</sub> response
     rnote right of CA #Lavender
         **[M210_RES : VC response]**
     end note
-    WALLET -> WALLET: VC=VC<sub>enc</sub> E2E decryption
+    WALLET -> WALLET: CredInfo = VC<sub>enc</sub> E2E decryption
     WALLET -> WALLET: Store VC
+    opt include ZKP
+        WALLET -> WALLET : verify and save Credential
+    end
 return Result
 
 == P210-7 : Issue VC Completion ==

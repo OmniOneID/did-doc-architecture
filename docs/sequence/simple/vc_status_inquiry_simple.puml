@@ -1,0 +1,83 @@
+
+@startuml vc_status_inquiry_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+    Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+    <size:25>VC Status Inquiry</size>
+end title
+
+'=== Options ===
+'Automatic numbering: e.g., "<b>000." => displays as a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+'Hide participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constant
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$doc = "Refer to the data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Wallet Token Generation ==
+activate CA
+
+rnote over WALLET, CA #white
+    Wallet Token Generation : CA -> Wallet
+end note
+
+
+== VC Status Query ==
+
+CA -> WALLET++ : Query VC List \n{Wallet Token}
+return
+
+CA -> BC++ : Query VC Status
+rnote right of CA #LightGray
+    **[API_REQ : VC Status Query Request]**
+    vcid
+end note
+
+return
+
+rnote right of CA #LightGray
+    **[API_RES : VC Status Query Response]**
+    VcMeta
+end note
+rnote right of CA #MintCream    
+    **VcMeta** : $doc
+end note
+
+|||
+|||
+
+@enduml

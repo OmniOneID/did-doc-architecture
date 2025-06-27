@@ -5,13 +5,13 @@ end title
 
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
-participant "**인가앱 서비스**" as cap <<Server>>
+participant "**인가앱 서비스**" as cas <<Server>>
 autonumber "<b>(#)</b>"
 
 ca -> wal++: WalletTokenSeed 요청 
 wal --> ca--: WalletTokenSeed 전달
-ca -> cap++: WalletTokenData 요청 (WalletTokenSeed)
-cap --> ca--: WalletTokenData 전달
+ca -> cas++: WalletTokenData 요청 (WalletTokenSeed)
+cas --> ca--: WalletTokenData 전달
 ca -> wal++: WalletToken 생성 요청 (WalletTokenData)
 wal -> wal: Nonce 생성
 wal -> wal: WalletTokenData와 Nonce를 조합하여 WalletToken 생성(WalletTokenData, Nonce)

@@ -1,0 +1,217 @@
+@startuml P311_submit_zkp_proof_ko
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P311 : ZKP Proof 제출 </size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as USER
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box 검증서버 #AliceBlue
+    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Offer 요청  ==
+
+rnote across #white    
+    Offer단계에서는 표준 API를 정의하지 않고 payload에 대한 데이터 형식만 규정되어있음.
+    Offer를 어떤 방식으로 전달할지는 본 문서의 범위 밖이다.
+end note
+
+hnote over CA, SP #LimeGreen
+    Offer 단계 수행으로 아래 정보 획득
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== P311-1 : ProofRequestProfile 요청 ==
+activate CA
+
+CA -> SP++ : ProofRequestProfile 요청(Request ProofRequestProfile)
+rnote right of CA #Lavender
+    **[M311_Req : ProofRequestProfile 요청]**    
+    body : 
+        messageId
+        offerId
+        verifierTxId
+end note
+
+SP -> SP : offerId 유효성 검사
+
+SP -> SP : ProofRequestProfile 관련 데이터 준비\
+            \n* proofRequest = ZKP proofRequest 생성\
+            \n* (ReqE2e) reqE2e = E2E 요청 정보 생성
+SP <-> BC : Verifier DID Doc 조회 / 응답
+
+rnote right of SP #MintCream    
+    **DidDoc** : $doc
+end note
+SP -> SP : ProofRequestProfile 생성 / 서명
+rnote right of SP #MintCream    
+    **ProofRequestProfile** : $doc
+end note
+
+return
+rnote right of CA #Lavender
+    **[M311_Res : ProofRequestProfile 응답]**
+    body : 
+        proofRequestProfile
+        verifierTxId
+end note
+
+== ProofRequestProfile 검증 ==
+
+CA <-> BC : Verifier DID Doc 조회 / 응답
+
+rnote right of CA #MintCream    
+    **DidDoc** : $doc
+end note
+
+CA -> CA : ProofRequestProfile 서명 검증
+rnote right of CA #MintCream    
+    **ProofRequestProfile** : $doc
+end note
+
+== 월렛 토큰 생성 ==
+
+rnote over WALLET, CA #LimeGreen
+    월렛토큰 생성 {purpose = "PresentVp"}
+    * walletToken = 월렛토큰
+end rnote
+
+== 제출가능 Credential 조회 ==
+
+CA -> WALLET++ : 제출가능 credential 조회\n{walletToken, proofRequestProfile}
+
+WALLET -> WALLET : walletToken 유효성 확인
+WALLET -> WALLET : proofRequestProfile.proof 검증
+WALLET -> WALLET : credential 검색\
+        \n* attribute, predicate 조건 확인\
+        \n* 이용가능한 referent 생성
+
+return {referent}
+CA <-> BC : VC Meta 조회
+CA -> CA : 제출 할 VC 폐기 유무 확인
+CA -> CA : 제출가능 credential 목록 출력
+
+USER -[#Blue]-> CA : credential 선택
+CA -> CA : credentialId = 선택된 credential ID
+
+USER -[#Blue]-> CA : 제출 클레임(attributes, predicates) 선택
+
+rnote over CA
+    credSchema 블록체인 조회
+    credDef 블록체인 조회
+end note
+
+CA <-> BC : CredentialSchema 조회 / 응답
+CA <-> BC : CredentialDefinition 조회 / 응답
+
+USER -[#Blue]-> CA : 제출 동의
+
+== P311-2 : ZKP Proof 제출 및 검증 ==
+
+CA -> WALLET++ : Proof 제출 요청\n{walletToken, proofRequest, proofParams, selfAttributes}
+
+WALLET -> WALLET : walletToken 유효성 확인
+
+WALLET -> WALLET : E2E용 ECDH 수행\
+        \n* _, pubKeyE2E = ECC 키쌍 생성\
+        \n* e2eKey = profile 내 E2E 데이터로 암호화키 생성\
+        \n* iv = IV 생성\
+        \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+        \n* signKeyAgree(accE2e)
+
+WALLET -> WALLET : proof 생성\
+        \n* proof = CreateProof(proofReq, proofParam, selfAttrs)
+
+WALLET -> WALLET : 암호화\
+        \n* encProof = enc(proof, e2eKey, iv)
+
+return {accE2e, encProof}
+
+CA -> SP++ : ZKP Proof 검증 요청
+rnote right of CA #Lavender
+    **[M311_Req : ZKP Proof 제출]**    
+    body : 
+        messageId
+        verifierTxId
+        accE2e
+        encProof
+end note
+
+SP -> SP : 거래코드 조회
+SP -> SP : E2e ECDH 수행\
+        \n* accE2e.proof가 있으면 검증\
+        \n* e2eKey = 암호화키 생성\
+        \n* iv = accE2e.iv
+        
+SP -> SP : ZKP Proof 복호화\
+        \n* proof = decrypt(encProof, e2eKey, iv)
+
+rnote over SP
+    credSchema 블록체인 조회
+    credDef 블록체인 조회
+    * Proof 내 proofs, aggregatedProof, requestedProof 기반 검증
+end note
+
+SP <-> BC : CredentialSchema 조회 / 응답
+SP <-> BC : CredentialDefinition 조회 / 응답
+
+SP -> SP : ZKP Proof 검증\
+        \n* proof.proofs 검증\
+        \n* ProofRequest와 일치성 확인\
+        \n* 영지식 증명 유효성 검증
+
+SP -> SP : Proof 저장 및 서비스 제공
+
+return
+rnote right of CA #Lavender
+    **[M311_Res : ZKP Proof 검증 응답]**      
+        body : 
+            verifierTxId        
+end note
+
+|||
+|||
+@enduml

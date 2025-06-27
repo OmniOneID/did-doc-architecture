@@ -1,0 +1,83 @@
+
+@startuml vc_status_inquiry_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>VC 상태조회</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== 월렛 토큰 생성 ==
+activate CA
+
+rnote over WALLET, CA #white
+    월렛 토큰 생성 : 인가앱 -> 월렛
+end note
+
+
+== VC 상태조회 ==
+
+CA -> WALLET++ : VC 리스트 조회 \n{월렛토큰}
+return
+
+
+CA -> BC++ : VC 상태 조회
+rnote right of CA #LightGray
+    **[API_REQ : VC 상태 조회 요청]**
+    vcid
+end note
+
+return
+rnote right of CA #LightGray
+    **[API_RES : VC 상태 조회 응답]**
+    VcMeta
+end note
+rnote right of CA #MintCream    
+    **VcMeta** : $doc
+end note
+
+|||
+|||
+@enduml
+

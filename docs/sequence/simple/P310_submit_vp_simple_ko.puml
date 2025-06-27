@@ -11,78 +11,83 @@ end footer
 
 '=== 제목 ===
 title
-	<size:25>P310 : VP 제출</size>
+	<size:25>VP 제출</size>
 end title
 
 '=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
 autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
 
-'=== Participants ===
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
 skinparam ParticipantPadding 20
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
 box 모바일 #OldLace
-    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
-    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+    participant "**월렛**" as wal <<Wallet>>
+    participant "**인가앱**" as ca <<App>>
 end box
+participant "**검증 사업자**" as vf <<Server>>
 
-box 검증서버 #AliceBlue
-    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
-end box
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
 
-'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' 내용
-'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-|||
-== VP Offer 요청  ==
+== Offer 요청 ==
 
-rnote across #white
-    인가앱은 Verifier로부터 VP Offer 요청을 수신해야 한다.
-    그러나 이 과정의 구체적인 내용은 본 규격에서 다루지 않는다.
+rnote across #white    
+    Offer단계에서는 표준 API를 정의하지 않고 payload에 대한 데이터 형식만 규정되어있음.
+    Offer를 어떤 방식으로 전달할지는 본 문서의 범위 밖이다.
 end note
 
-== P310-1 : VP Profile 요청 ==
+== P310-1 : Profile 요청 ==
 
-CA -> SP++: VP profile 요청
-rnote right of CA #Lavender        
-    **[M310_REQ: VP Profile 요청]**
+activate ca
+
+ca -> vf ++: Profile 요청
+    vf <-> BC: Verifier DID Doc 조회 / 응답
+return verifyProfile
+
+== Profile 검증 ==
+
+ca <-> BC: Verifier DID Doc 조회 / 응답
+ca -> ca: VerifyProfile 서명 검증
+ca -> ca: 사용자 제출 정보 확인
+
+== 월렛 토큰 생성 ==
+
+rnote over wal, ca #white
+    월렛 토큰 생성 : 인가앱 -> 월렛
 end note
 
-SP -> SP: VP Profile 생성 / 서명
+== VP 생성 ==
 
-SP --> CA--: VP profile 응답
-rnote right of CA #Lavender        
-    **[M310_RES: VP Profile 응답]**
-end note
+ca -> wal ++: VP 생성 요청
+    wal -> wal: VP 생성
+    wal -> wal: 사용자 인증
+    wal -> wal: VP 서명 생성
+    wal -> wal: VP 암호화
+    wal -> wal: AccE2e 생성
+return AccE2e, encVp
 
-== P310-2 : VP 제출  ==
+== P310-2 : VP 제출 및 검증 ==
 
-rnote across #white
-    VP는 암호화하여 제출해야 한다.
-    인가앱과 Verifier 간의 암호화 및 복호화를 위한 키 교환 과정은 생략되었다.
-end note
+ca -> vf ++: VP 검증 요청
+    vf -> vf: VP 복호화
+    vf -> vf: nonce 및 AuthType 검증
+    vf <-> BC: Holder / Issuer DID Doc 조회
+    vf -> vf: VP 서명 검증
+    vf -> vf: VP 저장 및 거래 완료 처리
+return OK
 
-CA -> SP++: VP 제출
-rnote right of CA #Lavender        
-    **[M310_REQ: VP 제출]**
-end note
+deactivate ca
 
-SP -> SP : VP검증
-SP --> CA--:  VP 제출 결과
-rnote right of CA #Lavender        
-    **[M310_RES: VP 제출 결과]**    
-end note
-
-== Vp 제출 결과 확인 ==
-
-rnote across #white
-    인가앱으로부터 VP 제출을 요청한 주체는 Verifier에게 VP 제출 결과를 요청할 수 있다.
-    그러나 이 과정의 구체적인 내용은 본 규격에서 다루지 않는다.
-end note
-
-
-|||
-|||
 @enduml

@@ -614,17 +614,16 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "발급 요청 정보",
     "VerifyProfile": "검증 요청 정보",
-    //sjkim 추가해야함
+    "ProofRequestProfile": "ZKP 검증 요청 정보"
 }
 
 def enum OFFER_TYPE: "offer type"
 {
-    //sjkim 추가
     "IssueOffer"     : "발급 오퍼 정보",
     "VerifyOffer"    : "제출 오퍼 정보",
     "RestoreDidOffer": "DID 복구 오퍼 정보",
     "ZkpIssueOffer"  : "ZKP 포함 발급 오퍼 정보",
-    "ZkpVerifyOffer" : "ZKP 제출 오퍼 정보",
+    "VerifyProofOffer" : "ZKP Proof 제출 오퍼 정보"
 }
 
 def enum PRESENT_MODE: "VP 제출 모드"
@@ -1353,7 +1352,6 @@ def object IssueProfile: "Issue Profile"
             - multibase              "value": "VC Schema를 multibase로 인코딩한 값"
         }
 
-        //sjkim 추가
         - object "credentialOffer": "Credential Offer 정보"
         {    
             + nonce "nonce"                      : "nonce"
@@ -1477,8 +1475,6 @@ def object VerifyProfile: "Verify Profile"
 #### 4.5.3. ProofRequestProfile
 
 ```c#
-
-//sjkim 추가
 
 def object ProofRequestProfile: "ProofRequest Profile"
 {

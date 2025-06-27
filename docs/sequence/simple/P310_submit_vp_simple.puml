@@ -11,11 +11,19 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P310: VP Submission</size>
+	<size:25>VP Submission</size>
 end title
 
 '=== Options ===
+' Auto numbering: ex) "<b>000." => Display as 3-digit number with leading zeros
 autonumber "<b>(#)</b>"
+' Hide participant box at bottom of page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification"
 
 '=== Participants ===
 skinparam ParticipantPadding 20
@@ -24,65 +32,62 @@ skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
 box Mobile #OldLace
-    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
-    participant "**Certified App**" as CA <<App>> #WhiteSmoke    
+    participant "**Wallet**" as wal <<Wallet>>
+    participant "**CA App**" as ca <<App>>
 end box
+participant "**Verifier**" as vf <<Server>>
 
-box Verification Server #AliceBlue
-    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
-end box
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
 
-'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-' Content
-'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-|||
-== VP Offer Request  ==
+== Offer Request ==
 
-rnote across #white
-    The Certified App must receive the VP Offer request from the Verifier.
-    However, the specific details of this process are not covered in this specification.
+rnote across #white    
+    The Offer stage does not define standard APIs, only payload data formats are specified.
+    How to deliver the Offer is outside the scope of this document.
 end note
 
-== P310-1: VP Profile Request ==
+== P310-1 : Profile Request ==
 
-CA -> SP++: VP Profile Request
-rnote right of CA #Lavender        
-    **[M310_REQ: VP Profile Request]**
+activate ca
+
+ca -> vf ++: Profile Request
+    vf <-> BC: Retrieve / Respond Verifier DID Doc
+return verifyProfile
+
+== Profile Verification ==
+
+ca <-> BC: Retrieve / Respond Verifier DID Doc
+ca -> ca: Verify VerifyProfile signature
+ca -> ca: Check user submission information
+
+== Wallet Token Generation ==
+
+rnote over wal, ca #white
+    Wallet Token Generation : CA App -> Wallet
 end note
 
-SP -> SP: VP Profile Creation / Signing
+== VP Generation ==
 
-SP --> CA--: VP Profile Response
-rnote right of CA #Lavender        
-    **[M310_RES: VP Profile Response]**
-end note
+ca -> wal ++: VP Generation Request
+    wal -> wal: Generate VP
+    wal -> wal: User authentication
+    wal -> wal: Generate VP signature
+    wal -> wal: Encrypt VP
+    wal -> wal: Generate AccE2e
+return AccE2e, encVp
 
-== P310-2: VP Submission  ==
+== P310-2 : VP Submission and Verification ==
 
-rnote across #white
-    The VP must be submitted in an encrypted form.
-    The process of key exchange between the Certified App and Verifier for encryption and decryption has been omitted.
-end note
+ca -> vf ++: VP Verification Request
+    vf -> vf: Decrypt VP
+    vf -> vf: Verify nonce and AuthType
+    vf <-> BC: Retrieve Holder / Issuer DID Doc
+    vf -> vf: Verify VP signature
+    vf -> vf: Store VP and complete transaction
+return OK
 
-CA -> SP++: VP Submission
-rnote right of CA #Lavender        
-    **[M310_REQ: VP Submission]**
-end note
+deactivate ca
 
-SP -> SP : VP Verification
-SP --> CA--: VP Submission Result
-rnote right of CA #Lavender        
-    **[M310_RES: VP Submission Result]**    
-end note
-
-== VP Submission Result Confirmation ==
-
-rnote across #white
-    The entity that requested VP submission can request the VP submission result from the Verifier.
-    However, the specific details of this process are not covered in this specification.
-end note
-
-
-|||
-|||
 @enduml

@@ -1,0 +1,135 @@
+
+@startuml retrieve_vc_list_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>VC 목록 조회</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box 서버 #AliceBlue
+    participant "**인가서버**" as CAS <<App>> #WhiteSmoke    
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$doc = "데이터명세 문서 참조"
+!$refdoc = "별도 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== 월렛 토큰 생성 ==
+activate CA
+
+CA -> WALLET++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    WALLET -> WALLET : nonce 생성
+    WALLET -> WALLET : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
+end note
+
+CA -> CAS++ : WalletTokenData요청 {walletTokenSeed}
+CAS-> CAS : WalletTokenData 생성
+CAS -> CA-- : WalletTokenData 전달 
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS : 인가앱사업자 (인가앱서버)
+end note
+
+CA -> WALLET++ : WalletToken 생성 요청 \n{WalletTokenData}
+    WALLET -> BC++ : CAS DID Doc 조회
+    rnote right of WALLET #LightGray
+        **[API_REQ : DID Doc 조회 요청]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES : DID Doc 조회 응답]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : 서명 검증
+    WALLET -> WALLET : resultNonce 생성 (resultNonce)
+
+    WALLET -> WALLET : 월렛토큰 생성 {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : resultNonce 전달 적용
+
+    CA -> CA : 월렛토큰 생성 {hWalletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== VC 목록조회 ==
+
+CA -> WALLET++ : VC 목록 조회 \n{월렛토큰}
+return {VC 목록}
+
+== VC 상태조회 ==
+
+loop 모든 VC
+    CA -> BC++ : VC 상태 조회 \n{vcId}
+
+    return {VC Meta}
+    rnote right of CA #MintCream    
+        **VcMeta** : $doc
+    end note
+end loop
+
+|||
+|||
+@enduml
+

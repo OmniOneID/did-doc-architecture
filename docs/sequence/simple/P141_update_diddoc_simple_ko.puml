@@ -1,0 +1,129 @@
+@startuml P141_update_diddoc_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P141 : 사용자 DID Document 갱신</size>
+end title
+
+'=== 옵션 ===
+autonumber "<b>(#)</b>"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke    
+end box
+
+box TAS 사업자 #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P141-1: 사용자 DID Document 갱신 시작 요청 ==
+CA -> TAS++: 사용자  요청
+rnote right of CA #Lavender        
+    **[M141_REQ: 사용자 DID Document 갱신 시작 요청]**
+end note
+
+TAS --> CA--: 사용자 DID Document 갱신 시작 응답
+rnote right of CA #Lavender        
+    **[M141_RES: 사용자 DID Document 갱신 시작 응답]**
+end note
+
+
+|||
+== P141-2: ECDH 요청  ==
+CA -> TAS++ : ECDH 요청
+rnote right of CA #Lavender
+    **[M141_REQ : ECDH 요청]**
+end note
+
+TAS --> CA--: ECDH 응답
+rnote right of CA #Lavender
+    **[M141_RES : ECDH 응답]**
+end note
+
+|||
+CA <--> TAS : 상호인증 및 키 교환
+
+|||
+== P141-3: 서버토큰 생성 요청  ==
+CA -> TAS++ : 서버토큰 생성 요청
+rnote right of CA #Lavender
+    **[M141_REQ : 서버토큰 생성 요청]**
+end note
+
+TAS --> CA--: 서버토큰 생성 응답
+rnote right of CA #Lavender
+    **[M141_RES : 서버토큰 생성 응답]**
+end note
+
+|||
+CA --> WALLET : 서버토큰 전달
+
+
+|||
+== P141-4: 사용자 DID Document 갱신 요청  ==
+WALLET -> WALLET: 사용자 DID Document 생성
+
+WALLET -> TAS++: 사용자 DID Document 갱신 요청
+rnote right of WALLET #Lavender
+    **[M141_REQ : 사용자 DID Document 갱신 요청]**
+    body:
+        사용자 DID Document
+        서버토큰
+end note
+
+TAS -> BC: 사용자 DID Document 등록
+
+TAS --> WALLET--: 사용자 DID Document 갱신 응답
+rnote right of WALLET #Lavender
+    **[M141_REQ : 사용자 DID Document 갱신 응답]**
+end note
+
+
+|||
+== P141-5: 사용자 DID Document 갱신 완료  ==
+CA -> TAS++: 사용자 DID Document 갱신 완료 요청
+rnote right of CA #Lavender        
+    **[M141_REQ: 사용자 DID Document 갱신 완료 요청]**
+end note
+
+TAS --> CA--: 사용자 DID Document 갱신 완료 응답
+rnote right of CA #Lavender        
+    **[M141_RES: 사용자 DID Document 갱신 완료 응답]**
+end note
+
+|||
+|||
+@enduml
+

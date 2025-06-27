@@ -64,6 +64,10 @@ For more information, refer to the following documents:
 
 ## 5. DID Repository List
 
+#### Demo
+
+1. [did-demo-app](https://github.com/OmniOneID/did-demo-app)
+
 #### Document
 
 1. [did-doc-architecture](https://github.com/OmniOneID/did-doc-architecture)
@@ -78,15 +82,17 @@ For more information, refer to the following documents:
 1. [did-wallet-sdk-server](https://github.com/OmniOneID/did-wallet-sdk-server)
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
+1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
 
 #### Mobile SDK 
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
+1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
 
 #### Server Application 
 
-1. [did-fabric-contact](https://github.com/OmniOneID/did-fabric-contract)
+1. [did-besu-contact](https://github.com/OmniOneID/did-besu-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)
@@ -94,6 +100,8 @@ For more information, refer to the following documents:
 1. [did-ca-server](https://github.com/OmniOneID/did-ca-server)
 1. [did-demo-server](https://github.com/OmniOneID/did-demo-server)
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
+1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
+1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 
 #### Mobile Application 
 

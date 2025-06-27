@@ -73,11 +73,7 @@ rnote right of WALLET #LightGray
 end note
 
 |||
-== 월렛 생성 ==
-WALLET -> WALLET: 월렛 초기화
-
-|||
-== 월렛 DID Document 생성 ==
+== 월렛 생성 (DID Document 생성) ==
 WALLET -> WALLET: 월렛 키(Device Key) 생성
 
 WALLET -> WALLET: (DidDoc)didDoc \
@@ -136,6 +132,9 @@ end note
         \n* walletProviderDid (월렛 사업자 DID)
 
 return 월렛 등록 응답
+
+WALLET -> WALLET : walletId, Device DidDoc저장 
+
 rnote right of WALLET #LightGray        
     **[M131_RES : 월렛 등록 응답]**
     body : 

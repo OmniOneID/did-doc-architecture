@@ -330,6 +330,7 @@ vf -> vf: 발급 Offer 생성\
         \n* vcPlanId = VC Plan id\
         \n* issuer = 발급 사업자 DID\
         \n* validUntil = 유효기한 설정
+note right: ZKP 포함 여부는 type(OFFER_TYPE)을 통해 식별
 vf -> vf: Offer vs 사용자 매핑\
         \n* offerId ~ userId
 vf -> vf: Offer Payload 생성\
@@ -506,6 +507,7 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
         vf -> vf: Profile 관련 데이터 준비\
                 \n* issuerNonce = 발급용 nonce 생성\
                 \n* (ReqE2e)reqE2e = E2E 요청정보 생성\
+                \n* ZKP 포함인 경우 CredentialOffer 생성 및 IssueProfile 하위에 삽입\
                 \n* 기타 데이터는 생략
         vf -> vf: (IssueProfile)profile = Profile 생성
     return {profile}
@@ -513,6 +515,11 @@ ca -> tas ++: Request Issue Profile\n{serverToken}
 return {authNonce, profile}
 
 == 5. Request Issue VC ==
+
+rnote over ca, wal
+    credDef 블록체인 조회
+    WalletApi 호출시 최초 masterSecret 생성/관리 됨
+end rnote
 
 ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
         \n   refId, authNonce, profile}
@@ -527,7 +534,7 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
     user -[#Blue]\ wal: 사용자 인증
     wal -> wal: signAuth(didAuth)
 
-    wal -> wal: E2E용 ECDH 수행\
+    wal -> wal: ECDH 수행\
             \n* _, pubKeyE2E = ECC 키쌍 생성\
             \n* e2eKey = profile 내 E2E 데이터로\
             \n  암호화키 생성\
@@ -535,8 +542,13 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
             \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
             \n* signKeyAgree(accE2e)
     wal -> wal: 발급 요청정보 생성 및 암호화\
+            \n* credReqMeta 생성\
             \n* (ReqVc)reqVc 생성\
             \n* encReqVc = enc(data, e2eKey, iv)
+            note right
+                ZKP 포함인 경우
+                reqVc 내 credentialRequest 포함
+            end note
 
     wal -> tas ++: Request Issue VC\n{serverToken, didAuth, accE2e, encReqVc}
         tas -> tas: serverToken 검증
@@ -556,6 +568,17 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
                     \n* profile.id 일치여부 확인\
                     \n* profile.issuerNonce 일치여부 확인
             vf -> vf: vc = **VC 발급 or 재발급**
+            note right
+                ZKP 포함인 경우
+                * vc -> credInfo
+                but 암호화된 네이밍은 encVc
+                credInfo 내 vc와 credential 포함
+                
+                credInfo = {
+                  vc = {..},
+                  credential = {..}
+                }
+            end note   
             vf -> vf: vc 암호화\
                     \n* iv = IV 생성\
                     \n* tmp = enc(vc, e2eKey, iv)\
@@ -565,8 +588,9 @@ ca -> wal ++: VC 발급 요청\n{walletToken, serverToken,\
 
     wal -> wal: encVc 복호화\
             \n* tmp = debase(encVc)\
-            \n* vc = dec(tmp, e2eKey, iv)
-    wal -> wal: 이슈어 서명 검증 및 저장
+            \n* vc, credential = dec(tmp, e2eKey, iv)
+    wal -> wal: credential 검증(meta) 및 저장
+    wal -> wal: 이슈어 서명 검증 및 저장 
     wal -> wal: vcId = VC id 추출
 return {vcId}
 
@@ -791,4 +815,102 @@ ca -> vf ++: Request Verify\n{accE2e, encVp}
 return OK
 @enduml
 
+--------------------------------------------------------------------------------
+
+@startuml seq_present_zkp_proof_direct_ko
+title
+	<size:25>ZKP Proof 제출 - Direct 모드</size>
+end title
+
+autonumber "<b>(#)</b>"
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**인가앱**" as ca <<App>>
+    participant "**월렛**" as wal <<Wallet>>
+end box
+participant "**검증 사업자**" as vf <<Server>>
+
+hnote over ca, vf #LimeGreen
+    Offer 단계 수행으로 아래 정보 획득
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== 1. Request Proof Request Profile ==
+
+activate ca
+
+ca -> vf ++: Request Proof Request Profile\n{offerId}
+    vf -> vf: offerId 유효성 확인
+    vf -> vf: Proof Request Profile 관련 데이터 준비\
+            \n* proofRequest = ZKP proofRequest 생성\
+            \n* reqE2e = E2E 요청정보 생성\
+            \n* 기타 데이터는 생략
+    vf -> vf: (ProofRequestProfile)proofRequestProfile = Proof Request Profile 생성
+return {proofRequestProfile}
+
+hnote over ca, wal #LimeGreen
+    월렛토큰 생성 {purpose = "PresentVp"}
+    * walletToken = 월렛토큰
+end hnote
+
+ca -> wal ++: 제출가능 credential 조회\n{walletToken, proofRequestProfile}
+    wal -> wal: walletToken 유효성 확인
+    wal -> wal: proofRequestProfile.proof 검증
+
+    wal -> wal: credential 검색\
+            \n* attribute, 생성\
+            \n* 이용가능한 referent 생성\
+
+
+
+return {referent}
+
+ca -> ca: 제출가능 credential 목록 출력
+
+user -[#Blue]\ ca: credential 선택
+ca -> ca: credentialId = 선택된 credential ID
+
+user -[#Blue]\ ca: 제출 클레임(attributes, predicates) 선택
+rnote over ca
+credSchema 블록체인 조회
+credDef 블록체인 조회
+end rnote
+
+
+user -[#Blue]\ ca: 제출 동의
+
+== 2. Request Verify Proof ==
+
+ca -> wal ++: Proof 제출 요청\n{walletToken, proofRequest, proofParams, selfAttributes }
+    wal -> wal: walletToken 유효성 확인
+    wal -> wal: E2E용 ECDH 수행\
+            \n* _, pubKeyE2E = ECC 키쌍 생성\
+            \n* e2eKey = profile 내 E2E 데이터로\
+            \n  암호화키 생성\
+            \n* iv = IV 생성\
+            \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+            \n* signKeyAgree(accE2e)
+    wal -> wal: proof 생성\
+            \n* proof = CreateProof(proofReq, proofParam, selfAttrs)
+    wal -> wal: 암호화\
+            \n* encProof = enc(proof, e2eKey, iv)
+return {accE2e, encProof}
+
+ca -> vf ++: Request Verify Proof\n{accE2e, encProof}
+    vf -> vf: E2E ECDH 수행\
+        \n* accE2e.proof 있으면 검증\
+        \n* e2eKey = 암호화키 생성\
+        \n* iv = accE2e.iv
+    vf -> vf: encProof 복호화\
+        \n* proof = dec(debase(encProof), e2eKey, iv)
+    vf -> vf: Proof 검증
+        rnote over vf
+        credSchema 블록체인 조회
+        credDef 블록체인 조회
+        * Proof 내 proofs, aggregatedProof, requestedProof 기반 검증
+        end rnote
+    vf -> vf: Proof 저장 및 서비스 제공
+return OK
+@enduml
 

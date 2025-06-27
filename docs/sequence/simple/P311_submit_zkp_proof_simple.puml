@@ -1,0 +1,110 @@
+@startuml P311_submit_zkp_proof_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>ZKP Proof Submission</size>
+end title
+
+'=== Options ===
+' Auto numbering: ex) "<b>000." => Display as 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide participant box at bottom of page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**CA App**" as ca <<App>>
+    participant "**Wallet**" as wal <<Wallet>>
+end box
+participant "**Verifier**" as vf <<Server>>
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+== Offer Request ==
+
+rnote across #white    
+    The Offer stage does not define standard APIs, only payload data formats are specified.
+    How to deliver the Offer is outside the scope of this document.
+end note
+
+hnote over ca, vf #LimeGreen
+    Information obtained through Offer stage execution
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== P311-1 : Request Proof Request Profile ==
+
+activate ca
+
+ca -> vf ++: Request Proof Request Profile
+    vf <-> BC: Retrieve / Respond Verifier DID Doc
+return proofRequestProfile
+
+== ProofRequestProfile Verification ==
+
+ca <-> BC: Retrieve / Respond Verifier DID Doc
+ca -> ca: Verify ProofRequestProfile signature
+
+== Wallet Token Generation ==
+
+hnote over ca, wal #LimeGreen
+    * purpose = "PresentVp"
+    * walletToken = wallet token
+end hnote
+
+== Query Available Credentials ==
+
+ca -> wal ++: Query available credentials
+    wal -> wal: Search credentials
+return referent
+
+ca -> ca: Display available credential list
+
+user -[#Blue]-> ca: Select credential
+
+user -[#Blue]-> ca: Select submission claims (attributes, predicates)
+
+ca <-> BC: Retrieve / Respond CredentialSchema
+ca <-> BC: Retrieve / Respond CredentialDefinition
+
+user -[#Blue]-> ca: Consent to submission
+
+== P311-2 : Submit ZKP Proof ==
+
+ca -> wal ++: Proof submission request
+    wal -> wal: Generate ZKP Proof
+    user -[#Blue]\ wal: User authentication
+    wal -> wal: Encrypt Proof
+return encProof
+
+ca -> vf ++: ZKP Proof verification request
+    vf -> vf: Decrypt and verify Proof
+    vf <-> BC: Retrieve / Respond CredentialSchema
+    vf <-> BC: Retrieve / Respond CredentialDefinition
+return OK
+
+deactivate ca
+
+@enduml

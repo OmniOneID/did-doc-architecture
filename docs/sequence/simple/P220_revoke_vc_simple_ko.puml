@@ -1,5 +1,5 @@
 
-@startuml P220_revoke_vc_ko
+@startuml P220_revoke_vc_simple_ko
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ' 설정
@@ -103,6 +103,10 @@ CA -> WALLET++: VC 폐기 요청
             ISSUER -> BC: VC 상태변경
         return 결과 응답
     return 결과 응답
+
+    opt ZKP 포함인 경우
+        WALLET -> WALLET: ZKP Credential 삭제
+    end
     rnote right of CA #Lavender
         **[M220_RES : 결과 응답]**
     end note

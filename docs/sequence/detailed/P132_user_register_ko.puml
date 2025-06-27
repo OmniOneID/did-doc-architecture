@@ -30,6 +30,10 @@ box 모바일 #OldLace
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
+box 인가앱 사업자 #AliceBlue
+    participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
+end box
+
 box TAS 사업자 #AliceBlue
     participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
 end box
@@ -66,9 +70,19 @@ end note
 
 |||
 == P132-2: ECDH 요청  ==
-CA -> CA: ECDH 데이터 준비 및 서명\
+CA -> WALLET: holder DID 조회
+
+return {Holder DID}
+CA -> CA: Client Nonce 생성
+CA -> CA: 임시키쌍 생성
+CA -> CA: ECDH 데이터 준비\
             \n* (ReqEcdh)reqEcdh\
             \n   = ECDH 요청 생성
+
+rnote right of CA #MintCream
+    **ReqEcdh** : $doc
+    client|clientNonce|curve|publicKey|candidate
+end note
 
 opt KeyAgreement 서명 ON
     CA -> WALLET ++: KeyAgreement 서명 요청\n{reqEcdh}
@@ -79,7 +93,14 @@ opt KeyAgreement 서명 ON
             * 월렛은 서명값만 응답
         end note
     return {reqEcdh}
+    rnote right of WALLET #MintCream
+        **signedReqEcdh** : $doc
+        client|clientNonce|curve|publicKey|candidate|Proof
+        Proof = KeyAgreeProof
+    end note
 end
+
+
 
 CA -> TAS++ : ECDH 요청
 rnote right of CA #Lavender
@@ -94,11 +115,28 @@ end note
         TAS -> TAS: reqEcdh.proof 서명 검증
     end
 
+    TAS -> TAS : reqEcdh 정합성 확인
+    TAS -> TAS : Server Nonce 생성
+    TAS -> TAS : mergedNonce 생성
+    rnote right of TAS #MintCream
+        **mergedNonce**
+        sha256(serverNonce, clientNonce)
+    end note
+    TAS -> TAS: 임시키쌍 생성
+
     TAS -> TAS: ECDH 수행\
                 \n* sesKey = 세션키\
-                \n* (AccEcdh)accEcdh\
-                \n   = ECDH 수락 생성
 
+    rnote right of TAS #MintCream
+        **sesKey**
+        ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
+    end note
+    TAS -> TAS: ECDH 수락 데이터 생성\
+                \n* (AccEcdh)accEcdh
+    rnote right of TAS #MintCream
+        **accEcdh** : $doc
+        server|serverNonce|cipher|publicKey|padding
+    end note
     opt KeyAgreement 서명  ON
         TAS -> TAS: signKeyAgree(accEcdh)
     end
@@ -114,8 +152,18 @@ end note
 opt KeyAgreement 서명  ON
     CA -> CA: accEcdh.proof 서명 검증
 end
-
+CA -> CA : accEcdh 정합성 확인
+CA -> CA : mergedNonce 생성
+rnote right of CA #MintCream
+    **mergedNonce**
+    sha256(serverNonce, clientNonce)
+end note
 CA -> CA: ECDH 수행\n* sesKey = 세션키
+
+rnote right of CA #MintCream
+    **sesKey**
+    ecies(clientPriKey|serverPubKey|mergedNonce|cipherAlg)
+end note
 
 |||
 == P132-3: 서버토큰 생성 요청  ==
@@ -124,10 +172,108 @@ hnote over CA, WALLET #LimeGreen
     * (SignedWalletInfo)walletInfo = 월렛정보 생성
     * walletToken = 월렛토큰
 end hnote
+== 월렛 토큰 생성 ==
 
-CA -> CA: * (AttestedAppInfo)caAppInfo\
-        \n   = 서명된 앱정보 생성
+activate CA
 
+CA -> WALLET++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    WALLET -> WALLET : nonce 생성
+    WALLET -> WALLET : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
+rnote right of WALLET #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed = 
+        (nonce | vaildUntil | purpose | pkgname | userId)
+end note
+
+CA -> CAS : WalletTokenData요청 {walletTokenSeed}
+CAS-> CAS : WalletTokenData 생성
+CAS -> CA : WalletTokenData 전달 
+rnote right of CA #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS : 인가앱사업자 (인가앱서버)
+end note
+
+CA -> WALLET++ : WalletToken 생성 요청 \n{WalletTokenData}
+    WALLET -> BC++ : CAS DID Doc 조회
+    rnote right of WALLET #LightGray
+        **[API_REQ : DID Doc 조회 요청]**
+        did
+    end note
+
+    return
+    rnote right of WALLET #LightGray
+        **[API_RES : DID Doc 조회 응답]**
+        DidDoc
+    end note
+    rnote right of WALLET #MintCream    
+        **DidDoc** : $refdoc
+    end note
+
+    WALLET -> WALLET : 서명 검증
+    WALLET -> WALLET : resultNonce 생성 (resultNonce)
+
+    WALLET -> WALLET : 월렛토큰 생성 {walletToken}
+    rnote right of WALLET #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of WALLET : resultNonce 전달 적용
+
+    CA -> CA : 월렛토큰 생성 {hWalletToken}
+    rnote right of CA #MintCream
+        **hWalletToken**
+        hWalletToken = 
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+== 서명된 월렛 정보 요청  ==
+CA -> WALLET ++ : 서명된 Wallet 정보 요청 {walletToken}
+    WALLET -> WALLET: nonce 생성
+    WALLET -> WALLET: Wallet 정보 서명\
+                \n* (SignedWalletInfo)walletInfo= {\
+                \n      walletId,\
+                \n      did,\
+                \n      nonce,\
+                \n      proof\
+                \n      }
+return {walletInfo}
+
+|||
+== 서명된 앱 정보 요청  ==
+rnote across #white
+    인가앱은 로그인 또는 유사한 과정을 통해 인가앱 서버와 이미 세션을 맺고 있어야 한다.
+    그러나 이 과정의 구체적인 내용은 본 규격에서 다루지 않는다.
+end note
+CA -> CAS ++ : 서명된 앱 정보 요청
+rnote right of CA #LightGray        
+    **[API_REQ : 서명된 앱 정보 요청]**
+    query:
+        appId
+end note
+    CAS -> CAS : nonce 생성
+    CAS -> CAS : 앱 정보 서명\
+            \n* (AttestedAppInfo)caAppInfo= {\
+            \n      appId,\
+            \n      provider,\
+            \n      nonce,\
+            \n      proof\
+            \n      }
+return 서명된 앱 정보 응답{caAppInfo}
+rnote right of CA #LightGray        
+    **[API_REQ : 서명된 앱 정보 응답]**
+    body:
+        attestedAppInfo
+end note
+
+|||
+== 서버토큰 데이터 생성 요청  ==
 CA -> CA: 서버토큰시드 생성\
         \n* (ServerTokenSeed)seed = {\
         \n     purpose = "CreateDid",\
@@ -135,14 +281,14 @@ CA -> CA: 서버토큰시드 생성\
         \n     caAppInfo\
         \n  }
 
-CA -> TAS++ : 서버토큰 생성 요청
-rnote right of CA #Lavender
-    **[M132_REQ : 서버토큰 생성 요청]**
-    body : 
-        messageId
-        txId
-        seed
-end note
+    CA -> TAS++ : 서버토큰 요청
+    rnote right of CA #LightGray        
+        **[API_REQ : 서버토큰 요청]**
+        body:
+            messageId,
+            txId,
+            seed
+    end note
 
     TAS -> TAS: 서명 검증\
             \n* 월렛서명 검증\
@@ -165,18 +311,26 @@ end note
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
 
-
-return 서버토큰 생성 응답
-rnote right of CA #Lavender
-    **[M132_RES : 서버토큰 생성 응답]**
-    body : 
-        txId
-        iv
+return 서버토큰 응답
+rnote right of CA #LightGray        
+    **[API_REQ : 서버토큰 응답]**
+    body:
+        txId,
+        iv,
         encStd
 end note
 
-CA -> CA: 복호화(생략) 및 데이터 준비\
-        \n* serverToken 계산
+|||
+== 서버토큰 생성  ==
+CA -> CA: encStd 복호화\
+    \n encStd = decodeMultibase(encStd)\
+    \n mergedNonce = clientNonce|serverNonce\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n sharedSecret = dec(secretKey, mergedNonce)\
+    \n* std = dec(encStd, sharedSecret, iv) 
+
+CA -> CA: 서버토큰 계산\
+    \n hServerToken = sha256(std)
 
 |||
 == 사용자 KYC  ==

@@ -1,0 +1,110 @@
+@startuml P311_submit_zkp_proof_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>ZKP Proof 제출</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**인가앱**" as ca <<App>>
+    participant "**월렛**" as wal <<Wallet>>
+end box
+participant "**검증 사업자**" as vf <<Server>>
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box 
+
+== Offer 요청 ==
+
+rnote across #white    
+    Offer단계에서는 표준 API를 정의하지 않고 payload에 대한 데이터 형식만 규정되어있음.
+    Offer를 어떤 방식으로 전달할지는 본 문서의 범위 밖이다.
+end note
+
+hnote over ca, vf #LimeGreen
+    Offer 단계 수행으로 아래 정보 획득
+    * device, service, (optional)offerId, (optional)passcode
+end hnote
+
+== P311-1 : 증명요청 프로파일 요청 ==
+
+activate ca
+
+ca -> vf ++: 증명요청 프로파일 요청
+    vf <-> BC: Verifier DID Doc 조회 / 응답
+return proofRequestProfile
+
+== ProofRequestProfile 검증 ==
+
+ca <-> BC: Verifier DID Doc 조회 / 응답
+ca -> ca: ProofRequestProfile 서명 검증
+
+== 월렛 토큰 생성 ==
+
+hnote over ca, wal #LimeGreen
+    * purpose = "PresentVp"
+    * walletToken = 월렛토큰
+end hnote
+
+== 제출가능 Credential 조회 ==
+
+ca -> wal ++: 제출가능 credential 조회
+    wal -> wal: credential 검색
+return referent
+
+ca -> ca: 제출가능 credential 목록 출력
+
+user -[#Blue]-> ca: credential 선택
+
+user -[#Blue]-> ca: 제출 클레임(attributes, predicates) 선택
+
+ca <-> BC: CredentialSchema 조회 / 응답
+ca <-> BC: CredentialDefinition 조회 / 응답
+
+user -[#Blue]-> ca: 제출 동의
+
+== P311-2 : ZKP Proof 제출 ==
+
+ca -> wal ++: Proof 제출 요청
+    wal -> wal: ZKP Proof 생성
+    user -[#Blue]\ wal: 사용자 인증
+    wal -> wal: Proof 암호화
+return encProof
+
+ca -> vf ++: ZKP Proof 검증 요청
+    vf -> vf: Proof 복호화 및 검증
+    vf <-> BC: CredentialSchema 조회 / 응답
+    vf <-> BC: CredentialDefinition 조회 / 응답
+return OK
+
+deactivate ca
+
+@enduml

@@ -5,14 +5,14 @@ end title
 
 participant "**Wallet**" as wal <<Wallet>>
 participant "**Certified App**" as ca <<App>>
-participant "**Certified App Service**" as cap <<Server>>
+participant "**Certified App Service**" as cas <<Server>>
 participant "**TA**" as ta <<Server>>
 autonumber "<b>(#)</b>"
 
 ca -> wal++: Request SignedWalletInfo 
 wal --> ca--: Transmit SignedWalletInfo
-ca -> cap++: Request AttestedAppInfo
-cap --> ca--: Transmit AttestedAppInfo
+ca -> cas++: Request AttestedAppInfo
+cas --> ca--: Transmit AttestedAppInfo
 ca -> ca: Generate ServerTokenSeed (SignedWalletInfo, AttestedAppInfo)
 ca -> ta++: Request ServerToken Generation (ServerTokenSeed)
 ta -> ta: Generate ServerTokenData (ServerTokenSeed)
