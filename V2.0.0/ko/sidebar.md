@@ -3,6 +3,7 @@
   - [소프트웨어 아키텍처](/V2.0.0/docs/architecture/Software%20Architecture_ko.md)
 - 개념
   - [JSON 직렬화](/V2.0.0/docs/concepts/JSON_serialization_ko.md)
+  - [키 운영 설명](/V2.0.0/docs/concepts/KeyManagement_ko.md)
   - [VP 제출](/V2.0.0/docs/concepts/Presentation%20of%20VP_ko.md)
   - [ZKP Proof 제출](/V2.0.0/docs/concepts/Presentation%20of%20ZKP%20Proof_ko.md)
   - [사용자 등록](/V2.0.0/docs/concepts/User%20Registration_ko.md)

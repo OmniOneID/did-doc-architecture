@@ -3,6 +3,7 @@
     - [Software Architecture](/V2.0.0/docs/architecture/Software%20Architecture.md)
 - Concepts
     - [JSON Serialization](/V2.0.0/docs/concepts/JSON_serialization.md)
+    - [Key Management Information](/V2.0.0/docs/concepts/KeyManagement.md)
     - [Presentation of VP](/V2.0.0/docs/concepts/Presentation%20of%20VP.md)
     - [ZKP Proof Submission](/V2.0.0/docs/concepts/Presentation%20of%20ZKP%20Proof.md)
     - [User Registration](/V2.0.0/docs/concepts/User%20Registration.md)
