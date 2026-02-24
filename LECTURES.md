@@ -1,119 +1,23 @@
 # OmniOne Open DID Lecture Series
-> We have prepared a lecture series to help you easily understand OmniOne Open DID.<br>
-> This series will be very helpful for gaining a comprehensive understanding of both DID and Open DID.
+> We have prepared a lecture series to help you easily understand and hands-on experience OmniOne Open DID.<br>
+> From basic concepts to server setup practice, you can learn Open DID step by step.
 
 ---
 
-Table of Contents
---
-- [OmniOne Open DID Lecture Series : For Beginners](#omnione-open-did-lecture-series--for-beginners)
-  - [Lecture 1: Introduction to DID Basics](#1-introduction-to-did-basics)
-  - [Lecture 2: Open DID Platform Components](#2-open-did-platform-components)
-  - [Lecture 3: Trusted Environment in Open DID](#3-trusted-environment-in-open-did)
-  - [Lecture 4: User Registration in Open DID](#4-user-registration-in-open-did)
-  - [Lecture 5: VC Issuance in Open DID](#5-vc-issuance-in-open-did)
-  - [Lecture 6: VP Submission in Open DID](#6-vp-submission-in-open-did)
-  - [Appendix: Open DID GitHub Repository Structure](#appendix-open-did-github-repository-structure)
+**Table of Contents**
+- [OmniOne Open DID Lecture Series : For Beginners](LECTURES_INTRO.md)
+  - [Lecture 1: Introduction to DID Basics](LECTURES_INTRO.md#1-introduction-to-did-basics)
+  - [Lecture 2: Open DID Platform Components](LECTURES_INTRO.md#2-open-did-platform-components)
+  - [Lecture 3: Trusted Environment in Open DID](LECTURES_INTRO.md#3-trusted-environment-in-open-did)
+  - [Lecture 4: User Registration in Open DID](LECTURES_INTRO.md#4-user-registration-in-open-did)
+  - [Lecture 5: VC Issuance in Open DID](LECTURES_INTRO.md#5-vc-issuance-in-open-did)
+  - [Lecture 6: VP Submission in Open DID](LECTURES_INTRO.md#6-vp-submission-in-open-did)
+  - [Appendix: Open DID GitHub Repository Structure](LECTURES_INTRO.md#appendix-open-did-github-repository-structure)
+- [OmniOne Open DID Lecture Series : Setup Tutorial](LECTURES_TUTORIAL.md)
+  - [Lecture 1: Overview of Open DID Hands-On Training](LECTURES_TUTORIAL.md#1-overview-of-open-did-hands-on-training)
+  - [Lecture 2-1: Practice for Installing an Open DID Server Using Orchestrator](LECTURES_TUTORIAL.md#2-1-practice-for-installing-an-open-did-server-using-orchestrator)
+  - [Lecture 2-2: Practice for Installing and Running a Server via Gradle Build](LECTURES_TUTORIAL.md#2-2-practice-for-installing-and-running-a-server-via-gradle-build)
+  - [Lecture 2-3: Practice for Installing and Running a Server in an IntelliJ IDEA Environment](LECTURES_TUTORIAL.md#2-3-practice-for-installing-and-running-a-server-in-an-intellij-idea-environment)
+  - [Lecture 2-4: Practice for Configuring a Server Using Docker Containers](LECTURES_TUTORIAL.md#2-4-practice-for-configuring-a-server-using-docker-containers)
+  - [Lecture 3: Practice for Registering an Installed Open DID Server to the Trust Registry](LECTURES_TUTORIAL.md#3-practice-for-registering-an-installed-open-did-server-to-the-trust-registry)
 - [More lectures coming soon...]
-
-<br>
-
-## OmniOne Open DID Lecture Series : For Beginners
-
----
-
-### 1. Introduction to DID Basics
-<iframe width="450" height="250" src="https://www.youtube.com/embed/59FRLpMAS2w?si=-s8YMjO0MKl1AZ1h" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the basic concept of DID(Decentralized Identifier).
-
-📚 **Topics covered in this lecture**
-- DID(Decentralized Identifier) and DID Document
-- VC(Verifiable Credential) and VP(Verifiable Presentation)
-- Wallet and ZKP(Zero-Knowledge Proof)
-- The relationship and usage flow of DID, VC, and VP
-- The role of Blockchain and the Issuer–Holder–Verifier structure
-
----
-
-### 2. Open DID Platform Components
-<iframe width="450" height="250" src="https://www.youtube.com/embed/qDgUdvhDtSI?si=kWUyzTxUOsKPU5rT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the components of the Open DID platform.
-
-📚 **Topics covered in this lecture**
-- Overview and features of Open DID
-- Concepts of Open DID components
-- Basic components of Open DID(Ledger, Server, Client)
-- Full components of Open DID(TAS, Issuer, Verifier, etc.)
-- Overall process of Open DID(5 steps)
-
----
-
-### 3. Trusted Environment in Open DID
-<iframe width="450" height="250" src="https://www.youtube.com/embed/4A2Rf1MSWAY?si=o-Yeabb15G1nlOva" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the trust environment of Open DID.
-
-📚 **Topics covered in this lecture**
-- Overview of the Open DID trust environment
-- Architecture of the Open DID trust environment
-- Core elements of the Open DID trust environment
-- Procedures for building the Open DID trust environment
-- Security elements of Open DID
-
----
-
-### 4. User Registration in Open DID
-<iframe width="450" height="250" src="https://www.youtube.com/embed/Gwk33NnCPRM?si=CtUfuxeNoI0rVYbi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the concept and procedure of Open DID user registration.
-
-📚 **Topics covered in this lecture**
-- Overview of Open DID user registration
-- Review of concepts related to Open DID user registration
-- Wallet registration procedure in Open DID
-- User registration procedure in Open DID
-
----
-
-### 5. VC Issuance in Open DID
-<iframe width="450" height="250" src="https://www.youtube.com/embed/zH-yIJzE7p4?si=BWBIkpH4fFZ3zkfQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the concept and procedure of Open DID VC issuance.
-
-📚 **Topics covered in this lecture**
-- Overview of Open DID VC issuance
-- Review of concepts related to Open DID VC issuance
-- Procedure for Open DID VC issuance
-- Practical use cases of Open DID VC issuance
-
----
-
-### 6. VP Submission in Open DID
-<iframe width="450" height="250" src="https://www.youtube.com/embed/H2m0RTLoay0?si=-dermb69tMqc6zUd" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the concept and procedure of Open DID VP submission.
-
-📚 **Topics covered in this lecture**
-- Overview of Open DID VP submission
-- Review of concepts related to Open DID VP submission
-- Procedure for Open DID VP submission
-- Practical use cases of Open DID VP submission
-
----
-
-### Appendix. Open DID GitHub Repository Structure
-<iframe width="450" height="250" src="https://www.youtube.com/embed/PlNfRa59t2A?si=eh39rVMNYG1mAKX2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
-
-This video will help you understand the overall structure of the Open DID GitHub repository.
-
-📚 **Topics covered in this lecture**
-- Overview of the Open DID GitHub repository structure
-- Open DID GitHub repository structure – Server
-- Open DID GitHub repository structure – Mobile
-- Open DID GitHub repository structure – Document
-- Full structure of the Open DID GitHub repository
-
----
-
