@@ -11,6 +11,7 @@
 - [2-3강. Open DID 서버 설치 (IDE)](#2-3강-open-did-서버-설치-ide)
 - [2-4강. Open DID 서버 설치 (Docker)](#2-4강-open-did-서버-설치-docker)
 - [3강. Open DID 서버 등록 (Trust Registry)](#3강-open-did-서버-등록-trust-registry)
+- [4강. Open DID App 설치](#4강-open-did-app-설치)
 - [더 많은 강의가 곧 공개됩니다...]
 
 <br>
@@ -101,5 +102,20 @@ Docker 컨테이너 기반으로 서버를 구성하는 방법을 실습합니�
 - TA 서버 등록 실습
 - Issuer 서버 등록 실습
 - 빠른 등록 방법 소개
+
+⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
+
+---
+
+### 4강. Open DID App 설치
+<iframe width="450" height="250" src="https://www.youtube.com/embed/g3FwjgP9m8w?si=VTen_SlPuo8Ri3xm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+Open DID 모바일 앱을 설치하는 방법을 실습합니다.
+
+📚 **이번 강의에서 다루는 내용**
+- 앱 설치 개요 및 준비 사항
+- 프로젝트 폴더 구조 안내
+- 앱 설치 및 실행 실습
+- 설치 결과 확인
 
 ⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.

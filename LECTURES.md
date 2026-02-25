@@ -20,4 +20,5 @@
   - [Lecture 2-3: Practice for Installing and Running a Server in an IntelliJ IDEA Environment](LECTURES_TUTORIAL.md#2-3-practice-for-installing-and-running-a-server-in-an-intellij-idea-environment)
   - [Lecture 2-4: Practice for Configuring a Server Using Docker Containers](LECTURES_TUTORIAL.md#2-4-practice-for-configuring-a-server-using-docker-containers)
   - [Lecture 3: Practice for Registering an Installed Open DID Server to the Trust Registry](LECTURES_TUTORIAL.md#3-practice-for-registering-an-installed-open-did-server-to-the-trust-registry)
+  - [Lecture 4: Practice for Installing the Open DID Mobile App](LECTURES_TUTORIAL.md#4-practice-for-installing-the-open-did-mobile-app)
 - [More lectures coming soon...]
