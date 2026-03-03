@@ -58,6 +58,8 @@
   - [README](/V2.0.0/README.md)
   - [ROADMAP](/V2.0.0/ROADMAP.md)
   - [Open DID Lecture Series](/V2.0.0/LECTURES.md)
+    - [For Beginners](/V2.0.0/LECTURES_INTRO.md)
+    - [Setup Tutorial](/V2.0.0/LECTURES_TUTORIAL.md)
   - [CHANGELOG](/V2.0.0/CHANGELOG.md)
   - [CLA](/V2.0.0/CLA.md)
   - [CODE_OF_CONDUCT](/V2.0.0/CODE_OF_CONDUCT.md)
