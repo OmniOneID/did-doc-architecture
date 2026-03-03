@@ -17,7 +17,7 @@ jobs:
         with:
           script: |
             const author = context.payload.pull_request.user.login;
-            let reviewers = ['k3255','djpark0402','yoongyu-lee','jinhwankim6557','gw-nam'];
+            let reviewers = ['k3255','ejkim4619','JoshuaLeeshock','shlee1223','yoongyu-lee','jinhwankim6557','gw-nam'];
             
             if (reviewers.includes(author)) {
               if(reviewers.length === 1)
