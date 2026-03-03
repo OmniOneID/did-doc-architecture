@@ -12,6 +12,7 @@
 - [Lecture 2-4: Practice for Configuring a Server Using Docker Containers](#2-4-practice-for-configuring-a-server-using-docker-containers)
 - [Lecture 3: Practice for Registering an Installed Open DID Server to the Trust Registry](#3-practice-for-registering-an-installed-open-did-server-to-the-trust-registry)
 - [Lecture 4: Practice for Installing the Open DID Mobile App](#4-practice-for-installing-the-open-did-mobile-app)
+- [Lecture 5: Practice for Registering a User via the Open DID Mobile App](#5-practice-for-registering-a-user-via-the-open-did-mobile-app)
 - [More lectures coming soon...]
 
 <br>
@@ -131,5 +132,22 @@ This Lecture 4 provides hands-on practice for installing the Open DID mobile app
 - Introduction to the project folder structure
 - Practice for installing and running the app
 - Verifying the installation results
+
+⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
+
+---
+
+### 5. Practice for Registering a User via the Open DID Mobile App
+<iframe width="450" height="250" src="https://www.youtube.com/embed/5xTM6pHN9_Q?si=cDGVakJqInIYgqLb" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+\* Please enable English subtitles to follow along.
+
+This Lecture 5 provides hands-on practice for registering a user via the Open DID mobile app.
+
+📚 **Topics covered in this lecture**
+- Overview of user registration
+- Pre-configuration for user registration
+- Practice for configuring TA Admin settings
+- Hands-on practice for user registration
 
 ⚠️ This lecture is based on Open DID Release Version 2.0.0.0.

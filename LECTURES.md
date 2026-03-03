@@ -21,4 +21,5 @@
   - [Lecture 2-4: Practice for Configuring a Server Using Docker Containers](LECTURES_TUTORIAL.md#2-4-practice-for-configuring-a-server-using-docker-containers)
   - [Lecture 3: Practice for Registering an Installed Open DID Server to the Trust Registry](LECTURES_TUTORIAL.md#3-practice-for-registering-an-installed-open-did-server-to-the-trust-registry)
   - [Lecture 4: Practice for Installing the Open DID Mobile App](LECTURES_TUTORIAL.md#4-practice-for-installing-the-open-did-mobile-app)
+  - [Lecture 5: Practice for Registering a User via the Open DID Mobile App](LECTURES_TUTORIAL.md#5-practice-for-registering-a-user-via-the-open-did-mobile-app)
 - [More lectures coming soon...]

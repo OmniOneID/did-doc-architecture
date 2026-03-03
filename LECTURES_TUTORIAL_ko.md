@@ -12,6 +12,7 @@
 - [2-4강. Open DID 서버 설치 (Docker)](#2-4강-open-did-서버-설치-docker)
 - [3강. Open DID 서버 등록 (Trust Registry)](#3강-open-did-서버-등록-trust-registry)
 - [4강. Open DID App 설치](#4강-open-did-app-설치)
+- [5강. 사용자 등록](#5강-사용자-등록)
 - [더 많은 강의가 곧 공개됩니다...]
 
 <br>
@@ -117,5 +118,20 @@ Open DID 모바일 앱을 설치하는 방법을 실습합니다.
 - 프로젝트 폴더 구조 안내
 - 앱 설치 및 실행 실습
 - 설치 결과 확인
+
+⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
+
+---
+
+### 5강. 사용자 등록
+<iframe width="450" height="250" src="https://www.youtube.com/embed/5xTM6pHN9_Q?si=cDGVakJqInIYgqLb" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+Open DID 모바일 앱을 통해 사용자를 등록하는 방법을 실습합니다.
+
+📚 **이번 강의에서 다루는 내용**
+- 사용자 등록 개요
+- 사용자 등록 사전 설정
+- TA 어드민 설정 실습
+- 사용자 등록 실습
 
 ⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
