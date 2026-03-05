@@ -22,4 +22,5 @@
   - [3강. Open DID 서버 등록 (Trust Registry)](LECTURES_TUTORIAL_ko.md#3강-open-did-서버-등록-trust-registry)
   - [4강. Open DID App 설치](LECTURES_TUTORIAL_ko.md#4강-open-did-app-설치)
   - [5강. 사용자 등록](LECTURES_TUTORIAL_ko.md#5강-사용자-등록)
+  - [6강. VC 발급 (Issuer-Initiated)](LECTURES_TUTORIAL_ko.md#6강-vc-발급-issuer-initiated)
 - [더 많은 강의가 곧 공개됩니다...]

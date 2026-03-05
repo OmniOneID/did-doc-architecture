@@ -13,6 +13,7 @@
 - [Lecture 3: Practice for Registering an Installed Open DID Server to the Trust Registry](#3-practice-for-registering-an-installed-open-did-server-to-the-trust-registry)
 - [Lecture 4: Practice for Installing the Open DID Mobile App](#4-practice-for-installing-the-open-did-mobile-app)
 - [Lecture 5: Practice for Registering a User via the Open DID Mobile App](#5-practice-for-registering-a-user-via-the-open-did-mobile-app)
+- [Lecture 6: Practice for Issuing a VC through the Issuer Server](#6-practice-for-issuing-a-vc-through-the-issuer-server)
 - [More lectures coming soon...]
 
 <br>
@@ -149,5 +150,22 @@ This Lecture 5 provides hands-on practice for registering a user via the Open DI
 - Pre-configuration for user registration
 - Practice for configuring TA Admin settings
 - Hands-on practice for user registration
+
+⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
+
+---
+
+### 6. Practice for Issuing a VC through the Issuer Server
+<iframe width="450" height="250" src="https://www.youtube.com/embed/v8PGJy1b6jM?si=TTl5cmv1Ke5OdKmb" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+\* Please enable English subtitles to follow along.
+
+This Lecture 6 provides hands-on practice for issuing a VC through the Issuer server.
+
+📚 **Topics covered in this lecture**
+- Explanation of the VC concept and issuance workflow
+- Practice for configuring ZKP policies
+- Practice for configuring VC policies
+- Hands-on practice for issuing a VC
 
 ⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
