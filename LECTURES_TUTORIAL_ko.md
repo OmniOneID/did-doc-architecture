@@ -13,6 +13,7 @@
 - [3강. Open DID 서버 등록 (Trust Registry)](#3강-open-did-서버-등록-trust-registry)
 - [4강. Open DID App 설치](#4강-open-did-app-설치)
 - [5강. 사용자 등록](#5강-사용자-등록)
+- [6강. VC 발급 (Issuer-Initiated)](#6강-vc-발급-issuer-initiated)
 - [더 많은 강의가 곧 공개됩니다...]
 
 <br>
@@ -133,5 +134,20 @@ Open DID 모바일 앱을 통해 사용자를 등록하는 방법을 실습합�
 - 사용자 등록 사전 설정
 - TA 어드민 설정 실습
 - 사용자 등록 실습
+
+⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
+
+---
+
+### 6강. VC 발급 (Issuer-Initiated)
+<iframe width="450" height="250" src="https://www.youtube.com/embed/v8PGJy1b6jM?si=TTl5cmv1Ke5OdKmb" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+Issuer 서버에서 발급 요청을 받아 VC를 발급받는 과정을 실습합니다.
+
+📚 **이번 강의에서 다루는 내용**
+- VC 개념 및 발급 흐름 설명
+- ZKP 정책 설정 실습
+- VC 정책 설정 실습
+- VC 발급 실습
 
 ⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
