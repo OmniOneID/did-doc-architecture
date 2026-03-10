@@ -23,4 +23,5 @@
   - [4강. Open DID App 설치](LECTURES_TUTORIAL_ko.md#4강-open-did-app-설치)
   - [5강. 사용자 등록](LECTURES_TUTORIAL_ko.md#5강-사용자-등록)
   - [6강. VC 발급 (Issuer-Initiated)](LECTURES_TUTORIAL_ko.md#6강-vc-발급-issuer-initiated)
+  - [7강. VC 발급 (User-Initiated)](LECTURES_TUTORIAL_ko.md#7강-vc-발급-user-initiated)
 - [더 많은 강의가 곧 공개됩니다...]

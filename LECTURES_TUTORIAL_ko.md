@@ -14,6 +14,7 @@
 - [4강. Open DID App 설치](#4강-open-did-app-설치)
 - [5강. 사용자 등록](#5강-사용자-등록)
 - [6강. VC 발급 (Issuer-Initiated)](#6강-vc-발급-issuer-initiated)
+- [7강. VC 발급 (User-Initiated)](#7강-vc-발급-user-initiated)
 - [더 많은 강의가 곧 공개됩니다...]
 
 <br>
@@ -149,5 +150,20 @@ Issuer 서버에서 발급 요청을 받아 VC를 발급받는 과정을 실습�
 - ZKP 정책 설정 실습
 - VC 정책 설정 실습
 - VC 발급 실습
+
+⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
+
+---
+
+### 7강. VC 발급 (User-Initiated)
+<iframe width="450" height="250" src="https://www.youtube.com/embed/PeTYccwPn3M?si=u0JxKwtARXYrEQ54" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+사용자가 모바일 앱을 통해 VC 발급을 직접 요청하는 과정을 실습합니다.
+
+📚 **이번 강의에서 다루는 내용**
+- VC 발급 흐름 이해
+- VC 정책 설정 실습
+- 사용자 주도 VC 발급 실습
+- 발급 결과 확인
 
 ⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
