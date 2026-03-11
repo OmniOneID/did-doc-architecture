@@ -15,6 +15,7 @@
 - [Lecture 5: Practice for Registering a User via the Open DID Mobile App](#5-practice-for-registering-a-user-via-the-open-did-mobile-app)
 - [Lecture 6: Practice for Issuing a VC through the Issuer Server](#6-practice-for-issuing-a-vc-through-the-issuer-server)
 - [Lecture 7: Practice for Requesting a VC Issuance via the Mobile App](#7-practice-for-requesting-a-vc-issuance-via-the-mobile-app)
+- [Lecture 8: Practice for Submitting a VC to a Verifier](#8-practice-for-submitting-a-vc-to-a-verifier)
 - [More lectures coming soon...]
 
 <br>
@@ -185,5 +186,22 @@ This Lecture 7 provides hands-on practice for requesting a VC issuance via the m
 - Practice for configuring VC policies
 - Hands-on practice for user-initiated VC issuance
 - Verifying the issuance results
+
+⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
+
+---
+
+### 8. Practice for Submitting a VC to a Verifier
+<iframe width="450" height="250" src="https://www.youtube.com/embed/UphkkBjQyxg?si=49GHPaumcYFrdtFJ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+\* Please enable English subtitles to follow along.
+
+This Lecture 8 provides hands-on practice for submitting a VC to a verifier.
+
+📚 **Topics covered in this lecture**
+- Explanation of the VP concept and submission workflow
+- Understanding VP policies
+- Practice for configuring VP policies
+- Hands-on practice for submitting a VP
 
 ⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
