@@ -23,4 +23,6 @@
   - [Lecture 4: Practice for Installing the Open DID Mobile App](LECTURES_TUTORIAL.md#4-practice-for-installing-the-open-did-mobile-app)
   - [Lecture 5: Practice for Registering a User via the Open DID Mobile App](LECTURES_TUTORIAL.md#5-practice-for-registering-a-user-via-the-open-did-mobile-app)
   - [Lecture 6: Practice for Issuing a VC through the Issuer Server](LECTURES_TUTORIAL.md#6-practice-for-issuing-a-vc-through-the-issuer-server)
+  - [Lecture 7: Practice for Requesting a VC Issuance via the Mobile App](LECTURES_TUTORIAL.md#7-practice-for-requesting-a-vc-issuance-via-the-mobile-app)
+  - [Lecture 8: Practice for Submitting a VC to a Verifier](LECTURES_TUTORIAL.md#8-practice-for-submitting-a-vc-to-a-verifier)
 - [More lectures coming soon...]
