@@ -16,7 +16,7 @@
 - [6강. VC 발급 (Issuer-Initiated)](#6강-vc-발급-issuer-initiated)
 - [7강. VC 발급 (User-Initiated)](#7강-vc-발급-user-initiated)
 - [8강. VP 제출](#8강-vp-제출)
-- [더 많은 강의가 곧 공개됩니다...]
+- [9강. ZKP Credential 제출](#9강-zkp-credential-제출)
 
 <br>
 
@@ -181,5 +181,20 @@ Issuer 서버에서 발급 요청을 받아 VC를 발급받는 과정을 실습�
 - VP 정책 이해
 - VP 정책 설정 실습
 - VP 제출 실습
+
+⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.
+
+---
+
+### 9강. ZKP Credential 제출
+<iframe width="450" height="250" src="https://www.youtube.com/embed/Xt97pUTpzLY?si=1skhMHbFpgY9Fq-4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="padding-right: 100px;"></iframe>
+
+영지식 증명 기반 인증서를 제출하는 방법을 실습합니다.
+
+📚 **이번 강의에서 다루는 내용**
+- ZKP 개념 및 제출 흐름 이해
+- ZKP 정책 이해
+- ZKP 정책 설정 실습
+- ZKP 제출 실습
 
 ⚠️ 본 강의는 Open DID 릴리즈 버전 2.0.0.0 버전 기준입니다.

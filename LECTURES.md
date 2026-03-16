@@ -25,4 +25,4 @@
   - [Lecture 6: Practice for Issuing a VC through the Issuer Server](LECTURES_TUTORIAL.md#6-practice-for-issuing-a-vc-through-the-issuer-server)
   - [Lecture 7: Practice for Requesting a VC Issuance via the Mobile App](LECTURES_TUTORIAL.md#7-practice-for-requesting-a-vc-issuance-via-the-mobile-app)
   - [Lecture 8: Practice for Submitting a VC to a Verifier](LECTURES_TUTORIAL.md#8-practice-for-submitting-a-vc-to-a-verifier)
-- [More lectures coming soon...]
+  - [Lecture 9: Practice for Submitting a Zero-Knowledge Proof (ZKP) Credential](LECTURES_TUTORIAL.md#9-practice-for-submitting-a-zero-knowledge-proof-zkp-credential)
