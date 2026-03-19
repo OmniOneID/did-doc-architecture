@@ -25,4 +25,4 @@
   - [6강. VC 발급 (Issuer-Initiated)](LECTURES_TUTORIAL_ko.md#6강-vc-발급-issuer-initiated)
   - [7강. VC 발급 (User-Initiated)](LECTURES_TUTORIAL_ko.md#7강-vc-발급-user-initiated)
   - [8강. VP 제출](LECTURES_TUTORIAL_ko.md#8강-vp-제출)
-- [더 많은 강의가 곧 공개됩니다...]
+  - [9강. ZKP Credential 제출](LECTURES_TUTORIAL_ko.md#9강-zkp-credential-제출)
