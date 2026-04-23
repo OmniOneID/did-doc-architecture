@@ -786,7 +786,7 @@ def object CredentialRequest: "credential request"
 - `~/nonce`: 요청의 유일성을 보장하기 위한 무작위 난수(Nonce). Credential Offer와 Credential Request 간의 보안성을 유지하는 역할.
 - `~/blindedMs`: 사용자의 속성을 블라인드 처리한(암호화된) 상태로 발급자에게 제공하는 데이터
 - `~/blindedMsCorrectnessProof`: blindedMs가 올바르게 생성되었음을 증명하는 암호학적 증명 데이터
-- 
+
 ### 4.4. Credential
 
 Credential은 발급자(Issuer)가 피증명인(Holder)에게 제공하는 디지털 증명서로, 탈중앙화 신원 증명(DID) 시스템에서 사용됩니다.
