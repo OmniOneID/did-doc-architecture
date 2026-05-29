@@ -81,9 +81,9 @@ def object WalletTokenData: "wallet token data"
 {
     + WalletTokenSeed "seed"      : "wallet token seed"
     + multibase       "sha256_pii": "multibase(sha256(personId)) - hashed PII"
-    + Provider        "provider"  : "wallet provider information"
+    + Provider        "provider"  : "CApp provider information"
     + multibase       "nonce"     : "provider nonce", byte_length(16)
-    + AssertProof     "proof"     : "provider proof - wallet provider signature"
+    + AssertProof     "proof"     : "provider proof - CApp provider signature"
 }
 ```
 
@@ -173,8 +173,8 @@ def object ServerTokenData: "server token data"
     + walletId             "walletId"  : "wallet id"
     + appId                "caAppId"   : "CApp id"
     + utcDatetime          "validUntil": "token expiration date and time"
-    + Provider             "provider"  : "provider information"
+    + Provider             "provider"  : "CApp provider information"
     + multibase            "nonce"     : "provider nonce", byte_length(16)
-    + AssertProof          "proof"     : "provider proof - provider signature"
+    + AssertProof          "proof"     : "provider proof - CApp provider signature"
 }
 ```

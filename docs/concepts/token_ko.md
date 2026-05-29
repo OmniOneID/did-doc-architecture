@@ -81,9 +81,9 @@ def object WalletTokenData: "wallet token data"
 {
     + WalletTokenSeed "seed"      : "wallet token seed"
     + multibase       "sha256_pii": "multibase(sha256(personId)) - hashed PII"
-    + Provider        "provider"  : "월렛 사업자 정보"
+    + Provider        "provider"  : "인가앱 사업자 정보"
     + multibase       "nonce"     : "provider nonce", byte_length(16)
-    + AssertProof     "proof"     : "provider proof - 월렛 사업자 서명"
+    + AssertProof     "proof"     : "provider proof - 인가앱 사업자 서명"
 }
 ```
 
@@ -172,8 +172,8 @@ def object ServerTokenData: "server token data"
     + walletId             "walletId"  : "wallet id"
     + appId                "caAppId"   : "인가앱 id"
     + utcDatetime          "validUntil": "token 만료 일시"
-    + Provider             "provider"  : "사업자 정보"
+    + Provider             "provider"  : "인가앱 사업자 정보"
     + multibase            "nonce"     : "provider nonce", byte_length(16)
-    + AssertProof          "proof"     : "provider proof - 사업자 서명"
+    + AssertProof          "proof"     : "provider proof - 인가앱 사업자 서명"
 }
 ```
