@@ -3,8 +3,16 @@ OpenDID API Documentation Writing Guide
 
 - Subject: API Documentation Writing Guide
 - Author: Open Source Development Team, Kang Youngho
-- Date: 2024-09-03
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
+
+Revision History
+---
+
+| Version | Date       | Change Details  |
+| ------- | ---------- | --------------- |
+| v1.0.0  | 2024-09-03 | Initial version |
+| v1.0.1  | 2026-10-13 | Fix links |
 
 Table of Contents
 ---
@@ -24,7 +32,7 @@ Table of Contents
     - [1.5. Unit API vs Compound API](#15-unit-api-vs-compound-api)
     - [1.6. Data Standards](#16-data-standards)
 - [2. API reference Sample](#2-api-reference-sample)
-    - [2.1. Retrieving Issuable VCs](#21-retrieving-issuable-vc)
+    - [2.1. Retrieving Issuable VCs](#21-retrieving-issuable-vcs)
         - [2.1.1. Request](#211-request)
         - [2.1.2. Response](#212-response)
         - [2.1.3. Example](#213-example)

@@ -3,11 +3,12 @@
 
 - 주제 : 월렛 소프트웨어 아키텍쳐
 - 작성 : 오픈소스개발팀
-- 일자 : 2025-06-23
-- 버전 : v2.0.0
+- 일자 : 2026-10-13
+- 버전 : v2.0.1
 
 | 버전     | 일자         | 변경                       |
 |--------|------------|--------------------------|
+| v2.0.1 | 2026-10-13 | 오타 수정                    |
 | v2.0.0 | 2025-06-23 | ZKP 내용 추가 및 SDK 통합 내용 반영 |
 | v1.0.0 | 2024-10-18 | 최초 작성                    |
 
@@ -15,12 +16,12 @@
 <br>
 
 
-CA(Certified App)는 신뢰 가능한 월랫 기능을 제공하기 위해서 유저 등록, VC 발급(ZKP 포함), VP 제출, ZKP 제출 등 Wallet, Utility, Communication, DataModel 컴포넌트를 참조하여 각 프로토콜 별 기능을 구현할 수 있다.
+CA(Certified App)는 신뢰 가능한 월렛 기능을 제공하기 위해서 유저 등록, VC 발급(ZKP 포함), VP 제출, ZKP 제출 등 Wallet, Utility, Communication, DataModel 컴포넌트를 참조하여 각 프로토콜 별 기능을 구현할 수 있다.
 
 ![wallet_sw_archietecture](./images/wallet_sw_architecture.svg)
 
 ### 1. 컴포넌트 설명
-상기 SDK구조는 OpenDID의 클라이언트의 인가앱과 월랫 소프트웨어 관계 구조도이며 아래는 각 컴포넌트별 대표 클래스를 설명한다.
+상기 SDK구조는 OpenDID의 클라이언트의 인가앱과 월렛 소프트웨어 관계 구조도이며 아래는 각 컴포넌트별 대표 클래스를 설명한다.
 
 - Wallet
   - Open DID에 필요한 WalletToken, Lock/Unlock, Key, DID Document(DID 문서), Verifiable Credential(이하 VC), Zero-knowledge Proof(이하 ZKP) 정보를 생성 및 보관, 관리하는 기능을 제공한다.
@@ -33,7 +34,7 @@ CA(Certified App)는 신뢰 가능한 월랫 기능을 제공하기 위해서 �
 - DataModel
   - 앱과 월렛 SDK에서 사용된 데이터 모델을 정의한다.
 
-| 커포넌트 그룹       | 클래스             | 기능                                                                  |
+| 컴포넌트 그룹       | 클래스             | 기능                                                                  |
 |------------------|------------------|----------------------------------------------------------------------|
 | Wallet           | WalletService    | - 유저 등록, VC발급(ZKP 포함), VP 제출 및 ZKP 제출 비즈니스 로직 처리<br>- 서명 값을 이용한 Proof 생성     |
 |                  | WalletCore       | - key, DID/VC, VP, ZKP 생성<br>- sign                                 |

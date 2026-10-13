@@ -21,8 +21,8 @@ Proof Request format
 - 주제
     - ZKP Proof Request 구조 정의
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Proof Request format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-30 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -109,7 +110,7 @@ def object ProofRequest: "proofRequest"
 - `~/nonce`: 난수 값 (증명 요청의 고유성을 보장)
 - `~/requestedAttributes`: 사용자가 공개해야 하는 속성 정보
   - `~/requestedAttributes/name`: 요청된 속성 이름 (예: "zkpsex" → 성별)
-  - `~/requestedAttributes/restriction`: 특정 Credential Definition(credDefId)에서 발급된 증명서만 허용
+  - `~/requestedAttributes/restrictions`: 특정 Credential Definition(credDefId)에서 발급된 증명서만 허용
 - `~/requestedPredicates`: 사용자가 조건을 만족해야 하는 속성 정보
   - `~/requestedPredicates/name`: 요청된 속성 이름 (예: "zkpbirth" → 생년월일)
   - `~/requestedPredicates/pType`: 비교 연산자 ("LE": ≤ (작거나 같음), "GE": ≥, "EQ": =)

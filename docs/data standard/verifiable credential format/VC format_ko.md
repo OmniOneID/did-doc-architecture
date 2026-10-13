@@ -15,15 +15,15 @@ puppeteer:
         fullPage: false
 ---
 
-Verifiable Crendentials format
+Verifiable Credentials format
 ==
 
 - 주제
-    - VC(Verifiable Crendentials) 데이터 형식 정의
+    - VC(Verifiable Credentials) 데이터 형식 정의
     - 엔티티별 가입증명서 VC 데이터 정의
 - 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 
 개정이력
@@ -32,6 +32,7 @@ Verifiable Crendentials format
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
 | v1.0.0 | 2024-09-03 | 초안                                         |
+| v1.0.1 | 2026-10-13 | 오타 수정, 링크 수정                               |
 
 
 <div style="page-break-after: always;"></div>
@@ -53,10 +54,10 @@ Verifiable Crendentials format
         - [2.3.4. `Vc` object](#234-vc-object)
 - [3. 가입증명서 VC](#3-가입증명서-vc)
     - [3.1. TAS Certificate VC](#31-tas-certificate-vc)
-        - [3.1.1. Crendential Metadata](#311-crendential-metadata)
+        - [3.1.1. Credential Metadata](#311-credential-metadata)
         - [3.1.2. Claims](#312-claims)
     - [3.2. Provider Certificate VC](#32-provider-certificate-vc)
-        - [3.2.1. Crendential Metadata](#321-crendential-metadata)
+        - [3.2.1. Credential Metadata](#321-credential-metadata)
         - [3.2.2. Claims](#322-claims)
 
 <!-- /TOC -->
@@ -66,7 +67,7 @@ Verifiable Crendentials format
 
 ## 1. 개요
 
-본 문서는 OpenDID에서 사용하는 Verifiable Crendentials(VC)의 데이터 구성을 정의한다.
+본 문서는 OpenDID에서 사용하는 Verifiable Credentials(VC)의 데이터 구성을 정의한다.
 기본적인 규정은 W3C의 `[VC-MODEL]` (Verifiable Credentials Data Model v2.0)을 준수한다.
 
 아래 사항에 대해서는 본 문서에서 정의한 것을 준수하여야 한다.
@@ -368,7 +369,7 @@ def object Vc: "VC object"
 - `Vc:~/proof`는 배열이 아닌 단일 객체
 - `Vc:~/evidence[]/type`은 배열이 아닌 string
 
-##### 2.3.4.1. Crendential Metadata
+##### 2.3.4.1. Credential Metadata
 
 - `~/id`: VC id는 UUID 타입을 권장하나 구현에 따라 다양한 형식을 사용할 수 있다.
 - `~/type`: VC 타입은 구현에 따른다.
@@ -409,7 +410,7 @@ def object Vc: "VC object"
 멀티 subject를 지원하는 경우 `~/credentialSubject`의 구조는 다음과 같이 배열로 변경된다.
 
 ```c#
-+ array(object) "credentialSubject": "lsit of credential subject"
++ array(object) "credentialSubject": "list of credential subject"
 {
     + did          "id"    : "subject did"
     + array(Claim) "claims": "클레임 목록", min_count(1)
@@ -444,7 +445,7 @@ VC에 대한 이슈어 서명은 `~/proof` 객체에 저장하며, 다음의 두
 
 ### 3.1. TAS Certificate VC
 
-#### 3.1.1. Crendential Metadata
+#### 3.1.1. Credential Metadata
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`
@@ -473,7 +474,7 @@ VC에 대한 이슈어 서명은 `~/proof` 객체에 저장하며, 다음의 두
 
 ### 3.2. Provider Certificate VC
 
-#### 3.2.1. Crendential Metadata
+#### 3.2.1. Credential Metadata
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`

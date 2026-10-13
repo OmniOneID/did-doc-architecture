@@ -21,8 +21,8 @@ VC Schema format
 - 주제
     - VC Schema 구조 정의
 - 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ VC Schema format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2024-09-03 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -60,7 +61,7 @@ VC Schema format
 
 ## 1. 개요
 
-본 문서는 OpenDID에서 사용하는 VC(Verifiable Crendentials) Schema의 구조와 관련 정보를 정의한다.
+본 문서는 OpenDID에서 사용하는 VC(Verifiable Credentials) Schema의 구조와 관련 정보를 정의한다.
 
 VC Schema는 다음의 정보를 포함한다.
 
@@ -230,7 +231,7 @@ def object VcSchema: "VC schema"
 ```json
 {
     "@context": [
-        "https://www.w3.org/ns/credentials/v2",
+        "https://www.w3.org/ns/credentials/v2"
     ],
     "id": "07f99562-fb73-4377-b5d3-82025873539f",
     "type": ["VerifiableCredential", "StudentIdCredential"],
@@ -244,14 +245,14 @@ def object VcSchema: "VC schema"
                 "caption": "성",
                 "value": "홍",
                 "type": "text",
-                "format": "plain",
+                "format": "plain"
             },
             {
                 "code": "org.iso.18013.5.given_name",
                 "caption": "이름",
                 "value": "길동",
                 "type": "text",
-                "format": "plain",
+                "format": "plain"
             },
             {
                 "code": "org.iso.18013.5.portrait",
@@ -259,7 +260,7 @@ def object VcSchema: "VC schema"
                 "type": "image",
                 "format": "jpg",
                 "value": "..."
-            },
+            }
             // ...생략...
         ]
     },
@@ -323,7 +324,7 @@ def object VcSchema: "VC schema"
                 },
                 "items": [
                     {"id": "student_id", "caption": "학번", "type": "text", "format": "plain"},
-                    {"id": "school_name", "caption": "학교명", "type": "text", "format": "plain"}
+                    {"id": "school_name", "caption": "학교명", "type": "text", "format": "plain"},
                     {"id": "school_logo", "caption": "로고이미지", "type": "image", "format": "png",
                         "location": "remote", "required": false}
                 ]

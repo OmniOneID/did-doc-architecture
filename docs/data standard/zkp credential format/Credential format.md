@@ -20,8 +20,8 @@ Credential Format
 
 - Subject: Definition of Credential Data Format
 - Author: Dongjun Park
-- Date: 2025-04-30
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 Revision History
 ---
@@ -29,6 +29,7 @@ Revision History
 | Version | Date       | Description                         |
 | ------- | ---------- | ----------------------------------- |
 | v0.0.1  | 2025-04-30 | Initial draft                       |
+| v1.0.1  | 2026-10-13 | Revise wording                      |
 
 <div style="page-break-after: always;"></div>
 
@@ -73,7 +74,7 @@ For undefined items, refer to `[ZKP-DATA-SPEC]`.
 
 ### 2.1. Credential Object
 
-The `Vc` object is a Verifiable Credential issued by the Issuer to the Holder and has the following structure:
+The `Credential` object is a Verifiable Credential issued by the Issuer to the Holder and has the following structure:
 
 - Credential Metadata  
 - Claim(s)  

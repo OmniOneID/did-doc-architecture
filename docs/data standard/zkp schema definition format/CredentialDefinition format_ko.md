@@ -21,8 +21,8 @@ Credential Definition format
 - 주제
     - ZKP Credentail Definition 구조 정의
 - 작성: 박동준
-- 일자: 2025-04-02
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Credential Definition format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-02 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정 |
 
 
 <div style="page-break-after: always;"></div>
@@ -45,7 +46,7 @@ Credential Definition format
   - [2. Credential Definition 구조](#2-credential-definition-구조)
     - [2.1. `CredentialDefinition` object](#21-credentialdefinition-object)
   - [3. 예시](#3-예시)
-    - [3.2. `운전면허증 Credential Definition`](#32-운전면허증-credential-definition)
+    - [3.1. `운전면허증 Credential Definition`](#31-운전면허증-credential-definition)
 
 <!-- /TOC -->
 
@@ -80,7 +81,7 @@ format은 모두 OSD (OpenDID Schema Definition Language)로 정의한다.
 
 
 ### 2.1. `CredentialDefinition` object
-Credential Definition (CredDef)**을 정의하는 정보입니다.
+Credential Definition (CredDef)을 정의하는 정보입니다.
 특정 Credential Schema에 따라 Credential을 발급하는 방식과 서명 방식을 정의합니다.
 발급자(Issuer)가 Credential을 발급하려면 반드시 Credential Definition을 생성해야 합니다.
 ```c#
@@ -92,7 +93,7 @@ def object CredentialDefinition : "Credential 정의"
     + CREDENTIAL_TYPE       "type"        : "Credential 서명 타입"
     + object                "value"       : "value"
     {
-        + object "primary" : "기본증명
+        + object "primary" : "기본증명"
         {
             + string "n" :  "n"
             + string "z" :  "z"
@@ -115,17 +116,17 @@ def object CredentialDefinition : "Credential 정의"
     + string "tag" : "태그"
 }
 ```
-- `~/id`: Credential Schema의 고유 식별자(ID). 특정 스키마를 참조하기 위해 사용됨.
+- `~/id`: Credential Definition의 고유 식별자(ID).
 - `~/schemaId` : Credential이 따르는 Schema(스키마) ID. 어떤 데이터 구조를 따르는지 정의한 Schema를 참조.
 - `~/ver`: Credential Definition의 버전(Version).
-- `~/type`: Credential의 서명 방식(Type). CL은 CL 서명(Clairaut-Lippold) 방식을 의미하며, 영지식 증명(ZKP) 기반 Credential 발급에 사용되는 기본 서명 방식.
+- `~/type`: Credential의 서명 방식(Type). CL은 CL 서명(Camenisch-Lysyanskaya) 방식을 의미하며, 영지식 증명(ZKP) 기반 Credential 발급에 사용되는 기본 서명 방식.
 - `~/value/primary`: 발급자 서명 키 및 암호학적 파라메터
 - `~/value/primary/n`: 공개 키의 일부로 사용되는 큰 소수
 - `~/value/primary/z`: 공개 키의 또 다른 구성 요소.
 - `~/value/primary/s`: 발급자의 서명 키와 관련된 암호학적 요소.
 - `~/value/primary/r`: Credential에 포함되는 속성(Attribute)별 암호학적 커밋(Commitment) 값.
 - `~/value/primary/r/zkpsex`: 성별(sex) 속성에 대한 암호학적 커밋 값
-- `~/value/primary/r/zkpsort`: 개인 식별 번호(passport 또는 주민등록번호 일부) 속성에 대한 커밋 값
+- `~/value/primary/r/zkpasort`: 개인 식별 번호(passport 또는 주민등록번호 일부) 속성에 대한 커밋 값
 - `~/value/primary/r/zkpaddr`: 주소(address) 속성에 대한 커밋 값
 - `~/value/primary/r/zkpbirth`: 생년월일(birth) 속성에 대한 커밋 값
 - `~/value/primary/r/masterSecret`: 피증명인의 Master Secret에 대한 암호학적 커밋 값. Credential을 연결하여 신원을 증명하는 데 사용됨.
@@ -137,7 +138,7 @@ def object CredentialDefinition : "Credential 정의"
 ## 3. 예시
 본 장에서는 Credential Definition의 이해를 돕기 위해 구체적인 예를 들어 추가로 설명한다.
 
-### 3.2. `운전면허증 Credential Definition`
+### 3.1. `운전면허증 Credential Definition`
 
 ```json
 {
@@ -161,7 +162,6 @@ def object CredentialDefinition : "Credential 정의"
       }
     },
     "tag": "Tag1"
-  }
 }
 ```
 

@@ -20,12 +20,13 @@ ZKP Data Specification
 
 - Subject: Structure and Requirements of Key Data
 - Author: Dongjun Park
-- Date: 2025-04-30
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Change Description |
 | ------- | ---------- | ------------------ |
 | v1.0.0  | 2025-04-30 | Initial Draft      |
+| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix image references |
 
 <div style="page-break-after: always;"></div>
 
@@ -178,7 +179,7 @@ It is used to create unique identifiers, and in the ZKP OpenDID project, it can 
 - message identifiers
 - cases requiring distinct naming for items
 
-![uuid](images/type_uuid_ko.svg)
+![uuid](images/type_uuid.svg)
 
 [Examples]
 
@@ -231,41 +232,43 @@ def enum ATTR_TYPE: "Attribute type"
 An object representing information related to attributes during the proof generation process.
 It allows selective disclosure or hidden verification of certain attributes.
 
-c#
+```c#
 def object AttrReferent: "attribute referent"
 {   
     + string                   "name"               : "Attribute name" 
     + bool                     "checkRevealed"      : "Whether to reveal the attribute"
     + array(AttrSubReferent)   "referent"           : "AttrSubReferent", min_extend(1)   
 }
+```
 
-- ~/name: A reference name used to identify a specific attribute in the proof.
-- ~/checkRevealed: Indicates whether the attribute will be revealed in the proof.
+- `~/name`: A reference name used to identify a specific attribute in the proof.
+- `~/checkRevealed`: Indicates whether the attribute will be revealed in the proof.
   - If set to `true`, the verifier can see this attribute.
   - If `false`, the attribute will be verified using zero-knowledge proof (ZKP) without revealing its value.
-- ~/referent: A list of AttrSubReferent objects providing detailed information of the attribute(s) being referred to in the proof.
+- `~/referent`: A list of AttrSubReferent objects providing detailed information of the attribute(s) being referred to in the proof.
 
 #### 4.1.2. AttrSubReferent
 
 Contains detailed information related to a specific attribute.
 
-c#
+```c#
 def object AttrSubReferent: "attribute sub referent"
 {   
     + string "raw"                        : "ex: seoul" 
     + uuid "credId"                       : "Credential ID"
     + definition-identifier "credDefId"   : "CredentialDefinition identifier"
 }
+```
 
-- ~/raw: Original value of the attribute.
-- ~/credId: ID of the credential containing the attribute.
-- ~/credDefId: ID of the Credential Definition issued for a specific schema. It is used by verifiers to verify the validity of the credential.
+- `~/raw`: Original value of the attribute.
+- `~/credId`: ID of the credential containing the attribute.
+- `~/credDefId`: ID of the Credential Definition issued for a specific schema. It is used by verifiers to verify the validity of the credential.
 
 #### 4.1.3. UserReferent
 
 Represents user reference data associated with specific attributes in a credential. It defines which attributes are included in ZKP proofs.
 
-c#
+```c#
 def object UserReferent: "user referent"
 {   
     + uuid "credId"                       : "Credential ID"
@@ -274,101 +277,108 @@ def object UserReferent: "user referent"
     + string "referentName"               : "Referent Name"
     + bool   "isRevealed"                 : "Whether to reveal the attribute"
 }
+```
 
-- ~/credId: Credential ID.
-- ~/raw: Original attribute value.
-- ~/referentKey: Internal reference key used during proof generation to distinguish between attributes.
-- ~/referentName: Reference group name containing the attribute.
-- ~/isRevealed: Indicates whether the attribute will be revealed.
+- `~/credId`: Credential ID.
+- `~/raw`: Original attribute value.
+- `~/referentKey`: Internal reference key used during proof generation to distinguish between attributes.
+- `~/referentName`: Reference group name containing the attribute.
+- `~/isRevealed`: Indicates whether the attribute will be revealed.
 
 #### 4.1.4. PredicateReferent
 
 Used to verify specific conditions on attribute values (e.g., if age ≥ 18). This enables zero-knowledge verification without disclosing the actual value.
 
-c#
+```c#
 def object PredicateReferent: "predicate referent"
 {   
     + string "name"               : "Name defining the predicate check, e.g., zkpbirth" 
     + bool   "checkRevealed"      : "Whether to reveal the attribute"
     + array(referent)             : "PredicateSubReferent", min_extend(1)
 }
+```
 
-- ~/name: Reference name identifying a predicate in the proof.
-- ~/checkRevealed: If `false`, the value is not revealed but only the condition is verified using ZKP.
+- `~/name`: Reference name identifying a predicate in the proof.
+- `~/checkRevealed`: If `false`, the value is not revealed but only the condition is verified using ZKP.
   - If `true`, the actual value may be disclosed (though typically false in predicate use).
-- ~/referent: A list of attributes to be used in the predicate check.
+- `~/referent`: A list of attributes to be used in the predicate check.
 
 #### 4.1.5. PredicateSubReferent
 
-c#
+```c#
 def object PredicateSubReferent: "predicate sub referent"
 {   
     + string "raw"                        : "ex: 20010101"
     + uuid "credId"                       : "Credential ID"
     + definition-identifier "credDefId"   : "CredentialDefinition identifier"
 }
+```
 
-- ~/raw: Original attribute value.
-- ~/credId: Credential ID that includes the attribute.
-- ~/credDefId: ID of the Credential Definition issued by the issuer to verify the attribute using ZKP.
+- `~/raw`: Original attribute value.
+- `~/credId`: Credential ID that includes the attribute.
+- `~/credDefId`: ID of the Credential Definition issued by the issuer to verify the attribute using ZKP.
 
 #### 4.1.6. ProofParam
 
 A core structure used in proof generation, including credentials, attributes, and ZKP data.
 
-c#
+```c#
 def object ProofParam: "proof param"
 {   
     + object "referentInfo"     : "ReferentInfo" 
     + object "schema"           : "CredentialSchema" 
     + object "credDef"          : "CredentialDefinition"
 }
+```
 
-- ~/referentInfo: Original attribute reference information.
-- ~/schema: Credential schema.
-- ~/credDef: Credential definition.
+- `~/referentInfo`: Original attribute reference information.
+- `~/schema`: Credential schema.
+- `~/credDef`: Credential definition.
 
 #### 4.1.7. ReferentInfo
 
 Contains information on how a specific credential and its attributes are referenced and proved.
 
-c#
+```c#
 def object ReferentInfo: "ReferentInfo"
 {
     + object "referents"                  : "Referent", min_extend(1)
 }
+```
 
-- ~/referents: A set of credentials used in proof requests.
+- `~/referents`: A set of credentials used in proof requests.
 
 #### 4.1.8. Referent
 
 Includes information on how a specific credential and its attributes are referenced and proved.
 
-c#
+```c#
 def object Referent: "Referent"
 {
     + schema-identifier "schemaId"        : "Credential schema ID"
     + definition-identifier "credDefId"   : "CredentialDefinition ID"
     + object "attrs"                      : "ReferentAttributeValue", min_extend(1)
 }
+```
 
-- ~/schemaId: ID defining the schema structure of the credential.
-- ~/credDefId: ID used by the verifier to verify the credential's validity.
-- ~/attrs: List of attributes used in the proof.
+- `~/schemaId`: ID defining the schema structure of the credential.
+- `~/credDefId`: ID used by the verifier to verify the credential's validity.
+- `~/attrs`: List of attributes used in the proof.
 
 #### 4.1.9. ReferentAttributeValue
 
 Information about the attributes to be proved.
 
-c#
+```c#
 def object ReferentAttributeValue: "ReferentAttributeValue"
 {
     + string "referentKey" : "Referent key"
     + bool   "isRevealed"  : "Whether the attribute is revealed"
 }
+```
 
-- ~/referentKey: Key referenced in the proof request.
-- ~/isRevealed: Whether this attribute is revealed (`true` or `false`).
+- `~/referentKey`: Key referenced in the proof request.
+- `~/isRevealed`: Whether this attribute is revealed (`true` or `false`).
 
 #### 4.1.10. ProofVerifyParam
 
@@ -412,7 +422,7 @@ def object BlindedCredentialSecretsCorrectnessProof: "BlindedCredentialSecretsCo
 ```
 - `~/c`: Hash value of the blinded message sent from the prover to the issuer.
 - `~/vDashCap`: Value proving the blinded message was not tampered with.
-- `~/cCaps`: Commit value for the masterSecret. Proves that the prover possesses the master secret.
+- `~/mCaps`: Commit value for the masterSecret. Proves that the prover possesses the master secret.
 
 #### 4.1.13. KeyCorrectnessProof
 
@@ -678,7 +688,7 @@ def object CredentialPrimaryKeyPair : "CredentialPrimaryKeyPair"
 
 Large RSA prime numbers known only to the issuer.
 ```c#
-def object CredentialPrimaryKeyPair : "CredentialPrimaryKeyPair"
+def object CredentialPrimaryPrivateKey : "CredentialPrimaryPrivateKey"
 {
     + string "p" : "First prime number"
     + string "q" : "Second prime number"

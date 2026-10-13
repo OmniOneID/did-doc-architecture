@@ -4,11 +4,12 @@
 
 - Subject: Explanation of Wallet Interface
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | Revise wording  |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -68,7 +69,7 @@ Users can create their wallet to securely store and use their digital ID and ide
 |   DID Issuance  |   O   |   O   |
 |   DID Renewal  |   O   |   O   |
 |   VC Issuance  |   O   |   O   |
-|   DID Issuance & Credential Presentation  |   O   |   O   |
+|   DID Issuance & Certificate VC Issuance  |   O   |   O   |
 |   VC Deletion  |   O   |   O   |
 |   VP Presentation  |   O   |   O   |
 |   VC List Query  |   O   |      |

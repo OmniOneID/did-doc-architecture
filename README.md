@@ -92,7 +92,7 @@ For more information, refer to the following documents:
 
 #### Server Application 
 
-1. [did-besu-contact](https://github.com/OmniOneID/did-besu-contract)
+1. [did-besu-contract](https://github.com/OmniOneID/did-besu-contract)
 1. [did-issuer-server](https://github.com/OmniOneID/did-issuer-server)
 1. [did-ta-server](https://github.com/OmniOneID/did-ta-server)
 1. [did-verifier-server](https://github.com/OmniOneID/did-verifier-server)

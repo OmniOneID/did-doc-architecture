@@ -20,12 +20,13 @@ puppeteer:
 
 - 주제: 주요 데이터의 구조 및 요건
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-30 | 초안 |
+| v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정, 이미지 참조 수정 |
 
 
 <div style="page-break-after: always;"></div>
@@ -65,7 +66,7 @@ puppeteer:
       - [4.1.12. BlindedCredentialSecretsCorrectnessProof](#4112-blindedcredentialsecretscorrectnessproof)
       - [4.1.13. KeyCorrectnessProof](#4113-keycorrectnessproof)
       - [4.1.14. SubProof](#4114-subproof)
-      - [4.1.15 PrimaryProof](#4115-primaryproof)
+      - [4.1.15. PrimaryProof](#4115-primaryproof)
       - [4.1.16. AggregatedProof](#4116-aggregatedproof)
       - [4.1.17. RequestedProof](#4117-requestedproof)
       - [4.1.18. Identifiers](#4118-identifiers)
@@ -124,10 +125,10 @@ schema, Definition, credential, proof, offer, proofRequest format 등 핵심적�
 
 **■ Terminal**
 
-![ALPHA](images/term_ALPHA.svg)
-![BIT](images/term_BIT.svg)
-![DIGIT](images/term_DIGIT.svg)
-![HEXDIG](images/term_HEXDIG.svg)
+![ALPHA](images/term_ALPHA_ko.svg)
+![BIT](images/term_BIT_ko.svg)
+![DIGIT](images/term_DIGIT_ko.svg)
+![HEXDIG](images/term_HEXDIG_ko.svg)
 
 
 <div style="page-break-after: always;"></div>
@@ -322,7 +323,7 @@ def object PredicateSubReferent: "predicate sub referent"
 
 Proof 생성 과정에서 사용되는 주요 구조체 중 하나로, 사용자가 제공하는 증명서(credential), 속성(attribute), 그리고 영지식 증명(Zero-Knowledge Proof, ZKP)에 필요한 데이터들을 포함
 ```c#
-def object ProofParam: "predicate referent"
+def object ProofParam: "proof param"
 {   
     + object "referentInfo"     : "ReferentInfo" 
     + object "schema"           : "CredentialSchema" 
@@ -415,7 +416,7 @@ def object BlindedCredentialSecretsCorrectnessProof: "BlindedCredentialSecretsCo
 ```
 - `~/c`: 피증명인이 발급자에게 보낼 블라인드 메시지(Blinded Message). 발급자가 서명할 때 실제 Credential의 특정 속성 값을 직접 알지 못하도록 하는 역할을 함.
 - `~/vDashCap`: blindedMs 메시지가 변조되지 않았음을 증명하는 값.
-- `~/cCaps`: masterSecret에 대한 커밋(commit) 값. 피증명인이 자신의 Master Secret을 보유하고 있음을 증명하는 데 사용됨.
+- `~/mCaps`: masterSecret에 대한 커밋(commit) 값. 피증명인이 자신의 Master Secret을 보유하고 있음을 증명하는 데 사용됨.
  
 #### 4.1.13. KeyCorrectnessProof
 
@@ -445,7 +446,7 @@ def object SubProof: "SubProof"
 }
 ```
 
-#### 4.1.15 PrimaryProof
+#### 4.1.15. PrimaryProof
 
 기본적인 동등성 증명(Equality Proof, eqProof)과 부등식 증명(Inequality Proof, neProofs)을 포함합니다.
 ```c#
@@ -690,9 +691,9 @@ def object CredentialPrimaryKeyPair : "CredentialPrimaryKeyPair"
 #### 4.1.30. CredentialPrimaryPrivateKey
 Issuer(발급자)만 알고 있는 RSA 기반의 대형 소수
 ```c#
-def object CredentialPrimaryKeyPair : "CredentialPrimaryKeyPair"
+def object CredentialPrimaryPrivateKey : "CredentialPrimaryPrivateKey"
 {
-    + stirng "p" : "첫 번째 소수"
+    + string "p" : "첫 번째 소수"
     + string "q" : "두 번째 소수"
 }
 ```
@@ -749,7 +750,7 @@ def object publicKeyMetadata : "publicKeyMetadata"
 }
 ```
 - `~/xz`: 추가적인 공개키 메타정보
-- `~/xr`: 속성(Attribute)별 추가적인 공개키 정보 (ex: zkpsex, zkpbirth, zkpsort, zkpaddr, mastersecret 등 특정 속성을 검증할 때 사용됨)
+- `~/xr`: 속성(Attribute)별 추가적인 공개키 정보 (ex: zkpsex, zkpbirth, zkpasort, zkpaddr, mastersecret 등 특정 속성을 검증할 때 사용됨)
 
 ### 4.2. CredentialOffer
 
@@ -766,7 +767,7 @@ def object CredentialOffer: "credential offer"
 - `~/nonce`: 재사용 공격을 방지하기 위해 사용되는 난수 값 (Credential Request와 연관)
 - `~/schemaId`: 증명서(Credential)의 데이터 구조(스키마)를 정의하는 ID
 - `~/credDefId`: 발급자가 특정 스키마에 대해 생성한 증명서 정의(CredentialDefinition)의 ID, CredentialDefinition은 해당증명서가 어떤 서명키로 발급되었는지 나타내며 검증자가 이를 이용하여 증명서의 유효성을 검증함
-- `~/keyCorrectnessProof`: 발급자가 올바른 공개 키를 사용했을을 보장하는 증명값, 증명서 요청 단계에서 Holder가 발급자의 공개키가 올바른지 확인하기 위함
+- `~/keyCorrectnessProof`: 발급자가 올바른 공개 키를 사용했음을 보장하는 증명값, 증명서 요청 단계에서 Holder가 발급자의 공개키가 올바른지 확인하기 위함
 
 ### 4.3. CredentialRequest
 
@@ -786,7 +787,7 @@ def object CredentialRequest: "credential request"
 - `~/nonce`: 요청의 유일성을 보장하기 위한 무작위 난수(Nonce). Credential Offer와 Credential Request 간의 보안성을 유지하는 역할.
 - `~/blindedMs`: 사용자의 속성을 블라인드 처리한(암호화된) 상태로 발급자에게 제공하는 데이터
 - `~/blindedMsCorrectnessProof`: blindedMs가 올바르게 생성되었음을 증명하는 암호학적 증명 데이터
-- 
+
 ### 4.4. Credential
 
 Credential은 발급자(Issuer)가 피증명인(Holder)에게 제공하는 디지털 증명서로, 탈중앙화 신원 증명(DID) 시스템에서 사용됩니다.
@@ -880,7 +881,7 @@ def object CredentialDefinition : "Credential 정의"
 - `~/schemaId`: 증명서(Credential)의 데이터 구조(스키마)를 정의하는 ID
 - `~/id`: 발급자가 특정 스키마에 대해 생성한 증명서 정의(CredentialDefinition)의 ID, CredentialDefinition은 해당증명서가 어떤 서명키로 발급되었는지 나타내며 검증자가 이를 이용하여 증명서의 유효성을 검증함
 - `~/ver`: CredentialDefinition의 버전(Version).
-- `~/type`: Credential의 서명 방식(Type). CL은 CL 서명(Clairaut-Lippold) 방식을 의미하며, 영지식 증명(ZKP) 기반 Credential 발급에 사용되는 기본 서명 방식.
+- `~/type`: Credential의 서명 방식(Type). CL은 CL 서명(Camenisch-Lysyanskaya) 방식을 의미하며, 영지식 증명(ZKP) 기반 Credential 발급에 사용되는 기본 서명 방식.
 - `~/value/primary`: 발급자 서명 키 및 암호학적 파라메터
 - `~/tag`: CredentialDefinition을 식별하는 태그(Tag). 동일한 스키마(Schema)라도 여러 CredentialDefinition이 존재할 수 있으며, 이를 구분하는 역할.
 

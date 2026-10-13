@@ -21,8 +21,8 @@ Credential Request format
 - 주제
     - ZKP Credential Request 구조 정의
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Credential Request format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-30 | 초안      |
+| v1.0.1 | 2026-10-13 | 문구 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -55,7 +56,7 @@ Credential Request format
 ## 1. 개요
 
 본 문서는 OpenDID ZKP에서 사용하는 Credential Request 구조와 관련 정보를 정의한다.
-Proof Request는 다음의 정보를 포함한다.
+Credential Request는 다음의 정보를 포함한다.
 
 - Credential Request 제목 및 설명
 - Credential Request

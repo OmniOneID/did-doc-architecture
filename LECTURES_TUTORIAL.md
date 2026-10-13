@@ -34,7 +34,7 @@ This first lecture provides an overview of the entire Open DID hands-on workflow
 - Key terminology: DID, VC, VP, and more
 - Guidance on choosing the installation method (Orchestrator / Gradle / IDE / Docker)
 
-⚠️ This lecture is baed on Open DID Release Version 2.0.0.0.
+⚠️ This lecture is based on Open DID Release Version 2.0.0.0.
 
 ---
 

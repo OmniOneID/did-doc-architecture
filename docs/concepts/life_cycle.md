@@ -2,11 +2,12 @@
 
 - Subject: Wallet Life Cycle
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | Revise wording  |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -56,7 +57,7 @@ DID undergoes a **5-stage lifecycle**.
 ![Image Description](./images/life_cycle_diddoc.svg)
 <!-- Spacing for line break -->
 
-### * Wallet Lifecycle States
+### * DID Document Lifecycle States
 * `DID Document Registration`
 * `DID Document Update`
 * `DID Document State Change`
@@ -96,7 +97,7 @@ VC (Verifiable Credential) undergoes a **4-stage lifecycle**.
 ![Image Description](./images/life_cycle_vc.svg)
 <!-- Spacing for line break -->
 
-### * Wallet Lifecycle States
+### * VC Lifecycle States
 * `VC Issuance`
 * `VC Reissuance`
 * `VC State Change`

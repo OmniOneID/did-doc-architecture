@@ -37,14 +37,14 @@ This means that one image corresponds to one graphml or plantuml file.
 ## Document Modification Example  
 
 If changes occur in the `Software Architecture.md of docs/architecture`:  
- 1. Write the content for 4.8 Notification Service  
- 2. Add the yEd diagram for Notification Service (graphml/308.component_notification_service.graphml)  
- 3. Export the .graphml to SVG and add it (images/308.component_notification_service.svg)  
+ 1. Write the content for 5.8 Notification Service  
+ 2. Add the yEd diagram for Notification Service (graphml/component_notification_service.graphml)  
+ 3. Export the .graphml to SVG and add it (images/component_notification_service.svg)  
  4. Write the corresponding content in the md file and insert the image
 
 ```
-### 4.8. Notification Service  
+### 5.8. Notification Service  
 Write a description of the notification service // Write content  
-![](images/308.component_notification_service.svg) // Insert image  
+![](images/component_notification_service.svg) // Insert image  
 ```
 <br>

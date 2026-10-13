@@ -20,11 +20,12 @@ Presentation of VP
 
 - Subject: Explanation of the concept of VP presentation
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | Revise wording, Fix links |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -43,10 +44,10 @@ Table of Contents
     - [3.2. Device of Service Definition](#32-device-of-service-definition)
     - [3.3. Definition of transmission media and message format for Verify offer](#33-definition-of-transmission-media-and-message-format-for-verify-offer)
 - [4. Presentation Procedures](#4-presentation-procedures)
-    - [4.1. Offer](#41-offer-stage)
+    - [4.1. Offer Stage](#41-offer-stage)
         - [4.1.1. VerifyOfferPayload](#411-verifyofferpayload)
         - [4.1.2. Example using QR code](#412-example-using-qr-code)
-    - [4.2. Presentation](#42-presentation-stage)
+    - [4.2. Presentation Stage](#42-presentation-stage)
         - [4.2.1. Presentation Modes](#421-presentation-modes)
         - [4.2.2. Example of Direct Mode](#422-example-of-direct-mode)
 
@@ -174,7 +175,7 @@ The presentation procedures are illustrated in the diagram below.
 
 ![Presentation Procedures](images/proc_present.svg)
 
-### 4.1. Offer
+### 4.1. Offer Stage
 
 The offer is illustrated in the diagram below.
 
@@ -301,7 +302,7 @@ aW50cyI6IFsiaHR0cHM6Ly9leGFtcGxlLmNvbS92cCJdLAogICAgImxvY2tlZCI6IHRydWUKfQ
 
 ![Verify Offer 2](images/seq_vp_offer2.svg)
 
-### 4.2. Presentation
+### 4.2. Presentation Stage
 
 The presentation involves obtaining the VerifyProfile and submitting the encrypted VP.
 The summary of the presentation is as follows:

@@ -21,8 +21,8 @@ Credential Offer format
 - 주제
     - ZKP Credential Offer 구조 정의
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Credential Offer format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-30 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -87,14 +88,14 @@ def object CredentialOffer: "credential offer"
     + nonce "nonce"                      : "난수 값"
     + schema-identifier "schemaId"       : "CredentialSchema의 ID"
     + definition-identifier "credDefId"  : "CredentialDefinition의 ID"
-    + object "keyCorrectnessProof"       : "KeyCorrectnessProof, "
+    + object "keyCorrectnessProof"       : "KeyCorrectnessProof"
 }
 ```
 
 - `~/nonce`: 재사용 공격을 방지하기 위해 사용되는 난수 값 (Credential Request와 연관)
 - `~/schemaId`: 증명서(Credential)의 데이터 구조(스키마)를 정의하는 ID
 - `~/credDefId`: 발급자가 특정 스키마에 대해 생성한 증명서 정의(Credential Definition)의 ID, Credential Definition은 해당증명서가 어떤 서명키로 발급되었는지 나타내며 검증자가 이를 이용하여 증명서의 유효성을 검증함
-- `~/keyCorrectnessProof`: 발급자가 올바른 공개 키를 사용했을을 보장하는 증명값, 증명서 요청 단계에서 Holder가 발급자의 공개키가 올바른지 확인하기 위함
+- `~/keyCorrectnessProof`: 발급자가 올바른 공개 키를 사용했음을 보장하는 증명값, 증명서 요청 단계에서 Holder가 발급자의 공개키가 올바른지 확인하기 위함
 
 <div style="page-break-after: always;"></div>
 

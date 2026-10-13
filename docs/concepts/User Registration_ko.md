@@ -20,11 +20,12 @@ puppeteer:
 
 - 주제 : 사용자 등록의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2024-10-18
-- 버전 : v1.0.0
+- 일자 : 2026-10-13
+- 버전 : v1.0.1
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | 오타 수정 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
 <br>
@@ -161,7 +162,7 @@ def object OwnerDidDoc: "DID Document with the owner proofs"
 def object AttestedDidDoc: "Provider attested DID Document - Attestation 서명 첨부"
 {
     + walletId  "walletId"   : "wallet id"
-    + mulitbase "ownerDidDoc": "multibase(OwnerDidDoc)"
+    + multibase "ownerDidDoc": "multibase(OwnerDidDoc)"
     + Provider  "provider"   : "provider 정보"
     + multibase "nonce"      : "provider nonce", byte_length(16)
     // DID Document를 사용할 장치 또는 사용자를 관리하는 사업자의 증명
@@ -170,7 +171,7 @@ def object AttestedDidDoc: "Provider attested DID Document - Attestation 서명 
 
 def object SignedDidDoc: "Wallet signed DID Document - 월렛 서명 첨부"
 {
-    + mulitbase "ownerDidDoc": "multibase(OwnerDidDoc)"
+    + multibase "ownerDidDoc": "multibase(OwnerDidDoc)"
     + object    "wallet"     : "wallet information"
     {
         + walletId "id" : "wallet id"
@@ -182,7 +183,7 @@ def object SignedDidDoc: "Wallet signed DID Document - 월렛 서명 첨부"
 
 def object InvokedDidDoc: "Controller signed DID Document - Invocation 서명 첨부"
 {
-    + mulitbase   "didDoc"    : "multibase(DidDoc)"
+    + multibase   "didDoc"    : "multibase(DidDoc)"
     + Provider    "controller": "controller 정보"
     + multibase   "nonce"     : "controller nonce", byte_length(16)
     + InvokeProof "proof"     : "controller's invocation proof"

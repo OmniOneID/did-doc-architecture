@@ -21,8 +21,8 @@ Credential format
 - 주제
     - Credential 데이터 형식 정의
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 
 개정이력
@@ -31,6 +31,7 @@ Credential format
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
 | v1.0.0 | 2025-04-30 | 초안                                         |
+| v1.0.1 | 2026-10-13 | 문구 수정                                      |
 
 
 <div style="page-break-after: always;"></div>
@@ -78,7 +79,7 @@ signatureCorrectnessProof는 Credential이 올바르게 서명되었음을 증�
 
 ### 2.1. `Credential` object
 
-`Vc` 객체는 이슈어가 Holder에게 발급하는 Verifiable Credential로서 아래와 같은 구조를 가진다.
+`Credential` 객체는 이슈어가 Holder에게 발급하는 Verifiable Credential로서 아래와 같은 구조를 가진다.
 
 - Credential Metadata
 - Claim(s)

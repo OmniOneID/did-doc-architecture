@@ -20,8 +20,8 @@ Profile format
 - Subject
     - Profile Structure Definition
 - Author: OpenSource Development Team
-- Date: 2025-05-09
-- Version: v2.0.0
+- Date: 2026-10-13
+- Version: v2.0.1
 
 Revision History
 ---
@@ -30,6 +30,7 @@ Revision History
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2024-09-03 | Initial version |
 | v2.0.0 | 2025-05-09 | Add ZKP data     |
+| v2.0.1 | 2026-10-13 | Fix typos, Revise wording |
 
 
 <div style="page-break-after: always;"></div>
@@ -62,10 +63,11 @@ Table of Contents
 
 ## 1. Overview
 
-The Profile is the request information provided to the Holder when the Issuer issues a VC or the Verifier receives a VP presentation. There are two types as follows:
+The Profile is the request information provided to the Holder when the Issuer issues a VC or the Verifier receives a VP presentation. There are three types as follows:
 
 - Issue Profile: Issuance Request Information
 - Verify Profile: Verification Request Information
+- ProofRequest Profile: ZKP Verification Request Information
 
 How the Profile is transmitted to the Holder's device is beyond the scope of this document, but examples include:
 
@@ -109,6 +111,7 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "Issuance Request Information",
     "VerifyProfile": "Verification Request Information",
+    "ProofRequestProfile": "ZKP Verification Request Information",
 }
 
 def enum ECC_CURVE_TYPE: "ECC curve type"
@@ -274,7 +277,7 @@ def object IssueProfile: "Issue Profile"
                   "masterSecret": "211...206"
                }
             }
-
+        },
         "process": {
             "endpoints": ["https://woosan.ac.kr/issue"],
             "reqE2e": {
@@ -458,7 +461,7 @@ The ProofRequest Profile is a structured data bundle through which the Verifier 
 | Category    | Details                                                                                                          |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- |
 | Verify Info | • Name, DID, Reference URL  |
-| ProofRequest      | • Name of the proof request <br>• Attributes the Holder must disclose explicitlyt<br>• Predicates the Holder must satisfy (e.g., ≥, ≤) |
+| ProofRequest      | • Name of the proof request <br>• Attributes the Holder must disclose explicitly<br>• Predicates the Holder must satisfy (e.g., ≥, ≤) |
 | ZKP Proof Submission Method | • Information related to encrypted submission (recipient public key, nonce, algorithm, etc.) |
 
 
@@ -473,7 +476,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
+    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile")
     + string       "title"      : "profile title"
     - string       "description": "profile description", default(""), emptiable(true)
     - LogoImage    "logo"       : "logo image for presentation"
@@ -514,7 +517,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
 ```json
 {
     "id": "d1f26925-6743-4609-9932-e909dda0299f",
-    "type": "VerifyProfile",
+    "type": "ProofRequestProfile",
     "title": "MyShopping Student ID Verification",
     "description": "Discounts are not available if personal identifier submission is not agreed.",
     "encoding": "UTF-8",
@@ -558,7 +561,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
             "publicKey": "zpuheLvAneYCdu3hjpdqF9BotnEpM2v7BmidRq5QBLKej",
             "cipher": "AES-256-CBC",
             "padding": "PKCS5"
-        },
+        }
     },  
     "proof": {
         "type": "Secp256r1Signature2018",

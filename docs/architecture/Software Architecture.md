@@ -20,8 +20,16 @@ Software Architecture
 
 - Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
-- Date: 2024-09-03  
-- Version: v1.0.0  
+- Date: 2026-10-13  
+- Version: v1.0.1  
+
+Revision History
+---
+
+| Version | Date       | Change Details  |
+| ------- | ---------- | --------------- |
+| v1.0.0  | 2024-09-03 | Initial version |
+| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
 
 
 Table of Contents
@@ -285,7 +293,7 @@ The Wallet group includes elements related to the user’s client wallet:
     - Mobile app wallet
     - Cloud wallet
 - Wallet Service:
-    - Signs the client wallet’s registration information with the Trust Agent’s signature for authenticity.
+    - Signs the client wallet’s registration information when the client wallet is registered with the Trust Agent, proving its authenticity.
     - Used solely for client wallet registration.
 
 Each domain must have at least one Wallet group. A domain refers to an OpenDID implementation that operates a unique DID method and a Trust Agent.
@@ -336,7 +344,7 @@ The Supplements group includes auxiliary or temporary functions:
     - Provides APIs for CApps to access the Trust Repository.
     - Required only when HyperLedger Besu is used as the blockchain.
         - HyperLedger Besu used by OpenDID enforces access control but does not support separate permissions for read and write access.
-        - User Service can receive certificates to provide read-only access for detailed access control.
+        - Therefore, User Service provides read-only services only, enabling fine-grained access control.
 - CLI Tool for Wallet:
     - A wallet tool for entities like Issuers and Verifiers.
     - Provides the following functions:
@@ -632,7 +640,7 @@ The Verifier Service implements the VP submission API using the OpenDID SDK.
 | Verify Controller | • Create VerifyOffer<br>           |       |\
 |                   | • Receive and verify VP submissions |       |
 
-The [PRESENT-VC] document outlines the complete VP submission process:
+The [PRESENT-VP] document outlines the complete VP submission process:
 
 1. Preparation Procedure
    - (A) Planning Stage
@@ -720,7 +728,7 @@ A Certified App (CApp) is a mobile application built using the OpenDID SDK (avai
 | Module     | Functionality            | Notes |
 | ---------- | ------------------------ | ----- |
 | DID Module | • Identity-related features |      |
-| VC Module  | • VC issuance and status updates (opt ZKP| |
+| VC Module  | • VC issuance and status updates (opt ZKP) | |
 | VP Module  | • VP or ZKP submission          |      |
 
 These modules are conceptual categories. In practice, software modules may be more diverse and interconnected. Only file-based wallets are considered for the client wallet in this case.

@@ -20,8 +20,8 @@ Verifiable Presentation format
 - 주제
     - VP(Verifiable Presentation) 데이터 형식 정의
 - 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -29,6 +29,7 @@ Verifiable Presentation format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2024-09-03 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -94,7 +95,7 @@ def enum VP_TYPE: "VP 타입"
 `Vp` object는 Holder가 Verifier에게 제출하는 Verifiable Presentation으로서 아래와 같은 구조를 가진다.
 
 - Presentation Metadata
-- Verifiable Crendential(s)
+- Verifiable Credential(s)
 - Proof(s)
 
 ```c#
@@ -113,7 +114,7 @@ def object Vp: "VP object"
     + multibase      "verifierNonce": "verifier nonce", byte_length(16)
 
     //---------------------------------------------------------------------------
-    // Verifiable Crendential(s)
+    // Verifiable Credential(s)
     //---------------------------------------------------------------------------
     + array(object) "verifiableCredential": "VC 목록"
     {
@@ -176,7 +177,7 @@ VP에 대한 정보를 포함한다.
         1. verifier의 요청에 대한 제출임을 확인(verifier가 일치여부 확인 필요)
         2. VP 중복 제출 방지
 
-##### 2.1.2.2. Verifiable Crendential(s)
+##### 2.1.2.2. Verifiable Credential(s)
 
 제출하는 VC와, 해당 VC 내 선택된 클레임에 대한 정보와 서명을 포함한다.
 

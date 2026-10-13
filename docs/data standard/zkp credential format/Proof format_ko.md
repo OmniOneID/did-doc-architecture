@@ -21,8 +21,8 @@ Proof format
 - 주제
     - ZKP Proof 구조 정의
 - 작성: 박동준
-- 일자: 2025-04-30
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Proof format
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2025-04-30 | 초안      |
+| v1.0.1 | 2026-10-13 | 오타 수정   |
 
 
 <div style="page-break-after: always;"></div>
@@ -56,9 +57,6 @@ Proof format
 ## 1. 개요
 
 본 문서는 OpenDID ZKP에서 사용하는 Proof의 구조와 관련 정보를 정의한다.
-
-
-
 
 본 문서는 Proof를 정의하기 위한 문서 형식인 Proof format을 정의하는 것을 목적으로 한다.
 format은 모두 OSD (OpenDID Schema Definition Language)로 정의한다.

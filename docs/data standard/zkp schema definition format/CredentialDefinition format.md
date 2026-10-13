@@ -20,8 +20,8 @@ Credential Definition Format
 
 - Subject: Definition of ZKP Credential Definition Structure
 - Author: Dongjun Park
-- Date: 2025-04-30
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 Revision History
 ---
@@ -29,6 +29,7 @@ Revision History
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
 | v1.0.0  | 2025-04-30 | Draft    |
+| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
 
 <div style="page-break-after: always;"></div>
 
@@ -43,7 +44,7 @@ Revision History
   - [2. Credential Definition Structure](#2-credential-definition-structure)
     - [2.1. CredentialDefinition Object](#21-credentialdefinition-object)
   - [3. Example](#3-example)
-    - [3.2. Driver’s License Credential Definition](#32-drivers-license-credential-definition)
+    - [3.1. Driver’s License Credential Definition](#31-drivers-license-credential-definition)
 
 <!-- /TOC -->
 
@@ -107,7 +108,7 @@ def object CredentialDefinition : "Credential Definition"
 - `~/id`: Unique ID of the Credential Definition.
 - `~/schemaId`: ID of the Credential Schema the Credential follows.
 - `~/ver`: Version of the Credential Definition.
-- `~/type`: Signing method used in the Credential. "CL" refers to Clairaut-Lippold signatures for ZKP-based Credentials.
+- `~/type`: Signing method used in the Credential. "CL" refers to Camenisch-Lysyanskaya signatures for ZKP-based Credentials.
 - `~/value/primary`: Issuer’s signing keys and cryptographic parameters.
 - `~/value/primary/n`, `z`, `s`: Components of the public key.
 - `~/value/primary/r`: Cryptographic commitments for each attribute.
@@ -121,7 +122,7 @@ def object CredentialDefinition : "Credential Definition"
 
 This chapter provides a concrete example to aid understanding of the Credential Definition.
 
-### 3.2. Driver’s License Credential Definition
+### 3.1. Driver’s License Credential Definition
 
 ```json
 {
@@ -145,6 +146,5 @@ This chapter provides a concrete example to aid understanding of the Credential 
       }
     },
     "tag": "Tag1"
-  }
 }
 ```

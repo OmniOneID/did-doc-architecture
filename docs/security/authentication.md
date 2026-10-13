@@ -4,11 +4,12 @@
 
 - Subject: Authentication and Secure Channel Creation
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | Fix typos       |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -81,7 +82,7 @@ Each entity signs DH-related information with its private key after generating a
 The recipient verifies the signature by querying the DID Doc of the upper entity of the counterpart.<br>
 To verify the DH message signature, it verifies the signature with the public key in the certificate.
 
-AAfter signature verification, each entity performs DH and generates a symmetric key through KDF using the received temporary key's public key and its temporary key's private key.<br>
+After signature verification, each entity performs DH and generates a symmetric key through KDF using the received temporary key's public key and its temporary key's private key.<br>
 The generated symmetric key is used for data encryption and integrity check when communicating with the counterpart.
 
 ![](./images/authentication_cert_did_dh.svg)

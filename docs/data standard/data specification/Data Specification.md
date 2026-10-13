@@ -20,13 +20,14 @@ Data Specification
 
 - Subject: Structure and Requirements of Major Data
 - Author: OpenSource Development Team
-- Date: 2025-05-09
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v2.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2024-09-03 | Initial version |
 | v2.0.0 | 2025-05-09 | Add ZKP data |
+| v2.0.1 | 2026-10-13 | Fix typos, Revise wording |
 
 <div style="page-break-after: always;"></div>
 
@@ -734,7 +735,7 @@ def object Proof: "general proof"
 }
 ```
 
-#### 4.1.1.2. AssertProof
+##### 4.1.1.2. AssertProof
 ```c#
 def object AssertProof: "assertion proof"
 {    
@@ -1440,7 +1441,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
+    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile")
     + string       "title"      : "profile title"
     - string       "description": "profile description", default(""), emptiable(true)
     - LogoImage    "logo"       : "logo image for presentation"
@@ -1497,6 +1498,7 @@ def object ReqEcdh: "ECDH request data"
         + array(SYMMETRIC_CIPHER_TYPE) "ciphers": "cipher type", default(["AES-256-CBC"])
     }
     - KeyAgreeProof "proof": "client's key agreement proof"
+}
 ```
 
 ##### 4.6.1.2. AccEcdh

@@ -2,11 +2,12 @@
 
 - Subject: Manage of PII
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | Fix image references |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -57,6 +58,6 @@ Therefore, a clear design is needed on how `TAS` will receive and utilize PII.
 ### File Wallet
 ![](./images/manage_pii_file_wallet_sequency.svg)
 ### App Wallet
-![](./images/manage_pii_app_wallet_sequency.svg)
+![](./images/manage_pii_file_app_wallet_sequency.svg)
 ### Cloud Wallet
 ![](./images/manage_pii_cloud_wallet_sequency.svg)

@@ -1,35 +1,36 @@
 <!-- 개별 문서는 향후에 병합될 수 있으므로, 목차는 사용하지 않습니다. -->
 
-# 월랫 잠금
+# 월렛 잠금
 
 - 주제 : 월렛 잠금
 - 작성 : 오픈소스개발팀
-- 일자 : 2024-10-18
-- 버전 : v1.0.0
+- 일자 : 2026-10-13
+- 버전 : v1.0.1
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v1.0.1  | 2026-10-13 | 오타 수정 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
 <br>
 
 인가앱(CA)으로 부터 받은 passcode 기반으로 cek(content encrypt key)를 생성,변경, 조회하는 역할을 한다. 
 <br>
-cek는 서비스 월랫에서 관리하며 월랫 lock/ unlock시 사용된다.
+cek는 서비스 월렛에서 관리하며 월렛 lock/ unlock시 사용된다.
 인가앱에서 passcode 입력 화면을 구현하고 passcode는 등록, 변경시 인가앱에서 매칭시킨다.
 
-잠금 형태의 월랫과 잠금형태가 아닌 월랫의 방식은 아래와 같이 사용자 인증 유무에 따라 동작한다.
+잠금 형태의 월렛과 잠금형태가 아닌 월렛의 방식은 아래와 같이 사용자 인증 유무에 따라 동작한다.
 
 ![이미지 설명](./images/wallet_type_access_sdk_ko.svg)
 
 잠금 형태의 지갑을 설정하기 위해서 사용자의 패스코드 등록과 인증에 대한 기술적 로직을 아래에서 설명한다.
 
 * 용어
-    * cek = content encrpytion key
+    * cek = content encryption key
     * kek = key encryption key
     * pbkdf = password-based key derivation function
 
-### 1. 월랫 잠금 (PIN) 
+### 1. 월렛 잠금 (PIN)
 
 ![이미지 설명](./images/wallet_lock_policy_pin_lock_ko.svg)
 
@@ -69,12 +70,12 @@ let finalEncCek = try SecureEncryptor.encrypt(plainData: encCek as Data)
 ```
 <br>
 
-### 2. 월랫 잠금해제 (PIN)
+### 2. 월렛 잠금해제 (PIN)
 
 ![이미지 설명](./images/wallet_lock_policy_pin_unlock_ko.svg)
 <br>
 ### 예제
-```code
+```swift
 let finalEncCek = try MultibaseUtils.decode(encoded: CoreDataManager.shared.selectUser()!.finalEncKey)
 
 WalletLogger.shared.debug("======[H] finalEncCek: \(MultibaseUtils.encode(type: MultibaseType.base16, data: finalEncCek))")
@@ -115,7 +116,7 @@ if cek as Data == decCek {
 
 
 
-### 3. 월랫 PIN 변경 (TO-DO)
+### 3. 월렛 PIN 변경 (TO-DO)
 
 ![이미지 설명](./images/wallet_lock_policy_pin_update_ko.svg)
 

@@ -20,13 +20,14 @@ puppeteer:
 
 - 주제: 주요 데이터의 구조 및 요건
 - 작성: 오픈소스개발팀
-- 일자: 2025-05-09
-- 버전: v2.0.0
+- 일자: 2026-10-13
+- 버전: v2.0.1
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
 | v1.0.0 | 2024-09-03 | 초기 작성 |
 | v2.0.0 | 2025-05-09 | ZKP 데이터 추가 |
+| v2.0.1 | 2026-10-13 | 오타 수정      |
 
 
 <div style="page-break-after: always;"></div>
@@ -686,7 +687,7 @@ def enum VERIFY_AUTH_TYPE: "(u4)제출용 인증수단"
     0x00000002: "PIN",
     0x00000004: "BIO",
     0x00000006: "PIN or BIO",
-    0x00008006: "PIN and BIO,
+    0x00008006: "PIN and BIO",
 }
 
 def enum VC_STATUS: "생애주기 - VC상태"
@@ -1003,7 +1004,7 @@ DID Document 소유자가 주체가 아닌 장치 등이어서 직접 controller
 def object AttestedDidDoc: "Provider attested DID Document - Attestation 서명 첨부"
 {
     + walletId  "walletId"   : "wallet id"
-    + mulitbase "ownerDidDoc": "multibase(OwnerDidDoc)"
+    + multibase "ownerDidDoc": "multibase(OwnerDidDoc)"
     + Provider  "provider"   : "provider 정보"
     + multibase "nonce"      : "provider nonce", byte_length(16)
     // DID Document를 사용할 장치 또는 사용자를 관리하는 사업자의 증명
@@ -1018,7 +1019,7 @@ def object AttestedDidDoc: "Provider attested DID Document - Attestation 서명 
 ```c#
 def object SignedDidDoc: "Wallet signed DID Document - 월렛 서명 첨부"
 {
-    + mulitbase "ownerDidDoc": "multibase(OwnerDidDoc)"
+    + multibase "ownerDidDoc": "multibase(OwnerDidDoc)"
     + object    "wallet"     : "wallet information"
     {
         + walletId "id" : "wallet id"
@@ -1037,7 +1038,7 @@ TAS와 같은 controller가 신뢰저장소에 DidDoc의 등록을 요청하기 
 ```c#
 def object InvokedDidDoc: "Controller signed DID Document - Invocation 서명 첨부"
 {
-    + mulitbase   "didDoc"    : "multibase(DidDoc)"
+    + multibase   "didDoc"    : "multibase(DidDoc)"
     + Provider    "controller": "controller 정보"
     + multibase   "nonce"     : "controller nonce", byte_length(16)
     + InvokeProof "proof"     : "controller's invocation proof"
@@ -1249,7 +1250,7 @@ def object Vp: "VP object"
     + multibase      "verifierNonce": "verifier nonce", byte_length(16)
 
     //---------------------------------------------------------------------------
-    // Verifiable Crendential(s)
+    // Verifiable Credential(s)
     //---------------------------------------------------------------------------
     + array(object) "verifiableCredential": "VC 목록"
     {
@@ -1331,7 +1332,7 @@ def object IssueProfile: "Issue Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("IssueProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("IssueProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "발급에 대한 로고 이미지"
@@ -1404,7 +1405,7 @@ def object VerifyProfile: "Verify Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "제출에 대한 로고 이미지"
@@ -1468,7 +1469,7 @@ def object VerifyProfile: "Verify Profile"
         - 제출 가능한 Issuer did 목록
         - 미지정의 경우 모든 Issuer를 허용
 - `~/profile/process/endpoints`: VP를 제출할 검증 사업자 API endpoint 목록
-    - 제출 모드가 "Direct"인 경우 enpoints는 필수
+    - 제출 모드가 "Direct"인 경우 endpoints는 필수
 
 
 
@@ -1482,7 +1483,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "제출에 대한 로고 이미지"

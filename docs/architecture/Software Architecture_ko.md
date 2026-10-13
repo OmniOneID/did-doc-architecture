@@ -20,8 +20,16 @@ Software Architecture
 
 - 주제: C4 model을 이용한 Software Architecture 설명
 - 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
+
+개정이력
+---
+
+| 버전   | 일자       | 변경 내용 |
+| ------ | ---------- | --------- |
+| v1.0.0 | 2024-09-03 | 최초 작성 |
+| v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정 |
 
 
 목차
@@ -300,7 +308,7 @@ Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공�
 
 ### 4.2. Wallet
 
-Walelt group은 사용자용 client wallet과 관련된 다음의 요소를 포함한다.
+Wallet group은 사용자용 client wallet과 관련된 다음의 요소를 포함한다.
 
 - Client wallet
     - File wallet
@@ -361,7 +369,7 @@ Supplements group은 부가적인 기능이나 임시 기능을 제공하는 다
     - 인가앱이 Trust Repository에 접근하는 API 제공
     - 저장소 Blockchain으로 HyperLedger Besu을 사용하는 경우에 한해 필요
         - OpenDID에서 사용하는 HyperLedger Besu는 접근통제를 하고 있으며, 읽기/쓰기 권한을 따로 부여할 수 없다.
-        - 그러므로 User Serivce를 통해 User Service는 읽기 서비스만 제공함으로써 상세 접근통제를 가능하게 한다.
+        - 그러므로 User Service는 읽기 서비스만 제공함으로써 상세 접근통제를 가능하게 한다.
 - CLI Tool for Wallet
     - Issuer, Verifier를 포함한 사업자(Provider)용 entity를 위한 Wallet 도구
     - 다음의 기능 제공
@@ -469,7 +477,7 @@ Provider의 DID Document 등록 절차는 다음과 같다.
 1. (Provider Admin) CLI Tool for wallet으로 DID Document 생성
 2. (Provider Admin) Trust Agent Admin에게 이메일 등의 방식으로 다음의 문서를 전달
     - DID Document
-    - Evdidence documents (사업자등록증 등 사업자를 증빙할 서류)
+    - Evidence documents (사업자등록증 등 사업자를 증빙할 서류)
 3. (TA Admin) 제출받은 문서 검토 후 TA Tool을 이용하여 시스템에 Provider 정보 입력
 4. (TA Admin) TA Tool을 이용하여 Provider의 DID Document를 Trust Repository에 등록
 
@@ -521,7 +529,7 @@ TA Admin이 CLI Tool for Wallet을 이용하여 DID Document를 생성하고,
 그 이유는 DID 정책 등 구현체의 요구사항에 따라 처리할 내용이 달라지기 때문이다.
 다만 여기서는 일반적인 처리내용에 대해 사례만 언급한다.
 
-- 사용자 DID Docment 폐기 (사용자 요구시 말소 가능)
+- 사용자 DID Document 폐기 (사용자 요구시 말소 가능)
 - 사용자에 발급된 모든 VC 폐기
 - 사용자 개인정보 삭제
 
@@ -627,7 +635,7 @@ Issuer Service는 OpenDID가 제공하는 SDK를 이용하여 VC 발급, VC 상�
     - (C) 개시 단계 (Initiation)
         - Issuer initiated
         - User initiated
-    - (D) 발급 단계 (Issueance)
+    - (D) 발급 단계 (Issuance)
 
 (A) ~ (C) 단계는 데이터 모델만 정의하고 API는 정의하고 있지 않으므로 구현체가 이를
 별도로 구현하여야 한다.
@@ -640,7 +648,7 @@ Issuance Controller는 인가앱이 아닌 Trust Agent에 의해 호출되는 VC
 아래 절차도는 인가앱, client wallet, Trust Agent, Issuer Service가 표준 API를 호출하는 순서를 보여준다.
 API 호출은 오렌지 색으로 표시하였다.
 
-Trust Agent에 의해 호출되는 아래 4개의 API가 Issuance Contoller가 제공하는 기능이다.
+Trust Agent에 의해 호출되는 아래 4개의 API가 Issuance Controller가 제공하는 기능이다.
 
 - Inspect Propose Issue: 인가앱의 발급 요청을 검사
 - Generate Issue Profile: IssueProfile 생성
@@ -675,7 +683,7 @@ Trust Agent가 수행하는 KYC와는 무관하게 Issuer가 자체적으로 KYC
 
 #### 5.2.2. VC Controller
 
-VC 생애주기(Lifecyle) 등 상세한 내용은 [VC-FORMAT] 문서를 참조한다.
+VC 생애주기(Lifecycle) 등 상세한 내용은 [VC-FORMAT] 문서를 참조한다.
 VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
 
 *[NOT yet documented]*
@@ -694,7 +702,7 @@ Verifier Service는 OpenDID가 제공하는 SDK를 이용하여 VP 제출 API를
 | Verify Controller | • VerifyOffer 생성<br> |      |\
 |                   | • VP 제출받아 검증     |      |
 
-[PRESENT-VC] 문서에 정의된 VP 제출의 전체 절차를 요약하면 다음과 같다.
+[PRESENT-VP] 문서에 정의된 VP 제출의 전체 절차를 요약하면 다음과 같다.
 
 1. 사전준비 절차
     - (A) 계획 단계 (Planning)
@@ -753,7 +761,6 @@ Verify Controller는 다양한 경로로 암호화된 VP를 제출하기 위한 
 
 - Request Profile: VerifyProfile 요청
 - Request Verify: VP를 제출하여 검증을 요청
-- Request Verify: VP를 제출하여 검증을 요청
 
 ■ QR-MPM + Direct mode 예시
 
@@ -788,7 +795,7 @@ Direct mode인 경우라면 서비스앱이 VerifyOfferPayload만 전달해주�
 
 ![](images/component_certified_app.svg)
 
-CApp은 OpenDID가 제공하는 SDK(Android, iOS 각각)를 이용하여 구현 모바일 응용 프로그램으로서
+CApp은 OpenDID가 제공하는 SDK(Android, iOS 각각)를 이용하여 구현한 모바일 응용 프로그램으로서
 아래와 같은 모듈로 구성되어 있다.
 
 | Module     | 기능                         | 비고 |
@@ -821,7 +828,7 @@ VC Module은 VC와 관련된 다음의 기능을 담당한다.
 
 #### 5.4.3. VP Module
 
-VC Module은 VP와 관련된 다음의 기능을 담당한다.
+VP Module은 VP와 관련된 다음의 기능을 담당한다.
 
 - VerifyOffer 입수 (QR Scan, PUSH 메시지 처리 등)
 - VP 생성

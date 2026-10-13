@@ -20,11 +20,12 @@ Key Management Information
 
 - Subject: Key Management
 - Author: OpenSource Development Team
-- Date: 2025-06-25
-- Version: v2.0.0
+- Date: 2026-10-13
+- Version: v2.0.1
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v2.0.1  | 2026-10-13 | Fix typos       |
 | v2.0.0  | 2025-06-25 | Initial version |
 
 <br>
@@ -594,7 +595,7 @@ All keys used for signing operations utilize the Secp256R1 elliptic curve algori
 
 <div style="page-break-after: always;"></div>
 
-### 3.1.3. Bio Key Generation
+#### 3.1.3. Bio Key Generation
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
 

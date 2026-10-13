@@ -20,8 +20,8 @@ Proof Request Format
 
 - Subject: Definition of ZKP Proof Request Structure
 - Author: Dongjun Park
-- Date: 2025-04-30
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 Revision History
 ---
@@ -29,6 +29,7 @@ Revision History
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
 | v1.0.0  | 2025-04-30 | Draft    |
+| v1.0.1  | 2026-10-13 | Fix typos |
 
 <div style="page-break-after: always;"></div>
 
@@ -109,7 +110,7 @@ def object ProofRequest: "proofRequest"
 - `~/nonce`: Random number value (ensures uniqueness of the request)
 - `~/requestedAttributes`: Attributes that must be disclosed by the user
   - `~/requestedAttributes/name`: Name of the requested attribute (e.g., "zkpsex" → gender)
-  - `~/requestedAttributes/restriction`: Only credentials issued by a specific Credential Definition (credDefId) are allowed
+  - `~/requestedAttributes/restrictions`: Only credentials issued by a specific Credential Definition (credDefId) are allowed
 - `~/requestedPredicates`: Attributes for which conditions must be satisfied
   - `~/requestedPredicates/name`: Name of the requested attribute (e.g., "zkpbirth" → date of birth)
   - `~/requestedPredicates/pType`: Comparison operator ("LE": ≤, "GE": ≥, "EQ": =)

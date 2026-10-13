@@ -20,14 +20,15 @@ OpenDID Schema Definition Language
 
 - 주제: JSON 데이터 형식을 표현하는 문법 정의
 - 작성: 오픈소스개발팀 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-10-13
+- 버전: v1.0.1
 
 개정이력
 ---
 
 | 버전   | 일자       | 변경 내용               |
 | ------ | ---------- | ----------------------- |
+| v1.0.1 | 2026-10-13 | 오타 수정               |
 | v1.0.0 | 2024-09-03 | 최초 작성               |
 
 
@@ -413,7 +414,7 @@ def object ResponseMessage: "response message"
         {
             + uuid      "cmdId"    : "command id"
             + string    "protoId"  : "protocol id"
-            + multibase "protolUrl": "URL to invoke"
+            + multibase "protoUrl" : "URL to invoke"
             + object    "param"    : "command parameters", emptiable(true) {...}
         }
 
@@ -439,7 +440,7 @@ def enum AES_TYPE: "AES key length"
     "AES128", "AES256"
 }
 
-def enum ECC_ALG_TYPE: "ECC algorith type"
+def enum ECC_ALG_TYPE: "ECC algorithm type"
 {
     "secp256k1", "secp256r1"
 }
@@ -454,7 +455,7 @@ def object RequestProposeDhEcies: "request of propose-dh-ecies"
         - object "candidate": "available algorithm list of the client"
         {
             + array(AES_TYPE)     "aesTypeList": "available AES alg list", default(["AES256"])
-            + array(ECC_ALG_TYPE) "algTypeList": "available ECC alg list", default(["secp256r1"])
+            + array(ECC_ALG_TYPE) "algTypeList": "available ECC algorithm list", default(["secp256r1"])
         }
     }
 }
@@ -784,7 +785,7 @@ SimpleMemberModifier = ("default" | "value" | "min_value" | "max_value") , "(", 
 - `byte_length`: 바이트 단위 고정 길이
 - `min_byte_length`, `max_byte_length`: 바이트 단위 최소, 최대 길이
 - `regex`: 정규표현식 조건
-- `mix_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
+- `min_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
 - `variable_type`: 확장변수의 명시적 타입을 지정. 기본은 "string"
 
 
@@ -793,7 +794,7 @@ SimpleMemberModifier = ("default" | "value" | "min_value" | "max_value") , "(", 
 ObjectMemberDefinition = "object", MemberName, ":", Descriptor
                        , {",", ObjectMemberModifier}
                        , "{"
-                       , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                       , ("..." | {PresenceSymbol, MemberDefinition}-)
                        , "}"
                        ;
 @endebnf
@@ -813,8 +814,8 @@ ObjectMemberModifier = ("default" | "value"), "(", "{", ? object value expressio
 - `default`: 기본값
     - 예: default({"age": 16, "name": "James"})
 - `value`: 고정값
-- `emptialbe`: 빈 값(`{}`) 허용 여부
-- `mix_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
+- `emptiable`: 빈 값(`{}`) 허용 여부
+- `min_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
 - `variable_type`: 확장변수의 명시적 타입을 지정. 기본은 "string"
 
 ```plantuml
@@ -828,7 +829,7 @@ ArrayMemberDefinition = ObjectArrayMemberDefinition | TypedArrayMemberDefinition
 ObjectArrayMemberDefinition = "array", "(", "object", ")", MemberName, ":", Descriptor
                             , {",", ArrayMemberModifier}
                             , "{"
-                            , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                            , ("..." | {PresenceSymbol, MemberDefinition}-)
                             , "}"
                             ;
 @endebnf
@@ -855,7 +856,7 @@ ArrayMemberModifier = ("count" | "min_count" | "max_count"), "(", IntegerLiteral
 - `count`: 고정 배열 항목 개수
 - `min_count`, `max_count`: 최소, 최대 항목 개수
 - `emptiable`: 빈 배열(`[]`) 허용 여부
-- `mix_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
+- `min_extend`, `max_extend`: 확장 부분에서 나타날 수 있는 객체의 최소, 최대 빈도
 - `variable_type`: 확장변수의 명시적 타입을 지정. 기본은 "string"
 
 ```plantuml
@@ -873,7 +874,7 @@ TypedArrayMemberModifier = ArrayMemberModifier
 
 ```plantuml
 @startebnf
-GroupDefinition = "group", "{", {PresenceSysmbol, MemberDefinition}-, "}";
+GroupDefinition = "group", "{", {PresenceSymbol, MemberDefinition}-, "}";
 @endebnf
 ```
 
@@ -914,7 +915,7 @@ ArrayTypeDeclaration = ObjectArrayTypeDeclaration | TypedArrayTypeDeclaration;
 ObjectArrayTypeDeclaration = "def", "array", "(", "object", ")", Identifier, ":", Descriptor
                            , {",", ArrayModifier}
                            , "{"
-                           , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                           , ("..." | {PresenceSymbol, MemberDefinition}-)
                            , "}"
                            ;
 @endebnf

@@ -20,14 +20,15 @@ OpenDID Schema Definition Language
 
 - Subject: Syntax definition for expressing JSON data format
 - Author: Open Source Development Team, Kang Young-ho
-- Date: 2024-09-03
-- Version: v1.0.0
+- Date: 2026-10-13
+- Version: v1.0.1
 
 Revision History
 ---
 
 | Version | Date       | Change Details         |
 | ------- | ---------- | ---------------------- |
+| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
 | v1.0.0  | 2024-09-03 | Initial version        |
 
 
@@ -44,7 +45,7 @@ Table of Contents
     - [2.2. User-Defined Types](#22-user-defined-types)
     - [2.3. Message Definitions](#23-message-definitions)
         - [2.3.1. Member Definitions](#231-member-definitions)
-        - [2.3.2. Member Group Definitions](#232-member-group-definitions)
+        - [2.3.2. Group Definitions](#232-group-definitions)
         - [2.3.3. Exclusive Choice Definitions](#233-exclusive-choice-definitions)
     - [2.4. Annotation](#24-annotation)
     - [2.5. Comments](#25-comments)
@@ -408,7 +409,7 @@ def object ResponseMessage: "response message"
         {
             + uuid      "cmdId"    : "command id"
             + string    "protoId"  : "protocol id"
-            + multibase "protolUrl": "URL to invoke"
+            + multibase "protoUrl" : "URL to invoke"
             + object    "param"    : "command parameters", emptiable(true) {...}
         }
 
@@ -615,7 +616,7 @@ UserTypeDeclaration = StringTypeDeclaration
 @endebnf
 ```
 
-#### 4.3.1. `string` User Type Declaration
+#### 4.3.1. `string` User Type Declarations
 
 ```plantuml
 @startebnf
@@ -785,7 +786,7 @@ SimpleMemberModifier = ("default" | "value" | "min_value" | "max_value") , "(", 
 ObjectMemberDefinition = "object", MemberName, ":", Descriptor
                        , {",", ObjectMemberModifier}
                        , "{"
-                       , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                       , ("..." | {PresenceSymbol, MemberDefinition}-)
                        , "}"
                        ;
 @endebnf
@@ -820,7 +821,7 @@ ArrayMemberDefinition = ObjectArrayMemberDefinition | TypedArrayMemberDefinition
 ObjectArrayMemberDefinition = "array", "(", "object", ")", MemberName, ":", Descriptor
                             , {",", ArrayMemberModifier}
                             , "{"
-                            , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                            , ("..." | {PresenceSymbol, MemberDefinition}-)
                             , "}"
                             ;
 @endebnf
@@ -865,7 +866,7 @@ TypedArrayMemberModifier = ArrayMemberModifier
 
 ```plantuml
 @startebnf
-GroupDefinition = "group", "{", {PresenceSysmbol, MemberDefinition}-, "}";
+GroupDefinition = "group", "{", {PresenceSymbol, MemberDefinition}-, "}";
 @endebnf
 ```
 
@@ -905,7 +906,7 @@ ArrayTypeDeclaration = ObjectArrayTypeDeclaration | TypedArrayTypeDeclaration;
 ObjectArrayTypeDeclaration = "def", "array", "(", "object", ")", Identifier, ":", Descriptor
                            , {",", ArrayModifier}
                            , "{"
-                           , ("..." | {PresenceSysmbol, MemberDefinition}-)
+                           , ("..." | {PresenceSymbol, MemberDefinition}-)
                            , "}"
                            ;
 @endebnf

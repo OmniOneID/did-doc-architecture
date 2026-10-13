@@ -21,8 +21,8 @@ Profile format
 - 주제
     - Profile 구조 정의
 - 작성: 오픈소스개발팀
-- 일자: 2025-05-09
-- 버전: v2.0.0
+- 일자: 2026-10-13
+- 버전: v2.0.1
 
 개정이력
 ---
@@ -31,6 +31,7 @@ Profile format
 | ------ | ---------- | --------------------------------------------------- |
 | v1.0.0 | 2024-09-03 | 초안                                                |
 | v2.0.0 | 2025-05-09 | ZKP 데이터 추가                                        |
+| v2.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정                               |
 
 
 <div style="page-break-after: always;"></div>
@@ -91,7 +92,7 @@ Profile을 Holder의 단말에 어떻게 전달하는지는 본 문서의 범위
 | ------------------ | ------------------------------------------- | ---- |
 | [OSD]              | OpenDID Schema Definition Language          |      |
 | [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification) |      |
-| [DATA-SPEC]        | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
+| [ZKP-DATA-SPEC]    | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
 | [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  |      |
 
 ## 2. 공통사항
@@ -126,6 +127,7 @@ def enum PROFILE_TYPE: "profile type"
 {
     "IssueProfile" : "발급 요청정보",
     "VerifyProfile": "검증 요청정보",
+    "ProofRequestProfile": "ZKP 검증 요청정보",
 }
 
 def enum ECC_CURVE_TYPE: "ECC curve type"
@@ -155,7 +157,7 @@ def enum VERIFY_AUTH_TYPE: "제출용 인증수단"
     0x00000002: "PIN",
     0x00000004: "BIO",
     0x00000006: "PIN or BIO",
-    0x00008006: "PIN and BIO,
+    0x00008006: "PIN and BIO",
 }
 ```
 
@@ -185,7 +187,7 @@ def object IssueProfile: "Issue Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("IssueProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("IssueProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "발급에 대한 로고 이미지"
@@ -294,7 +296,7 @@ def object IssueProfile: "Issue Profile"
                   "masterSecret": "211...206"
                }
             }
-
+        },
         "process": {
             "endpoints": ["https://woosan.ac.kr/issue"],
             "reqE2e": {
@@ -327,7 +329,7 @@ Verify Profile은 Verifier가 제출받고자 하는 VC 및 VP 제출방법에 �
 | 분류        | 내용                                                                                                             |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- |
 | Verify 정보 | • 이름, DID, 참조 URL                                                                                            |
-| ProofRequest     | • 전체 제출 여부<br>• 제출 가능한 VC Schema 및 Issuer 목록<br>• 사용자 화면에 보여줄 claim 목록<br>• 필수로 제출해야 하는 claim 목록 |
+| Filter      | • 전체 제출 여부<br>• 제출 가능한 VC Schema 및 Issuer 목록<br>• 사용자 화면에 보여줄 claim 목록<br>• 필수로 제출해야 하는 claim 목록 |
 | VP 제출방법 | • 제출 API URL<br>• 제출정보 암호화 관련 정보(수신자 공개키, nonce, 알고리즘 등)<br>• 제출용 인증수단            |
 
 VC Schema를 여러 개 지정한 경우 이것이 AND 조건인지 OR 조건인지는 본 문서의 범위 밖이다.
@@ -344,7 +346,7 @@ def object VerifyProfile: "Verify Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "제출에 대한 로고 이미지"
@@ -495,7 +497,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
     // Profile Metadata
     //--------------------------------------------------------------------------
     + uuid         "id"         : "profile id"
-    + PROFILE_TYPE "type"       : "profile type", value("VerifyProfile)
+    + PROFILE_TYPE "type"       : "profile type", value("ProofRequestProfile")
     + string       "title"      : "profile 제목"
     - string       "description": "profile 설명", default(""), emptiable(true)
     - LogoImage    "logo"       : "제출에 대한 로고 이미지"
@@ -536,7 +538,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
 ```json
 {
     "id": "d1f26925-6743-4609-9932-e909dda0299f",
-    "type": "VerifyProfile",
+    "type": "ProofRequestProfile",
     "title": "MyShopping 학생증 확인",
     "description": "개인식별자 제출 미동의 시 할인이 불가합니다.",
     "encoding": "UTF-8",
@@ -545,7 +547,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
         "verifier": {
             "did": "did:example:myshopping",
             "certVcRef": "https://myshopping.com/cert-vc/1",
-            "name": "MyShpping",
+            "name": "MyShopping",
             "ref": "https://myshopping.com"
         },
         "proofRequest": {
@@ -580,7 +582,7 @@ def object ProofRequestProfile: "ProofRequest Profile"
             "publicKey": "zpuheLvAneYCdu3hjpdqF9BotnEpM2v7BmidRq5QBLKej",
             "cipher": "AES-256-CBC",
             "padding": "PKCS5"
-        },
+        }
     },  
     "proof": {
         "type": "Secp256r1Signature2018",
