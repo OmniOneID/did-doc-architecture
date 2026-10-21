@@ -1,0 +1,323 @@
+@startuml P210_issue_vc_proxy
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>VC Issuance (Proxy Mode)</size>
+end title
+
+'=== Options ===
+' Autonumbering: ex) "<b>000." => Display a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**Wallet**" as wal <<Wallet>>
+    participant "**Certified App**" as ca <<App>>
+end box
+
+box Certified App Provider #AliceBlue
+    participant "**CAS**" as cas <<WAS>> #WhiteSmoke
+    participant "**Proxy**" as proxy <<Server>>
+end box
+
+participant "**tas**" as tas <<Server>>
+participant "**Issuer**" as vf <<Server>>
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== Retrieve VC Plan List ==
+
+activate ca
+ca -> tas ++: Request VC Plan List
+return VC Plan List
+rnote right of ca #MintCream
+    **VcPlan** : $doc
+    vcPlanId | name | ... | issuanceMode | endpoints
+    * issuanceMode = DIRECT | PROXY
+    * Registered with the tas from the Issuance Mode of the Issue Profile
+end note
+
+ca -> ca: Select a VC Plan whose issuanceMode is PROXY
+note right of ca
+    A VC Plan with DIRECT follows the standard
+    VC issuance (P210) through the tas.
+end note
+
+rnote over ca, cas
+    (Precondition) The certified app registers the user information
+    verified through KYC or a similar process with the CAS in advance (userId ↔ pii).
+    The issuer retrieves the pii from the CAS with the userId in the proxy request
+    to identify the user to issue to.
+
+    * userId = User ID of the certified app
+    * pii = Personal Identification Number
+end rnote
+
+|||
+== P210-1: Propose Issue VC ==
+
+ca -> proxy ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
+    proxy -> vf ++: Inspect Proposal\n{vcPlanId[, issuer, offerId]}
+        vf -> vf: Check if VC issuance is possible\
+                \n* Retrieve the Issue Profile of the VC Plan
+        vf -> vf: * txId = Generate transaction ID\
+                \n* refId = Generate reference number
+    return {txId, refId}
+return {txId, refId}
+
+|||
+== P210-2 : Request Issue Profile ==
+
+ca -> proxy ++: Request Issue Profile\n{txId, userId}
+    note right of ca
+        How the proxy authenticates the certified app
+        (session, access token, etc.) depends on the proxy
+        implementation and is beyond the scope of this specification.
+    end note
+    proxy -> vf ++: Generate Profile (Proxy)\n{txId, userId}
+        vf -> vf: Validate txId\n(previous step: Inspect Proposal)
+        vf -> cas ++: Retrieve PII\n{userId}
+            cas -> cas: Retrieve the user PII by userId
+        return {pii}
+        note right of vf
+            SSRVISS15505 if communication
+            with the CAS fails
+        end note
+        vf -> vf: Identify the user to issue to\
+                \n* Holder = {pii}\
+                \n* Retrieve the user according to the User Query Method
+        note right of vf
+            **User Query Method** (Issue Profile setting)
+            * DB : Retrieve the user registered in the issuer DB by pii and VC Schema
+            * TEST : Generate test claims from the VC Schema at issuance time
+              without registered user information
+            * API (external system lookup) : Not supported yet (SSRVISS00502)
+        end note
+        vf -> vf: Prepare profile-related data\
+                \n* issuerNonce = Generate nonce for issuance\
+                \n* (ReqE2e)reqE2e = Create E2E request information\
+                \n* Other data is omitted
+                opt include ZKP
+                    vf -> vf : Generate CredentialOffer
+                end
+        vf <-> BC: Query/Retrieve Issuer DID Doc
+                rnote right of vf #MintCream
+                    **DidDoc** : $doc
+                end note
+        vf -> vf: (IssueProfile)profile = Create and sign Profile
+        vf -> vf: Store VC Profile\
+                \n* Store user and nonce\
+                \n* The Holder DID is fixed by didAuth in the VC issuance request
+        vf -> vf: authNonce = issuerNonce
+        note right of vf
+            In the standard procedure the tas generates authNonce.
+            In proxy mode the issuer uses issuerNonce as authNonce.
+        end note
+    return {txId, profile, authNonce}
+return {txId, profile, authNonce}
+
+|||
+== P210-3 : Wallet Token Generation ==
+
+hnote over ca, wal #LimeGreen
+    * purpose = "IssueVc"
+    * walletToken = Wallet token
+end hnote
+
+ca -> wal++ : Request to generate walletTokenSeed {purpose, pkgname, userId}
+    wal -> wal : Generate nonce
+    wal -> wal : Generate walletTokenSeed with expiration
+return {walletTokenSeed}
+rnote right of wal #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed =
+        (nonce | validUntil | purpose | pkgname | userId)
+end note
+
+ca -> cas : Request WalletTokenData {walletTokenSeed}
+cas -> cas : Generate WalletTokenData
+cas -> ca : Return WalletTokenData
+rnote right of ca #MintCream
+    **WalletTokenData** : $doc
+    seed | sha_pii | provider | nonce | Proof
+    Proof = sign(seed | sha_pii | provider | nonce, CAS_PriKey)
+
+    CAS: Authorized App Provider (Authorization App Server)
+end note
+
+ca -> wal++ : Request to create WalletToken \n{WalletTokenData}
+    wal -> BC++ : Query CAS DID Document
+    rnote right of wal #LightGray
+        **[API_REQ: DID Document Query Request]**
+        did
+    end note
+
+    return
+    rnote right of wal #LightGray
+        **[API_RES: DID Document Query Response]**
+        DidDoc
+    end note
+    rnote right of wal #MintCream
+        **DidDoc** : $refdoc
+    end note
+
+    wal -> wal : Verify signature
+    wal -> wal : Generate resultNonce (resultNonce)
+
+    wal -> wal : Create wallet token {walletToken}
+    rnote right of wal #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of wal : resultNonce delivered and applied
+
+    ca -> ca : Create wallet token {hWalletToken}
+    rnote right of ca #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+rnote across #white
+    In proxy mode the ECDH with the tas and the server token issuance are not performed.
+    The issuer verifies the holder directly through the DID Auth signed by the wallet.
+end note
+
+|||
+== P210-4 : Request Issue VC ==
+
+ca -> wal ++: VC Issuance Request\n{walletToken,\
+        \n   txId, refId, authNonce, profile}
+    wal -> wal: Validate walletToken
+
+    wal -> wal: Verify profile.proof signature
+    wal -> wal: Prepare DID Auth data\
+        \n* (DidAuth)didAuth = {\
+        \n     did = Holder DID,\
+        \n     authNonce\
+        \n  }
+    user -[#Blue]\ wal: User authentication (non-standard)
+    wal -> wal: signAuth(didAuth)
+
+    wal -> wal: Perform ECDH for E2E\
+            \n* _, pubKeyE2E = Generate ECC key pair\
+            \n* e2eKey = Generate encryption key using E2E data from the profile\
+            \n* iv = Generate IV\
+            \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+            \n* signKeyAgree(accE2e)
+    wal -> wal: Generate and encrypt issuance request information\
+            \n* Generate (ReqVc)reqVc\
+            \n* encReqVc = enc(data, e2eKey, iv)
+            opt include ZKP
+                wal -> wal : inquery credDef from trust repository, Create/Manage Master Secrets
+                wal -> wal : Generate credentialRequest include in reqVc
+            end
+
+    wal -> proxy ++: Request Issue VC\n{txId, didAuth, accE2e, encReqVc}
+        proxy -> vf ++: Issue VC (Proxy)\n{txId, didAuth, accE2e, encReqVc}
+            vf -> vf: Validate txId\n(previous step: Generate Profile)
+            vf -> vf: Check that didAuth.proof exists
+            note right of vf
+                SSRVISS00426 if the proof is missing
+            end note
+            vf <-> BC: Query/Retrieve Holder DID Doc (didAuth.did)
+            vf -> vf: Validate DID Auth\
+                    \n* Verify didAuth.proof signature\
+                    \n* Check if authNonce matches\
+                    \n  (issuerNonce stored in the VC Profile)
+            note right of vf
+                SSRVISS00210 if authNonce does not match
+            end note
+            vf -> vf: Store the Holder DID (didAuth.did) in the VC Profile
+            vf -> vf: Perform ECDH for E2E\
+                    \n* Verify accE2e.proof\
+                    \n* Generate e2eKey\
+                    \n* iv = accE2e.iv
+            vf -> vf: Decrypt encReqVc\
+                    \n* tmp = debase(encReqVc)\
+                    \n* reqVc = dec(tmp, e2eKey, iv)
+            vf -> vf: Validate reqVc against IssueProfile\
+                    \n* Check if refId matches\
+                    \n* Check if profile.id matches\
+                    \n* Check if profile.issuerNonce matches
+            vf -> vf: Retrieve the user information to issue\
+                    \n* DB : VC data of the registered user\
+                    \n* TEST : Generate test claims
+            vf <-> BC: Retrieve Issuer DID Doc
+                rnote right of vf #MintCream
+                    **DidDoc** : $doc
+                end note
+            vf -> vf: vc = **Issue or Reissue VC**
+                opt In Case of VC reissuance
+                    vf -> BC: Revoke existing VC
+                end
+                opt include ZKP
+                    vf -> vf: credential = Issue ZKP Credential
+                end
+            vf -> BC: Generate/Register vcMeta
+                rnote right of vf #MintCream
+                    **vcMeta** : $doc
+                end note
+            vf -> vf : generate credInfo
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // include ZKP
+                    }
+                end note
+            vf -> vf: Encrypt vc\
+                    \n* iv = Generate IV\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
+                    \n* encVc = multibase(tmp)
+        return {txId, encVc, iv}
+    return {txId, encVc, iv}
+
+    wal -> wal: Decrypt encVc\
+            \n* tmp = debase(encVc)\
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+            \n credInfo = {vc={..}, credential={..}}
+            opt include ZKP
+                wal -> wal : verify/save credential
+            end
+    wal -> wal: Verify issuer signature and store VC
+    wal -> wal: vcId = Extract VC ID
+return {vcId}
+
+|||
+== P210-5 : Confirm Issue VC ==
+
+ca -> proxy ++: Confirm Issue VC\n{txId, vcId}
+    proxy -> vf ++: Complete VC\n{txId, vcId}
+        vf -> vf: Verify vcId and complete the process
+    return {txId}
+return {txId}
+
+|||
+@enduml

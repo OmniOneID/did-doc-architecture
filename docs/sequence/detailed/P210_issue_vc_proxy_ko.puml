@@ -1,0 +1,325 @@
+@startuml P210_issue_vc_proxy_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>VC 발급 (Proxy 모드)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**월렛**" as wal <<Wallet>>
+    participant "**인가앱**" as ca <<App>>
+end box
+
+box 인가앱 사업자 #AliceBlue
+    participant "**CAS**" as cas <<WAS>> #WhiteSmoke
+    participant "**Proxy**" as proxy <<Server>>
+end box
+
+participant "**TAS**" as tas <<Server>>
+participant "**발급 사업자**" as vf <<Server>>
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== VC Plan 목록 조회 ==
+
+activate ca
+ca -> tas ++: VC Plan 목록 요청
+return VC Plan 목록
+rnote right of ca #MintCream
+    **VcPlan** : $doc
+    vcPlanId | name | ... | issuanceMode | endpoints
+    * issuanceMode = DIRECT | PROXY
+    * Issue Profile의 Issuance Mode가 TAS에 등록된 값
+end note
+
+ca -> ca: issuanceMode = PROXY 인 VC Plan 선택
+note right of ca
+    DIRECT인 VC Plan은 TAS를 경유하는
+    표준 VC 발급(P210) 절차를 따른다.
+end note
+
+rnote over ca, cas
+    (사전 조건) 인가앱은 KYC 등으로 확인한 사용자 정보를
+    CAS에 미리 등록해 둔다. (userId ↔ pii)
+    발급 사업자는 Proxy 요청의 userId로 CAS에서 pii를 조회하여
+    발급 대상 사용자를 식별한다.
+
+    * userId = 인가앱 사용자 ID
+    * pii = 개인식별번호
+end rnote
+
+|||
+== P210-1 : VC 발급 시작 요청 ==
+
+ca -> proxy ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
+    proxy -> vf ++: Inspect Propose\n{vcPlanId[, issuer, offerId]}
+        vf -> vf: VC 발급 가능여부 확인\
+                \n* VC Plan의 Issue Profile 조회
+        vf -> vf: * txId = 거래 ID 생성\
+                \n* refId = 참조번호 생성
+    return {txId, refId}
+return {txId, refId}
+
+|||
+== P210-2 : VC 발급 프로파일 요청 ==
+
+ca -> proxy ++: Request Issue Profile\n{txId, userId}
+    note right of ca
+        Proxy 접근 인증(세션, Access Token 등)은
+        Proxy 구현에 따르며 본 규격의 범위가 아니다.
+    end note
+    proxy -> vf ++: Generate Profile (Proxy)\n{txId, userId}
+        vf -> vf: txId 거래 확인\n(이전 단계: Inspect Propose)
+        vf -> cas ++: Retrieve PII\n{userId}
+            cas -> cas: userId로 사용자 PII 조회
+        return {pii}
+        note right of vf
+            CAS 통신 실패 시
+            SSRVISS15505 오류
+        end note
+        vf -> vf: 발급 대상 사용자 식별\
+                \n* Holder = {pii}\
+                \n* User Query Method에 따라 사용자 조회
+        note right of vf
+            **User Query Method** (Issue Profile 설정)
+            * DB : pii와 VC Schema로 발급 사업자 DB에 등록된 사용자 조회
+            * TEST : 사용자 정보 없이 발급 시점에 VC Schema 기준
+              테스트용 Claim을 자동 생성
+            * API(외부 시스템 조회) : 현재 미지원 (SSRVISS00502)
+        end note
+        vf -> vf: Profile 관련 데이터 준비\
+                \n* issuerNonce = 발급용 nonce 생성\
+                \n* (ReqE2e)reqE2e = E2E 요청정보 생성\
+                \n* 기타 데이터는 생략
+                opt ZKP 포함인 경우
+                    vf -> vf : CredentialOffer 생성
+                end
+        vf <-> BC: Issuer DID Doc 조회 / 응답
+                rnote right of vf #MintCream
+                    **DidDoc** : $doc
+                end note
+        vf -> vf: (IssueProfile)profile = Profile 생성 및 서명
+        vf -> vf: VC Profile 저장\
+                \n* 사용자, nonce 저장\
+                \n* Holder DID는 VC 발급 요청 시 didAuth로 확정
+        vf -> vf: authNonce = issuerNonce
+        note right of vf
+            표준 절차에서는 TAS가 authNonce를 생성하지만,
+            Proxy 모드에서는 발급 사업자가 issuerNonce를
+            authNonce로 사용한다.
+        end note
+    return {txId, profile, authNonce}
+return {txId, profile, authNonce}
+
+|||
+== P210-3 : 월렛 토큰 생성 ==
+
+hnote over ca, wal #LimeGreen
+    * purpose = "IssueVc"
+    * walletToken = 월렛토큰
+end hnote
+
+ca -> wal++ : walletTokenSeed 생성 요청 {purpose, pkgname, userId}
+    wal -> wal : nonce 생성
+    wal -> wal : walletTokenSeed 생성, 유효시간
+return {walletTokenSeed}
+rnote right of wal #MintCream
+    **walletTokenSeed** : $doc
+    walletTokenSeed =
+        (nonce | validUntil | purpose | pkgname | userId)
+end note
+
+ca -> cas : WalletTokenData요청 {walletTokenSeed}
+cas -> cas : WalletTokenData 생성
+cas -> ca : WalletTokenData 전달
+rnote right of ca #MintCream
+    **WalletTokenData** : $doc
+    seed|sha_pii|provider|nonce|Proof
+    Proof = sign(seed|sha_pii|provider|nonce|, CAS_PriKey)
+
+    CAS : 인가앱사업자 (인가앱서버)
+end note
+
+ca -> wal++ : WalletToken 생성 요청 \n{WalletTokenData}
+    wal -> BC++ : CAS DID Doc 조회
+    rnote right of wal #LightGray
+        **[API_REQ : DID Doc 조회 요청]**
+        did
+    end note
+
+    return
+    rnote right of wal #LightGray
+        **[API_RES : DID Doc 조회 응답]**
+        DidDoc
+    end note
+    rnote right of wal #MintCream
+        **DidDoc** : $refdoc
+    end note
+
+    wal -> wal : 서명 검증
+    wal -> wal : resultNonce 생성 (resultNonce)
+
+    wal -> wal : 월렛토큰 생성 {walletToken}
+    rnote right of wal #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(WalletTokenData | resultNonce)
+    end note
+
+    return {resultNonce}
+    note right of wal : resultNonce 전달 적용
+
+    ca -> ca : 월렛토큰 생성 {hWalletToken}
+    rnote right of ca #MintCream
+        **hWalletToken**
+        hWalletToken =
+            sha256(ObjWalletTokenData | resultNonce)
+    end note
+
+rnote across #white
+    Proxy 모드에서는 TAS와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
+    Holder 인증은 월렛이 서명한 DID Auth를 발급 사업자가 직접 검증한다.
+end note
+
+|||
+== P210-4 : VC 발급 요청 ==
+
+ca -> wal ++: VC 발급 요청\n{walletToken,\
+        \n   txId, refId, authNonce, profile}
+    wal -> wal: walletToken 검증
+
+    wal -> wal: profile.proof 서명 검증
+    wal -> wal: DID Auth 데이터 준비\
+        \n* (DidAuth)didAuth = {\
+        \n     did = Holder DID,\
+        \n     authNonce\
+        \n  }
+    user -[#Blue]\ wal: 사용자 인증(비표준)
+    wal -> wal: signAuth(didAuth)
+
+    wal -> wal: E2E용 ECDH 수행\
+            \n* _, pubKeyE2E = ECC 키쌍 생성\
+            \n* e2eKey = profile 내 E2E 데이터로\
+            \n  암호화키 생성\
+            \n* iv = IV 생성\
+            \n* (AccE2e)accE2e = {pubKeyE2E, iv}\
+            \n* signKeyAgree(accE2e)
+    wal -> wal: 발급 요청정보 생성 및 암호화\
+            \n* (ReqVc)reqVc 생성\
+            \n* encReqVc = enc(data, e2eKey, iv)
+            opt ZKP 포함인 경우
+                wal -> wal : credDef 블록체인 조회, mastersecret 생성/관리됨
+                wal -> wal : credentialRequest 생성, reqVc에 포함
+            end
+    wal -> proxy ++: Request Issue VC\n{txId, didAuth, accE2e, encReqVc}
+
+        proxy -> vf ++: Issue VC (Proxy)\n{txId, didAuth, accE2e, encReqVc}
+            vf -> vf: txId 거래 확인\n(이전 단계: Generate Profile)
+            vf -> vf: didAuth.proof 존재 확인
+            note right of vf
+                proof가 없으면 SSRVISS00426 오류
+            end note
+            vf <-> BC: Holder DID Doc 조회 / 응답 (didAuth.did)
+            vf -> vf: DID Auth 검증\
+                    \n* didAuth.proof 서명 검증\
+                    \n* authNonce 일치여부 확인\
+                    \n  (VC Profile에 저장된 issuerNonce)
+            note right of vf
+                authNonce 불일치 시 SSRVISS00210 오류
+            end note
+            vf -> vf: VC Profile에 Holder DID(didAuth.did) 저장
+            vf -> vf: E2E ECDH 수행\
+                    \n* accE2e.proof 검증\
+                    \n* e2eKey = 암호화키 생성\
+                    \n* iv = accE2e.iv
+            vf -> vf: encReqVc 복호화\
+                    \n* tmp = debase(encReqVc)\
+                    \n* reqVc = dec(tmp, e2eKey, iv)
+            vf -> vf: IssueProfile 대비 reqVc 검증\
+                    \n* refId 일치여부 확인\
+                    \n* profile.id 일치여부 확인\
+                    \n* profile.issuerNonce 일치여부 확인
+            vf -> vf: 발급 대상 사용자 정보 조회\
+                    \n* DB : 등록된 사용자 VC 데이터\
+                    \n* TEST : 테스트용 Claim 생성
+            vf <-> BC: Issuer DID Doc 조회 / 응답
+                rnote right of vf #MintCream
+                    **DidDoc** : $doc
+                end note
+            vf -> vf: vc = **VC 발급 or 재발급**
+            opt VC 재발급인 경우
+                vf -> BC: 기존 VC 폐기 요청
+            end
+                opt ZKP 포함인 경우
+                vf -> vf: credential = ZKP Credential 발급
+                end
+            vf -> BC: vcMeta 생성 / 등록
+                rnote right of vf #MintCream
+                    **vcMeta** : $doc
+                end note
+                vf -> vf : credInfo 생성
+                note right of vf
+                    credInfo = {
+                        vc = {...},
+                        credential = {...} // ZKP 포함시
+                    }
+                end note
+            vf -> vf: vc 암호화\
+                    \n* iv = IV 생성\
+                    \n* tmp = enc(credInfo, e2eKey, iv)\
+                    \n* encVc = multibase(tmp)
+        return {txId, encVc, iv}
+    return {txId, encVc, iv}
+
+    wal -> wal: encVc 복호화\
+            \n* tmp = debase(encVc)\
+            \n* credInfo = dec(tmp, e2eKey, iv)\
+            \n credInfo = {vc={..}, credential={..}}
+            opt ZKP 포함인 경우
+                wal -> wal : credential 검증 및 저장
+            end
+    wal -> wal: 이슈어 서명 검증 및 저장
+    wal -> wal: vcId = VC id 추출
+return {vcId}
+
+|||
+== P210-5 : 발급 완료 응답 ==
+
+ca -> proxy ++: Confirm Issue VC\n{txId, vcId}
+    proxy -> vf ++: Complete VC\n{txId, vcId}
+        vf -> vf: vcId 확인 및 완료 처리
+    return {txId}
+return {txId}
+
+|||
+@enduml
