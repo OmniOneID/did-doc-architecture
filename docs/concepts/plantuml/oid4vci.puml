@@ -1,0 +1,217 @@
+@startuml oid4vci_components
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "User" as user
+component "Wallet" as wallet
+component "TAS\n(List Provider)" as tas
+
+rectangle "Issuer (Issuer Server)" {
+    component "Webview Issuance\n(User-Initiated)" as web
+    component "Authorization Server\n(Built-in)\n- Token / Authorize" as as
+    component "Credential Issuer\n- Credential Offer\n- Credential / Nonce\n- Credential Revocation" as ci
+    component "Status List\nEndpoint" as sl
+    component "Admin Console" as admin
+}
+
+database "Trust Repository\n(DID Document)" as repo
+component "Verifier" as verifier
+
+user -right-> wallet
+wallet -right-> tas : Retrieve Issuer list
+wallet --> web : Start issuance\n(User Initiation URI)
+wallet --> as : Issue Access Token
+wallet --> ci : Issue/Revoke Credential
+admin -up-> tas : Request Issuer registration
+' leading \n\n keeps the label below the curved edge (smetana layout)
+admin -left-> ci : \n\nConfigure Metadata/Configuration
+ci --> repo : Retrieve Holder DID Document
+verifier -up-> sl : Check status
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_pre_authorized
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+participant "**Wallet**" as wal <<Wallet>>
+box Issuer #AliceBlue
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+participant "**Trust Repository**" as repo <<Storage>>
+
+== Issuance Initiation (Credential Offer) ==
+ci -> as ++: Request Pre-Authorized Code generation\n{userId, txCodeRequired}
+return {pre-authorized_code, tx_code(PIN)}
+ci -> ci: Store Credential Offer
+ci -> user: Display QR code (credential_offer_uri)\n+ Provide tx_code(PIN) separately
+user -> wal: Scan QR
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer\n{credential_issuer, credential_configuration_ids,\n grants.pre-authorized_code{pre-authorized_code, tx_code}}
+note right of wal
+    The Credential Offer can be retrieved only once.
+end note
+
+== Retrieve Metadata ==
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Issuer Metadata\n{authorization_servers, credential_endpoint, nonce_endpoint, ...}
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+
+== Access Token Issuance ==
+user -> wal: Enter tx_code(PIN)
+wal -> as ++: POST Token\n{grant_type = pre-authorized_code,\n pre-authorized_code, tx_code[, authorization_details]}
+    as -> as: Check code validity (unused, validity period) and tx_code
+return {access_token[, authorization_details]}
+
+== Credential Issuance ==
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> wal: Generate and sign Proof JWT\n* header.kid = Holder DID URL\n* payload.nonce = c_nonce
+wal -> ci ++: POST Credential (Bearer access_token)\n{credential_configuration_id, proofs.jwt[]}
+    ci -> repo: Retrieve Holder DID Document
+    ci -> ci: Verify Proof\n* Verify signature with authentication key\n* Consume c_nonce (one-time use)
+    ci -> ci: Allocate Status List index
+    ci -> ci: Generate and sign Credential\n(SD-JWT VC or mdoc)
+return {credentials[{credential}]}
+wal -> wal: Verify and store Credential
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_authorization_code
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+participant "**Wallet**" as wal <<Wallet>>
+box Issuer #AliceBlue
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+== Issuance Initiation (Credential Offer) ==
+ci -> user: Display QR code (credential_offer_uri)
+user -> wal: Scan QR
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer\n{credential_issuer, credential_configuration_ids,\n grants.authorization_code{issuer_state}}
+
+== Retrieve Metadata ==
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+
+== User Authentication and Authorization ==
+wal -> as ++: Authorization Request\n{response_type = code, client_id, redirect_uri,\n scope[, authorization_details]}
+    as -> user: Login screen
+    user -> as: Log in
+return Authorization Response (redirect_uri)\n{code}
+
+== Access Token Issuance ==
+wal -> as ++: POST Token\n{grant_type = authorization_code, code, redirect_uri}
+return {access_token[, authorization_details]}
+
+== Credential Issuance ==
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> ci ++: POST Credential (Bearer access_token)\n{credential_configuration_id, proofs.jwt[]}
+    note right of wal
+        Proof verification and Credential generation
+        are the same as in the Pre-Authorized Code flow.
+    end note
+return {credentials[{credential}]}
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_user_init
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+participant "**Wallet**" as wal <<Wallet>>
+participant "**TAS**\n(List Provider)" as tas <<Server>>
+box Issuer #AliceBlue
+    participant "**Webview Issuance**" as web <<Server>>
+    participant "**Credential Issuer**" as ci <<Server>>
+end box
+
+== Issuer Discovery ==
+wal -> tas ++: Retrieve Issuer list
+return {items[{credentialIssuer,\n credentialIssuerMetadataUri, userInitiationUri}]}
+note right of tas
+    Only Issuers approved with ACTIVE status are returned.
+end note
+user -> wal: Select Issuer and Credential to be issued
+
+== Webview Issuance ==
+wal -> web ++: GET userInitiationUri\n{did = Holder DID, credential_configuration_id[, credential_type]}
+    web -> web: Create issuance session (10 minutes)
+return Claim input screen
+user -> web: Enter and confirm Claims
+web -> web: Validate input and store Claims
+web -> ci: Create Credential Offer\n(Pre-Authorized Code, no tx_code)
+web --> wal: Redirect\nopenid-credential-offer://?credential_offer_uri=...
+
+== Credential Issuance ==
+wal -> ci: Retrieve Credential Offer and proceed with issuance\n(Token → Nonce → Credential)
+note right of wal
+    Same as the Pre-Authorized Code flow,
+    but tx_code entry is not required.
+end note
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_state_credential_status
+!pragma layout smetana
+hide empty description
+state VALID: Valid (0)
+state SUSPENDED: Suspended (2)
+state INVALID: Revoked (1)
+
+[*] --> VALID : Issuance
+VALID --> SUSPENDED : Suspended by administrator
+SUSPENDED --> VALID : Suspension lifted by administrator
+VALID --> INVALID : Revoked by administrator\nor wallet revocation request
+SUSPENDED --> INVALID : Revoked by administrator\nor wallet revocation request
+INVALID --> [*]
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_revocation
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+participant "**Wallet**" as wal <<Wallet>>
+participant "**Credential Issuer**" as ci <<Server>>
+participant "**Trust Repository**" as repo <<Storage>>
+
+user -> wal: Request Credential revocation
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> wal: Generate and sign Revocation Token\n* header{alg = ES256, typ = opendid-credential-revocation+jwt,\n         kid = Holder DID URL}\n* payload{iss = Holder DID, iat, exp, nonce,\n          credential_status.status_list{uri, idx}}
+wal -> ci ++: POST credential_revocation_endpoint\n{revocation_token}
+    ci -> repo: Retrieve Holder DID Document
+    ci -> ci: Verify signature and Claims
+    ci -> ci: Retrieve issuance record (status_list uri + idx)\n* Check ISSUED status\n* Check subject_did = iss
+    ci -> ci: Consume c_nonce (one-time use)
+    ci -> ci: Change status to INVALID\n* Update Status List\n* Record change history (USER_REQUEST)
+return {credential_status{status_list, status = INVALID}, revoked_at}
+@enduml

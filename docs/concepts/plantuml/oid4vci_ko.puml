@@ -1,0 +1,218 @@
+@startuml oid4vci_components_ko
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "사용자" as user
+component "월렛\n(Wallet)" as wallet
+component "TAS\n(List Provider)" as tas
+
+rectangle "발급 사업자 (Issuer 서버)" {
+    component "Webview 발급\n(사용자 주도)" as web
+    component "Authorization Server\n(내장)\n- Token / Authorize" as as
+    component "Credential Issuer\n- Credential Offer\n- Credential / Nonce\n- Credential 폐기" as ci
+    component "Status List\nEndpoint" as sl
+    component "Admin Console" as admin
+}
+
+database "신뢰저장소\n(DID Document)" as repo
+component "검증 사업자\n(Verifier)" as verifier
+
+user -right-> wallet
+wallet -right-> tas : Issuer 목록 조회
+wallet --> web : 발급 시작\n(User Initiation URI)
+wallet --> as : Access Token 발급
+wallet --> ci : Credential 발급·폐기
+admin -up-> tas : Issuer 등록 요청
+' 라벨 앞의 \n\n은 곡선 화살표와 라벨이 겹치지 않게 한다 (smetana layout)
+admin -left-> ci : \n\nMetadata·Configuration 설정
+ci --> repo : Holder DID Document 조회
+verifier -up-> sl : 상태 확인
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_pre_authorized_ko
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+participant "**월렛**" as wal <<Wallet>>
+box 발급 사업자 #AliceBlue
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+participant "**신뢰저장소**" as repo <<Storage>>
+
+== 발급 개시 (Credential Offer) ==
+ci -> as ++: Pre-Authorized Code 생성 요청\n{userId, txCodeRequired}
+return {pre-authorized_code, tx_code(PIN)}
+ci -> ci: Credential Offer 저장
+ci -> user: QR 코드 (credential_offer_uri) 표시\n+ tx_code(PIN) 별도 안내
+
+user -> wal: QR 스캔
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer\n{credential_issuer, credential_configuration_ids,\n grants.pre-authorized_code{pre-authorized_code, tx_code}}
+note right of wal
+    Credential Offer는 한 번만 조회할 수 있다.
+end note
+
+== Metadata 조회 ==
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Issuer Metadata\n{authorization_servers, credential_endpoint, nonce_endpoint, ...}
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+
+== Access Token 발급 ==
+user -> wal: tx_code(PIN) 입력
+wal -> as ++: POST Token\n{grant_type = pre-authorized_code,\n pre-authorized_code, tx_code[, authorization_details]}
+    as -> as: 코드 유효성(미사용, 유효시간) 및 tx_code 확인
+return {access_token[, authorization_details]}
+
+== Credential 발급 ==
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> wal: Proof JWT 생성 및 서명\n* header.kid = Holder DID URL\n* payload.nonce = c_nonce
+wal -> ci ++: POST Credential (Bearer access_token)\n{credential_configuration_id, proofs.jwt[]}
+    ci -> repo: Holder DID Document 조회
+    ci -> ci: Proof 검증\n* authentication 키로 서명 검증\n* c_nonce 일회성 소비
+    ci -> ci: Status List index 할당
+    ci -> ci: Credential 생성 및 서명\n(SD-JWT VC 또는 mdoc)
+return {credentials[{credential}]}
+wal -> wal: Credential 검증 및 저장
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_authorization_code_ko
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+participant "**월렛**" as wal <<Wallet>>
+box 발급 사업자 #AliceBlue
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+== 발급 개시 (Credential Offer) ==
+ci -> user: QR 코드 (credential_offer_uri) 표시
+user -> wal: QR 스캔
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer\n{credential_issuer, credential_configuration_ids,\n grants.authorization_code{issuer_state}}
+
+== Metadata 조회 ==
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+
+== 사용자 인증 및 인가 ==
+wal -> as ++: Authorization Request\n{response_type = code, client_id, redirect_uri,\n scope[, authorization_details]}
+    as -> user: 로그인 화면
+    user -> as: 로그인
+return Authorization Response (redirect_uri)\n{code}
+
+== Access Token 발급 ==
+wal -> as ++: POST Token\n{grant_type = authorization_code, code, redirect_uri}
+return {access_token[, authorization_details]}
+
+== Credential 발급 ==
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> ci ++: POST Credential (Bearer access_token)\n{credential_configuration_id, proofs.jwt[]}
+    note right of wal
+        Proof 검증과 Credential 생성은
+        Pre-Authorized Code 흐름과 같다.
+    end note
+return {credentials[{credential}]}
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_user_init_ko
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+participant "**월렛**" as wal <<Wallet>>
+participant "**TAS**\n(List Provider)" as tas <<Server>>
+box 발급 사업자 #AliceBlue
+    participant "**Webview 발급**" as web <<Server>>
+    participant "**Credential Issuer**" as ci <<Server>>
+end box
+
+== Issuer 탐색 ==
+wal -> tas ++: Issuer 목록 조회
+return {items[{credentialIssuer,\n credentialIssuerMetadataUri, userInitiationUri}]}
+note right of tas
+    ACTIVE 상태로 승인된 Issuer만 반환한다.
+end note
+user -> wal: 발급받을 Issuer 및 Credential 선택
+
+== Webview 발급 ==
+wal -> web ++: GET userInitiationUri\n{did = Holder DID, credential_configuration_id[, credential_type]}
+    web -> web: 발급 세션 생성 (10분)
+return Claim 입력 화면
+user -> web: Claim 입력 및 확인
+web -> web: 입력값 검증 및 Claim 저장
+web -> ci: Credential Offer 생성\n(Pre-Authorized Code, tx_code 없음)
+web --> wal: Redirect\nopenid-credential-offer://?credential_offer_uri=...
+
+== Credential 발급 ==
+wal -> ci: Credential Offer 조회 후 발급 진행\n(Token → Nonce → Credential)
+note right of wal
+    Pre-Authorized Code 흐름과 같으며
+    tx_code 입력은 필요하지 않다.
+end note
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_state_credential_status_ko
+!pragma layout smetana
+hide empty description
+state VALID: 유효 (0)
+state SUSPENDED: 정지 (2)
+state INVALID: 폐기 (1)
+
+[*] --> VALID : 발급
+VALID --> SUSPENDED : 관리자 정지
+SUSPENDED --> VALID : 관리자 정지 해제
+VALID --> INVALID : 관리자 폐기\n또는 월렛 폐기 요청
+SUSPENDED --> INVALID : 관리자 폐기\n또는 월렛 폐기 요청
+INVALID --> [*]
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vci_seq_revocation_ko
+autonumber "<b>(#)</b>"
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+participant "**월렛**" as wal <<Wallet>>
+participant "**Credential Issuer**" as ci <<Server>>
+participant "**신뢰저장소**" as repo <<Storage>>
+
+user -> wal: Credential 폐기 요청
+wal -> ci ++: POST Nonce
+return {c_nonce}
+wal -> wal: Revocation Token 생성 및 서명\n* header{alg = ES256, typ = opendid-credential-revocation+jwt,\n         kid = Holder DID URL}\n* payload{iss = Holder DID, iat, exp, nonce,\n          credential_status.status_list{uri, idx}}
+wal -> ci ++: POST credential_revocation_endpoint\n{revocation_token}
+    ci -> repo: Holder DID Document 조회
+    ci -> ci: 서명 및 Claim 검증
+    ci -> ci: 발급 기록 조회 (status_list uri + idx)\n* ISSUED 상태 확인\n* subject_did = iss 확인
+    ci -> ci: c_nonce 일회성 소비
+    ci -> ci: 상태 INVALID 변경\n* Status List 갱신\n* 변경 이력 기록 (USER_REQUEST)
+return {credential_status{status_list, status = INVALID}, revoked_at}
+@enduml
