@@ -2,11 +2,12 @@
 
 - Subject: Open DID Architecture
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-10-22
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, and LSS |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -38,6 +39,10 @@ Services combine the functions of various entities into products. Services can b
     * **Entities**: KYC, OP
     * **Description**: Provides services for user authentication and authorization management. The KYC entity verifies and authenticates the user's identity, while the OP entity issues secure tokens based on the authenticated information and grants permissions to users.
 
+* **OID4VC-based Credential Issuance Service**
+    * **Entities**: Issuer, OP, List
+    * **Description**: A service that issues Credentials in the SD-JWT VC and mdoc formats with the OID4VCI (OpenID for Verifiable Credential Issuance) standard and manages the Credential status with the Token Status List. The Issuer entity issues Credentials, the OP entity issues the Access Tokens required for issuance, and the List entity provides the list of OID4VCI Issuers to wallets. OpenDID provides the OID4VCI SDK, OID4VC Formatter SDK, SD-JWT VC SDK, and mso_mdoc SDK to implement this service. For details, refer to [OID4VCI Issuance](OID4VCI%20Issuance.md).
+
 ## Overall Architecture
 The diagram below represents the overall architecture of Open DID. To clearly illustrate the entities that make up Open DID, each provider is assumed to offer a single service, and that service provides the function of a single entity.
 
@@ -54,6 +59,7 @@ Providers are entities that combine various services to offer comprehensive solu
 1.	Digital ID Issuance: Possesses the user's identity or qualification information and can issue a digital ID to the user.
 2.	Digital ID Renewal: When the user's identity information changes or the ID expires, a new ID can be created or renewed.
 3.	Digital ID Revocation: Can revoke the digital ID upon user cancellation or withdrawal.
+4.	OID4VCI Issuance: Issues Credentials in the SD-JWT VC and mdoc formats with the OID4VCI standard, and manages the Credential status (valid, suspended, revoked) with the Token Status List.
 
 #### Verifier
 1.	Digital ID Verification: Requests and verifies the user's digital ID to check if the user is authorized to use the service.
@@ -66,10 +72,12 @@ Providers are entities that combine various services to offer comprehensive solu
 #### CApp Provider
 1.	App Status Verification: Checks if the user's app is in a normal state and verifies whether it is a trusted app.
 2.	Wallet Trust Information Provision: Provides reliability information about the app requested by the user.
+3.	Proxy Issuance Relay (optional): Operates a Proxy server that relays VC issuance requests between the CApp and the Issuer without going through the TAS.
 
 #### OP Provider
 1.	Token Provision: Verifies the trust information provided by the user and provides a safe and valid token to the user.
 2.	Authorization Management per Token: Grants permissions based on the tokens issued to the user.
+3.	OID4VCI Access Token Issuance: As the Authorization Server in OID4VCI issuance, issues Access Tokens with a Pre-Authorized Code or an Authorization Code. The OpenDID Issuer server has an embedded Authorization Server.
 
 #### Wallet Provider
 1.	Key Storage Integration: Provides an interface to connect to storage (HSM, File, Vault) that can store wallet keys appropriate to the type (device/cloud).
@@ -80,10 +88,12 @@ Providers are entities that combine various services to offer comprehensive solu
 #### List Provider
 1.	Issuer List Provision: Provides a list of issuers for VC issuance.
 2.	VC List Provision: Provides a list of VCs for issuance.
+3.	OID4VCI Issuer List Provision: Approves and manages registration requests from OID4VCI Issuers, and provides the list of approved Issuers to wallets. In OpenDID, the TAS performs the role of the List Provider.
 
 #### KYC Provider
 1.	User Authentication: Performs user authentication for the use of digital IDs.
 2.	Identity Information Provision: Provides identity information for the use of digital IDs.
+3.	User PII Provision: In Proxy mode issuance, provides the PII of the user when the Issuer requests it with the user identifier (userId). In the OpenDID demo implementation, the CAS of the CApp Provider performs this role.
 
 #### Notification Provider
 1.	User Notification Feature Provision: Sends messages to the user via email, SMS, or push notifications.
@@ -107,6 +117,7 @@ Providers are entities that combine various services to offer comprehensive solu
 #### Storage (DBMS Provider)
 1.	Public Database Provision: Provides a public database to store and manage necessary data for each entity.
 2.	Data Management: Stores and manages data such as public keys and VC Meta.
+3.	Blockchain Alternative Storage: OpenDID provides the LSS (Ledger Service Server), which can be used instead of the blockchain. The LSS manages DID Documents, VC Meta, and other data with a PostgreSQL database and provides the same functions as the blockchain.
 
 #### Backup Provider
 1.	Data Backup: Provides functions to store and manage backup data such as wallets and VCs.
