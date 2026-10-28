@@ -164,7 +164,7 @@ OID4VCI 기반 발급의 구성 요소는 아래 그림과 같다.
 | 항목 | 설명 |
 | ---- | ---- |
 | Configuration ID | Credential Configuration의 고유 식별자. Credential Offer의 `credential_configuration_ids`와 Credential 요청에서 사용한다. |
-| Format | Credential 형식. `dc+sd-jwt`, `dc+sd-jwt-did`, `mso_mdoc`, `mso_mdoc-did` 중 하나 ([4.6](#46-credential-형식) 참조) |
+| Format | Credential 형식. `dc+sd-jwt-did`, `mso_mdoc-did` 중 하나 ([4.6](#46-credential-형식) 참조) |
 | Identifiers | 발급할 Credential 유형을 식별하는 값. Access Token 응답의 `authorization_details.credential_identifiers`로 전달된다. |
 | Metadata | Issuer Metadata의 `credential_configurations_supported`에 공개할 JSON. SD-JWT VC는 `vct`, mdoc은 `doctype`과 Claim 표시 정보, 지원 Proof 유형(`jwt`, ES256)을 포함한다. |
 
@@ -316,8 +316,8 @@ Credential Issuer가 사용자를 미리 확인한 상태에서 Pre-Authorized C
 
 | 항목 | 규칙 |
 | ---- | ---- |
-| 키 식별 | Header에 `kid`, `jwk`, `x5c` 중 하나만 사용한다. |
-| `kid` | Holder DID URL(키 fragment 포함, 예: `did:omn:holder?versionId=1#auth`). Credential Issuer는 Holder DID Document를 조회하여 `authentication`에 등록된 P-256 키로 서명을 검증한다. |
+| 키 식별 | Header의 키 식별 값은 하나만 사용하며, OpenDID 월렛은 Holder DID URL `kid`를 사용한다. |
+| `kid` | Holder DID URL(키 fragment 포함, 예: `did:omn:holder?versionId=1#pin`, 키 이름은 `#pin` 또는 `#bio`). Credential Issuer는 Holder DID Document를 조회하여 `authentication`에 등록된 P-256 키로 서명을 검증한다. |
 | Holder | 하나의 요청에 포함된 Proof는 모두 같은 Holder DID를 사용해야 한다. |
 | `nonce` | Nonce Endpoint에서 받은 c_nonce. c_nonce는 10분간 유효하며 한 번만 사용할 수 있다. |
 | 상태 관리 형식 | SD-JWT VC와 mdoc은 Holder DID `kid`로 식별되는 Proof가 필요하다. |
@@ -328,18 +328,16 @@ Proof의 공개키는 Credential의 Holder 바인딩 키(SD-JWT VC의 `cnf`, mdo
 **Credential 응답 암호화**
 
 Issuer Metadata의 `credential_response_encryption.encryption_required`가 `true`이면, 월렛은 Credential 요청에 응답 암호화용 공개키(`credential_response_encryption{jwk, alg, enc}`)를 포함해야 하며
-Credential Issuer는 Credential 응답을 JWE로 암호화하여 반환한다. 지원 알고리즘은 `ECDH-ES`, `ECDH-ES+A256KW`(EC 키)와 `A256GCM`이다.
+Credential Issuer는 Credential 응답을 JWE로 암호화하여 반환한다. OpenDID 월렛은 `ECDH-ES`(EC 키)와 `A256GCM`을 사용하며, 요청에 `alg`가 없으면 Credential Issuer가 Issuer Metadata의 `alg_values_supported`에서 알고리즘을 선택하므로 Metadata에는 `ECDH-ES`만 설정한다.
 
 ### 4.6. Credential 형식
 
 | Format | Credential | Issuer 키 식별 | 비고 |
 | ------ | ---------- | --------------- | ---- |
 | `dc+sd-jwt-did` | SD-JWT VC | Issuer DID URL (`kid`) | JWT Header `typ: dc+sd-jwt-did` |
-| `dc+sd-jwt` | SD-JWT VC | X.509 인증서 체인 (`x5c`) | JWT Header `typ: dc+sd-jwt` |
 | `mso_mdoc-did` | ISO mdoc | Issuer DID URL로 IssuerAuth 서명 | |
-| `mso_mdoc` | ISO mdoc | X.509 인증서 체인 (`x5c`) | |
 
-- `-did` 형식은 OpenDID 신뢰저장소에 등록된 Issuer DID Document의 키로 서명하므로, 검증자는 Issuer DID Document로 서명을 검증한다.
+- Credential은 OpenDID 신뢰저장소에 등록된 Issuer DID Document의 키로 서명하므로, 월렛과 검증자는 Issuer DID Document로 서명을 검증한다.
 - SD-JWT VC의 유형은 `vct`, mdoc의 유형은 `doctype`으로 표현하며 Credential Configuration의 Metadata에서 가져온다.
 - 상태 관리가 적용되는 Credential은 Status List 참조(`status.status_list{uri, idx}`)를 포함한다. SD-JWT VC는 Issuer가 서명한 Claim으로, mdoc은 MSO에 포함한다.
 
@@ -353,7 +351,7 @@ Credential Issuer는 Credential 응답을 JWE로 암호화하여 반환한다. �
 OpenDID는 OID4VCI로 발급한 SD-JWT VC와 mdoc의 상태를 [TOKEN-STATUS]로 관리한다.
 
 - Credential Issuer는 Credential 형식별로 Status List를 만들고, Credential 발급 시 Status List의 index를 할당한다.
-- Credential에는 Status List URI(`{credential_issuer}/status-lists/{listId}`)와 index가 포함된다.
+- Credential에는 Status List URI(`{Issuer 기본 URL}/status-lists/{listId}`)와 index가 포함된다.
 - Status List Endpoint는 Status List를 Issuer DID 키로 서명한 JWT(`typ: statuslist+jwt`, `application/statuslist+jwt`)로 제공한다.
     - Claims: `sub`(Status List URI), `iat`, `exp`, `ttl`, `status_list{bits, lst}`
     - `lst`는 상태 비트 배열을 압축(zlib)하여 base64url로 인코딩한 값이다.

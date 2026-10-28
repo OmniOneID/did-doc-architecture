@@ -164,7 +164,7 @@ The components of OID4VCI-based issuance are shown in the diagram below.
 | Item | Description |
 | ---- | ----------- |
 | Configuration ID | Unique identifier of the Credential Configuration. Used in `credential_configuration_ids` of the Credential Offer and in the Credential request. |
-| Format | Credential format. One of `dc+sd-jwt`, `dc+sd-jwt-did`, `mso_mdoc`, `mso_mdoc-did` (see [4.6](#46-credential-formats)) |
+| Format | Credential format. One of `dc+sd-jwt-did` and `mso_mdoc-did` (see [4.6](#46-credential-formats)) |
 | Identifiers | Values that identify the type of Credential to be issued. Delivered as `authorization_details.credential_identifiers` in the Access Token response. |
 | Metadata | JSON to be published in `credential_configurations_supported` of the Issuer Metadata. Includes `vct` for SD-JWT VC or `doctype` for mdoc, together with Claim display information and the supported Proof types (`jwt`, ES256). |
 
@@ -316,8 +316,8 @@ The wallet requests the Credential together with the Access Token, and the reque
 
 | Item | Rule |
 | ---- | ---- |
-| Key identification | Use only one of `kid`, `jwk`, and `x5c` in the Header. |
-| `kid` | Holder DID URL (including the key fragment, e.g., `did:omn:holder?versionId=1#auth`). The Credential Issuer retrieves the Holder DID Document and verifies the signature with the P-256 key registered in `authentication`. |
+| Key identification | Use only one key identifier in the Header; the OpenDID wallet uses the Holder DID URL `kid`. |
+| `kid` | Holder DID URL (including the key fragment, e.g., `did:omn:holder?versionId=1#pin`; the key name is `#pin` or `#bio`). The Credential Issuer retrieves the Holder DID Document and verifies the signature with the P-256 key registered in `authentication`. |
 | Holder | All Proofs included in a single request must use the same Holder DID. |
 | `nonce` | The c_nonce received from the Nonce Endpoint. A c_nonce is valid for 10 minutes and can be used only once. |
 | Formats with status management | SD-JWT VC and mdoc require a Proof identified by a Holder DID `kid`. |
@@ -328,18 +328,16 @@ The public key of the Proof is included in the Credential as the Holder binding 
 **Credential Response Encryption**
 
 If `credential_response_encryption.encryption_required` in the Issuer Metadata is `true`, the wallet must include a public key for response encryption (`credential_response_encryption{jwk, alg, enc}`) in the Credential request,
-and the Credential Issuer encrypts the Credential response as a JWE and returns it. The supported algorithms are `ECDH-ES`, `ECDH-ES+A256KW` (EC keys), and `A256GCM`.
+and the Credential Issuer encrypts the Credential response as a JWE and returns it. The OpenDID wallet uses `ECDH-ES` (EC keys) and `A256GCM`. If the request has no `alg`, the Credential Issuer chooses an algorithm from `alg_values_supported` in the Issuer Metadata, so the Metadata lists `ECDH-ES` only.
 
 ### 4.6. Credential Formats
 
 | Format | Credential | Issuer Key Identification | Remarks |
 | ------ | ---------- | ------------------------- | ------- |
 | `dc+sd-jwt-did` | SD-JWT VC | Issuer DID URL (`kid`) | JWT Header `typ: dc+sd-jwt-did` |
-| `dc+sd-jwt` | SD-JWT VC | X.509 certificate chain (`x5c`) | JWT Header `typ: dc+sd-jwt` |
 | `mso_mdoc-did` | ISO mdoc | IssuerAuth signed with the Issuer DID URL | |
-| `mso_mdoc` | ISO mdoc | X.509 certificate chain (`x5c`) | |
 
-- The `-did` formats are signed with the key of the Issuer DID Document registered in the OpenDID Trust Repository, so the verifier verifies the signature with the Issuer DID Document.
+- Credentials are signed with the key of the Issuer DID Document registered in the OpenDID Trust Repository, so the wallet and the verifier verify the signature with the Issuer DID Document.
 - The type of an SD-JWT VC is expressed as `vct` and the type of an mdoc as `doctype`, and both are taken from the Metadata of the Credential Configuration.
 - A Credential to which status management applies includes a Status List reference (`status.status_list{uri, idx}`). For SD-JWT VC, it is included as a Claim signed by the Issuer, and for mdoc, it is included in the MSO.
 
@@ -353,7 +351,7 @@ and the Credential Issuer encrypts the Credential response as a JWE and returns 
 OpenDID manages the status of SD-JWT VCs and mdocs issued via OID4VCI with [TOKEN-STATUS].
 
 - The Credential Issuer creates a Status List for each Credential format, and allocates a Status List index when issuing a Credential.
-- The Credential includes the Status List URI (`{credential_issuer}/status-lists/{listId}`) and the index.
+- The Credential includes the Status List URI (`{Issuer base URL}/status-lists/{listId}`) and the index.
 - The Status List Endpoint provides the Status List as a JWT signed with the Issuer DID key (`typ: statuslist+jwt`, `application/statuslist+jwt`).
     - Claims: `sub` (Status List URI), `iat`, `exp`, `ttl`, `status_list{bits, lst}`
     - `lst` is the status bit array compressed (zlib) and encoded in base64url.
