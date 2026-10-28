@@ -20,8 +20,8 @@ Software Architecture
 
 - Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
-- Date: 2026-10-13  
-- Version: v1.0.1  
+- Date: 2026-10-22  
+- Version: v1.1.0  
 
 Revision History
 ---
@@ -30,6 +30,7 @@ Revision History
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2024-09-03 | Initial version |
 | v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
+| v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, OID4VCI Issuer list, LSS, and OID4VC SDKs |
 
 
 Table of Contents
@@ -65,6 +66,7 @@ Table of Contents
     - [5.2. Issuer Service](#52-issuer-service)
       - [5.2.1. Issuance Controller](#521-issuance-controller)
       - [5.2.2. VC Controller](#522-vc-controller)
+      - [5.2.3. OID4VCI](#523-oid4vci)
     - [5.3. Verifier Service](#53-verifier-service)
       - [5.3.1. Verify Controller](#531-verify-controller)
     - [5.4. Certified App (CApp)](#54-certified-app-capp)
@@ -101,6 +103,10 @@ This four-step approach enables a hierarchical understanding of the entire syste
 | [ISSUE-VC] | (OpenDID) VC Issuance | [VC Issuance](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance.md?ref_type=heads) |
 | [PRESENT-VP] | (OpenDID) VP Presentation | [VP Presentation](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP.md?ref_type=heads) |
 | [VC-FORMAT] | (OpenDID) VC Format | [VC Format](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format.md?ref_type=heads) |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI Issuance | [OID4VCI Issuance](../concepts/OID4VCI%20Issuance.md) |
+| [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [P210_issue_vc_proxy.puml](../sequence/detailed/P210_issue_vc_proxy.puml) |
+| [LSS] | (OpenDID) Ledger Service Server | https://github.com/OmniOneID/did-ledger-service-server |
 
 <div style="page-break-after: always;"></div>
 
@@ -193,6 +199,7 @@ OpenDID serves as the target system, offering the following services to particip
     - Sending IssueOffers to Holders
     - Issuing VCs to Holders
     - Managing the status of VCs
+    - Issuing Credentials (SD-JWT VC, mdoc) through OID4VCI and managing their status
 - to Verifier:
     - Providing VerifyOffers to Service Devices
     - Receiving and verifying VPs from Holders
@@ -244,18 +251,22 @@ The diagram categorizes containers as follows:
 | Group                       | Containers                                   | Multiple |
 | --------------------------- | -------------------------------------------- | :------: |
 | **Core**                    | • Trust Agent<br>                            |          |\
-|                             | • Trust Repository (Blockchain network)<br>  |          |\
+|                             | • Trust Repository (Blockchain network or LSS)<br> |    |\
 |                             | • Notification Service                       |          |
 | **Wallet**                  | • Client wallet (SDK, Mobile App, Cloud)<br> |    Y     |\
 |                             | • Wallet Service (for client wallet)         |          |
 | **Certified App**<br>(CApp) | • CApp (Mobile App for holder)<br>           |    Y     |\
-|                             | • CApp Service                               |          |
+|                             | • CApp Service<br>                           |          |\
+|                             | • Proxy (optional)                           |          |
 | **Issuer**                  | • Issuer Service<br>                         |    Y     |\
 |                             | • Issuer Legacy                              |          |
 | **Verifier**                | • Verifier Service<br>                       |    Y     |\
 |                             | • Verifier Legacy                            |          |
 | **Supplements**             | • User Service<br>                           |          |\
-|                             | • CLI Tool for Wallet                        |          |
+|                             | • CLI Tool for Wallet<br>                    |          |\
+|                             | • LSS (Ledger Service Server)                |          |
+
+> The Container Diagram above does not show the Proxy, the LSS, or the OID4VCI components of the Issuer Service added in OpenDID 3.0. Each of them is described in its own section.
 
 ### 4.1. Core
 
@@ -264,6 +275,7 @@ The Core group contains the essential components for operating the Digital ID sy
 - Trust Repository:
     - A blockchain-based storage system that prevents hacking and tampering.
     - Stores DID Documents, VC metadata, and schemas and definitions used for Zero-Knowledge Proofs (ZKP).
+    - The LSS (Ledger Service Server) can be used instead of the blockchain (refer to [4.6](#46-supplements)).
 - Trust Agent:
     - Authorized by the Digital Identity Committee to operate the trust chain and perform the following tasks:
         - Registering DID Documents.
@@ -273,6 +285,7 @@ The Core group contains the essential components for operating the Digital ID sy
     - Provides additional services:
         - Registering and retrieving VC Plans.
         - Performing Know Your Customer (KYC) procedures.
+        - Registering OID4VCI Issuers and providing the Issuer list.
 - Notification Service:
     - Sends emails and push notifications from servers to CApps.
     - Issuers and Verifiers can operate their own Notification Services if needed.
@@ -308,6 +321,10 @@ The Certified App (CApp) group involves mobile applications for users:
 - CApp Service:
     - Signs token seed information to generate WalletTokens and ServerTokens, proving the app’s authenticity.
     - CApp Services must sign every interaction with client wallets or Trust Agent services.
+    - In Proxy mode issuance, provides the user's PII at the request of the Issuer Service (Retrieve PII).
+- Proxy (optional):
+    - A server of the CApp Provider that relays issuance requests between the CApp and the Issuer Service in Proxy mode issuance.
+    - Used to issue VCs without the issuance mediation of the Trust Agent (refer to [5.2.1](#521-issuance-controller)).
 
 Each domain must have at least one CApp group.
 
@@ -318,6 +335,8 @@ The Issuer group contains elements related to identity issuance:
 - Issuer Service:
     - A server implementing the Issuer API using the OpenDID SDK.
     - Alternatively, Issuer Legacy systems may add Issuer APIs to their infrastructure.
+    - Supports OID4VCI issuance in addition to the OpenDID issuance protocol (refer to [5.2.3](#523-oid4vci)).
+        - Provides the Credential Issuer, the Authorization Server (embedded), and the Status List Endpoint.
 - Issuer Legacy:
     - Legacy servers that store and manage the personal data necessary for identity issuance.
 
@@ -356,6 +375,11 @@ The Supplements group includes auxiliary or temporary functions:
     - The wallet file is copied to the Provider Service server to configure the server wallet.  
     - The DID Document is sent to the TA administrator to request registration in the Trust Repository.  
     - The Provider Service invokes the entity registration protocol with the Trust Agent.
+- LSS (Ledger Service Server):
+    - An alternative Trust Repository service that provides the same functions as the blockchain using a PostgreSQL database.
+    - Provides APIs such as registering and retrieving DID Documents and VC Metadata (refer to [LSS]).
+    - Used to build OpenDID without blockchain infrastructure.
+    - The Trust Agent and the Issuer Service access the LSS instead of the blockchain with the `lss` profile, and authenticate each request with the `X-API-Key` header.
 
 
 <div style="page-break-after: always;"></div>
@@ -388,6 +412,19 @@ The OpenDID SDK is used across all containers and includes the following types:
 | Client Wallet SDK      | • Manage client wallets (lock/unlock)<br>          | For DID and VC management |
 |                        | • Create, store, and retrieve DID Documents<br>    |       |
 |                        | • Store and retrieve VCs                           |       |
+| OID4VCI SDK            | • OID4VCI Credential Issuer<br>                     | OID4VCI issuance |
+|                        | &nbsp;&nbsp;(Metadata, Credential Offer, Nonce, Credential)<br> |       |
+|                        | • Authorization Server (Pre-Authorized Code, Authorization Code)<br> |       |
+|                        | • Token Status List, Credential revocation          |       |
+| OID4VC Formatter SDK   | • Create Credentials by format (OpenDID VC, SD-JWT VC, mdoc)<br> | Credential format selection |
+|                        | • Verify VP Tokens                                  |       |
+| SD-JWT VC SDK          | • Create SD-JWT VCs (selective disclosure)<br>      | SD-JWT VC |
+|                        | • Verify SD-JWT VCs and Key Binding JWTs            |       |
+| mso_mdoc SDK           | • Create ISO mdocs (MSO, COSE Sign1 signature)<br>  | ISO/IEC 18013-5 |
+|                        | • Verify mdocs                                      |       |
+
+The OID4VC SDKs (OID4VCI, OID4VC Formatter, SD-JWT VC, mso_mdoc) are used for OID4VCI-based Credential issuance.
+The OID4VCI components of the Issuer Service are described in [5.2.3](#523-oid4vci).
 
 
 
@@ -412,7 +449,8 @@ The Trust Agent implements registration, issuance, and listing APIs using the Op
 |                     | &nbsp;&nbsp;- VC Plan list by category<br>           |       |
 |                     | &nbsp;&nbsp;- VC Plan details<br>                    |       |
 |                     | &nbsp;&nbsp;- Allowed CApp packages for wallets<br> |       |
-|                     | &nbsp;&nbsp;- Certificate VCs by DID                 |       |
+|                     | &nbsp;&nbsp;- Certificate VCs by DID<br>             |       |
+|                     | • Request OID4VCI Issuer registration, retrieve the Issuer list |       |
 
 #### 5.1.1. Enroll Controller
 
@@ -543,6 +581,13 @@ In the diagram below, the API calls made by the CApp to the Trust Agent (2a, 3, 
 
 *[NOT yet documented]*
 
+■ Issuance without Mediation
+
+The following issuance methods do not go through the Issuance Controller of the Trust Agent.
+
+- Proxy mode issuance: The Proxy server of the CApp Provider relays issuance requests between the CApp and the Issuer Service. The Trust Agent is used only to retrieve the VC Plan list (refer to [5.2.1](#521-issuance-controller)).
+- OID4VCI issuance: The wallet calls the OID4VCI Endpoints of the Issuer Service directly. The Trust Agent provides only the OID4VCI Issuer list (refer to [5.2.3](#523-oid4vci)).
+
 #### 5.1.3. List Controller
 
 The List Controller handles list services typically managed by a List Provider. The demo implementation integrates these services into the Trust Agent but may separate them into a dedicated List Service in the future.
@@ -560,6 +605,21 @@ This information is stored in the List Provider's database, not in the Trust Rep
 1. Allowed CApp Package List for Wallets: Package IDs of CApps that can use specific wallets.
 1. Certificate VCs by DID: Retrieve certificate VCs using provider DIDs.
 
+■ OID4VCI Issuer List
+
+As a List Provider, the Trust Agent registers and manages OID4VCI Issuers and provides the Issuer list to wallets.
+The wallet selects an Issuer from this list to start user-initiated issuance.
+
+| API                                         | Caller | Function                                                  |
+| ------------------------------------------- | ------ | --------------------------------------------------------- |
+| `POST /list/api/v1/oid4vci/issuers`         | Issuer | Request OID4VCI Issuer registration (`REQUESTED`)         |
+| `GET /list/api/v1/oid4vci/issuers`          | Wallet | Retrieve the list of Issuers in `ACTIVE` status           |
+| `GET /list/api/v1/oid4vci/issuers/detail`   | Wallet | Retrieve an Issuer in `ACTIVE` status by `credentialIssuer` |
+
+The TAS administrator approves (`ACTIVE`) or rejects (`REJECTED`) a registration request in the Admin Console,
+and can suspend (`SUSPENDED`) or revoke (`REVOKED`) an approved Issuer.
+For the registration information and status transitions, refer to the List Provider registration section of the [OID4VCI-ISSUANCE] document.
+
 
 <div style="page-break-after: always;"></div>
 
@@ -568,11 +628,19 @@ This information is stored in the List Provider's database, not in the Trust Rep
 ![](images/component_issuer_service.svg)
 
 The Issuer Service implements VC issuance and management APIs using the OpenDID SDK.
+It also provides OID4VCI-based Credential issuance and status management using the OID4VC SDKs.
 
-| API Group           | Functionality    | Notes |
-| ------------------- | ---------------- | ----- |
-| Issuance Controller | VC Issuance      |       |
-| VC Controller       | VC Status Update |       |
+| API Group           | Functionality                 | Notes                 |
+| ------------------- | ----------------------------- | --------------------- |
+| Issuance Controller | • VC Issuance<br>             |                       |\
+|                     | • VC Issuance (Proxy mode)    |                       |
+| VC Controller       | • VC Status Update            |                       |
+| OID4VCI             | • Credential Issuer<br>       | [5.2.3](#523-oid4vci) |\
+|                     | • Authorization Server<br>    |                       |\
+|                     | • Status List Endpoint<br>    |                       |\
+|                     | • Webview issuance            |                       |
+
+The Component Diagram above shows only the components of the OpenDID issuance protocol. For the OID4VCI components, refer to the diagram in [5.2.3](#523-oid4vci).
 
 The [ISSUE-VC] document outlines the complete issuance process:
 
@@ -620,11 +688,72 @@ The diagram below illustrates the (D) Issuance stage. While the Trust Agent can 
 
 ![](images/issue_vc.svg)
 
+■ Proxy Mode Issuance
+
+In Proxy mode, the Proxy server of the CApp Provider, instead of the Trust Agent, relays issuance requests between the CApp and the Issuer Service.
+The Proxy server calls the following APIs.
+
+- Inspect Propose Issue: Same as the standard procedure.
+- Generate Issue Profile (Proxy): Create the IssueProfile with the user identifier (`userId`).
+- Issue VC (Proxy): Issue the VC.
+- Complete VC: Same as the standard procedure.
+
+The differences from the standard procedure are as follows.
+
+- The CApp sends a `userId` instead of user information, and the Issuer Service identifies the user to be issued by retrieving the user's PII from the CApp Service with the `userId`.
+- The `issuerNonce` generated by the Issuer Service is used as the `authNonce`, instead of the `authNonce` generated by the Trust Agent.
+- The Issuer Service verifies the `didAuth` signature and the `authNonce` in the VC issuance request to confirm the Holder DID.
+
+Access authentication to the Proxy (session, Access Token, etc.) depends on the Proxy implementation. For the detailed procedure, refer to [ISSUE-VC-PROXY].
+
 #### 5.2.2. VC Controller
 
 The VC Controller manages the VC lifecycle. Additional details are provided in the [VC-FORMAT] document. API definitions for VC lifecycle management are not currently available.
 
 *[NOT yet documented]*
+
+For the status management of Credentials issued through OID4VCI, refer to [5.2.3](#523-oid4vci).
+
+#### 5.2.3. OID4VCI
+
+The Issuer Service provides OID4VCI-based Credential issuance using the OID4VC SDKs.
+Unlike the OpenDID issuance protocol, the wallet calls the Issuer Service directly, and the Trust Agent does not mediate issuance but provides only the OID4VCI Issuer list.
+For details, refer to the [OID4VCI-ISSUANCE] document.
+
+![OID4VCI Components](../concepts/images/oid4vci_components.svg)
+
+| Component            | Function                                                                               | Notes                        |
+| -------------------- | -------------------------------------------------------------------------------------- | ---------------------------- |
+| Credential Issuer    | • Provides the Issuer Metadata (`/.well-known/openid-credential-issuer`)<br>           |                              |\
+|                      | • Credential Offer, Nonce, and Credential Endpoints<br>                                |                              |\
+|                      | • Credential revocation Endpoint                                                       | Revocation is an OpenDID extension |
+| Authorization Server | • Issues Access Tokens with the Pre-Authorized Code and Authorization Code grants<br>  | Embedded in the Issuer Service |\
+|                      | • Provides the Authorization Server Metadata (`/.well-known/oauth-authorization-server`) |                            |
+| Status List Endpoint | • Provides signed Token Status Lists (`/status-lists/{listId}`)                        | `application/statuslist+jwt` |
+| Webview issuance     | • Provides the Claim input screen and creates the Credential Offer in user-initiated issuance |                       |
+| Admin Console        | • Issuer Metadata, Credential Configuration, and Client settings<br>                   |                              |\
+|                      | • List Provider registration<br>                                                       |                              |\
+|                      | • Retrieval of the issuance history and Credential status changes                      |                              |
+
+The supported Credential formats are as follows.
+
+| Format          | Credential | Data Format                                                                                    |
+| --------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md)  |
+| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](../data%20standard/oid4vc%20credential%20format/mdoc%20format.md)              |
+
+The issuance and revocation procedures are as follows.
+
+| Procedure                       | Description                                                                         | Sequence |
+| ------------------------------- | ----------------------------------------------------------------------------------- | -------- |
+| Pre-Authorized Code issuance    | The issuance service creates a Credential Offer and delivers it to the user by QR code, etc. | [P230](../sequence/detailed/P230_oid4vci_issue_pre_authorized.puml) |
+| Authorization Code issuance     | The wallet receives an Access Token after user authentication at the Authorization Server | [P231](../sequence/detailed/P231_oid4vci_issue_authorization_code.puml) |
+| User-initiated issuance         | The wallet selects an Issuer from the TAS Issuer list and enters Claims in the Webview | [P232](../sequence/detailed/P232_oid4vci_issue_user_init.puml) |
+| Credential revocation           | The wallet requests revocation with a revocation token signed with the Holder DID key | [P240](../sequence/detailed/P240_oid4vci_revoke_credential.puml) |
+
+The Credential status is managed with the Token Status List, and the status values are `VALID`, `SUSPENDED`, and `INVALID`.
+The Issuer administrator changes the status in the Admin Console, and the wallet requests revocation (`INVALID`) through the Credential revocation Endpoint.
+For the status values and the Status List Token format, refer to the [CRED-STATUS] document.
 
 
 <div style="page-break-after: always;"></div>

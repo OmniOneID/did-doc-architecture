@@ -20,8 +20,8 @@ Software Architecture
 
 - 주제: C4 model을 이용한 Software Architecture 설명
 - 작성: 강영호
-- 일자: 2026-10-13
-- 버전: v1.0.1
+- 일자: 2026-10-22
+- 버전: v1.1.0
 
 개정이력
 ---
@@ -30,6 +30,7 @@ Software Architecture
 | ------ | ---------- | --------- |
 | v1.0.0 | 2024-09-03 | 최초 작성 |
 | v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정 |
+| v1.1.0 | 2026-10-22 | OID4VCI 발급, Proxy 모드 발급, OID4VCI Issuer 목록, LSS, OID4VC SDK 추가 |
 
 
 목차
@@ -65,6 +66,7 @@ Software Architecture
     - [5.2. Issuer Service](#52-issuer-service)
       - [5.2.1. Issuance Controller](#521-issuance-controller)
       - [5.2.2. VC Controller](#522-vc-controller)
+      - [5.2.3. OID4VCI](#523-oid4vci)
     - [5.3. Verifier Service](#53-verifier-service)
       - [5.3.1. Verify Controller](#531-verify-controller)
     - [5.4. Certified App (CApp)](#54-certified-app-capp)
@@ -105,6 +107,10 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 | [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance_ko.md?ref_type=heads)                     |
 | [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP_ko.md?ref_type=heads)                    |
 | [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md?ref_type=heads)                     |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 발급                       | [OID4VCI 발급](../concepts/OID4VCI%20Issuance_ko.md) |
+| [CRED-STATUS] | (OpenDID) Credential Status format                | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [P210_issue_vc_proxy_ko.puml](../sequence/detailed/P210_issue_vc_proxy_ko.puml) |
+| [LSS]        | (OpenDID) Ledger Service Server                    | https://github.com/OmniOneID/did-ledger-service-server |
 
 <div style="page-break-after: always;"></div>
 
@@ -201,6 +207,7 @@ OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 �
     - IssueOffer를 Holder에 발송
     - Holder에 VC 발급
     - VC 상태 관리
+    - OID4VCI로 Credential(SD-JWT VC, mdoc) 발급 및 상태 관리
 - to Verifier
     - 응대장치에 VerifyOffer 제공
     - Holder로부터 VP 수신하여 검증
@@ -266,18 +273,22 @@ Container를 분류하면 다음과 같다.
 | Group                       | Containers                                   | Multiple |
 | --------------------------- | -------------------------------------------- | :------: |
 | **Core**                    | • Trust Agent<br>                            |          |\
-|                             | • Trust Repository (Blockchain network)<br>  |          |\
+|                             | • Trust Repository (Blockchain network 또는 LSS)<br> |  |\
 |                             | • Notification Service                       |          |
 | **Wallet**                  | • Client wallet (SDK, Mobile App, Cloud)<br> |    Y     |\
 |                             | • Wallet Service (for client wallet)         |          |
 | **Certified App**<br>(CApp) | • CApp (Mobile App for holder)<br>           |    Y     |\
-|                             | • CApp Service                               |          |
+|                             | • CApp Service<br>                           |          |\
+|                             | • Proxy (선택)                               |          |
 | **Issuer**                  | • Issuer Service<br>                         |    Y     |\
 |                             | • Issuer Legacy                              |          |
 | **Verifier**                | • Verifier Service<br>                       |    Y     |\
 |                             | • Verifier Legacy                            |          |
 | **Supplements**             | • User Service<br>                           |          |\
-|                             | • CLI Tool for Wallet                        |          |
+|                             | • CLI Tool for Wallet<br>                    |          |\
+|                             | • LSS (Ledger Service Server)                |          |
+
+> 상기 Container diagram 그림에는 OpenDID 3.0에서 추가된 Proxy, LSS와 Issuer Service의 OID4VCI 구성 요소가 표시되어 있지 않다. 각 요소는 해당 절에서 설명한다.
 
 ### 4.1. Core
 
@@ -286,6 +297,7 @@ Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공�
 - Trust Repository
     - Blockchain 기반 저장소로서 해킹 및 위변조 차단
     - DID Document, VC Metadata, 영지식증명 사용 시 Schema, Definition 등을 저장
+    - Blockchain 대신 LSS(Ledger Service Server)를 사용할 수 있음 ([4.6](#46-supplements) 참조)
 - Trust Agent
     - Digital Identity Committee (이하 위원회)로부터 다음의 권한을 위임받아 신뢰체인을 구축하고 운영
         - DID Document 등록
@@ -295,6 +307,7 @@ Core group은 Digital ID 시스템 운영에 반드시 필요한 다음의 공�
     - 기타 부가적인 기능 제공
         - VC Plan 등록 및 조회
         - KYC
+        - OID4VCI Issuer 등록 및 목록 제공
 - Notification Service
     - 서버로부터 인가앱으로 이메일, PUSH 알림 등 메시지를 전달
     - Issuer나 Verifier는 별도의 Notification Service를 운영할 수도 있음
@@ -333,6 +346,10 @@ CApp group은 사용자용 모바일 앱과 관련된 다음의 요소를 포함
 - CApp Service
     - WalletToken 및 ServerToken 생성 시 token seed 정보를 서명하여 인가앱의 authenticity 증명
     - 인가앱이 client wallet이나 TA 서비스 이용 시마다 CApp Service의 서명이 필요함
+    - Proxy 모드 발급 시 Issuer Service의 요청에 따라 사용자 PII 제공 (Retrieve PII)
+- Proxy (선택)
+    - Proxy 모드 발급에서 인가앱과 Issuer Service 사이의 발급 요청을 중계하는 인가앱 사업자의 서버
+    - Trust Agent의 발급 중개 없이 VC를 발급할 때 사용 ([5.2.1](#521-issuance-controller) 참조)
 
 하나의 도메인에는 최소 1개 이상의 CApp group이 필요하다.
 
@@ -343,6 +360,8 @@ Issuer group은 신분증 발급과 관련된 다음의 요소를 포함한다.
 - Issuer Service
     - OpenDID에서 제공하는 SDK를 이용하여 Issuer API를 구현한 서버
     - Issuer Legacy에 Issuer API를 추가로 구현하는 것도 가능
+    - OpenDID 발급 프로토콜 외에 OID4VCI 발급을 지원 ([5.2.3](#523-oid4vci) 참조)
+        - Credential Issuer, Authorization Server(내장), Status List Endpoint 제공
 - Issuer Legacy
     - 신분증 발급에 필요한 개인정보를 보유하고 관리하는 Issuer의 기존 서버
 
@@ -381,6 +400,11 @@ Supplements group은 부가적인 기능이나 임시 기능을 제공하는 다
         - Wallet 파일은 Provider Service 서버에 복사하여 server wallet 설정
         - TA 관리자에 DID Document를 전송하여 신뢰 저장소에 등록 요청
         - Provider Service에서 Trust Agent로 Entity 등록 프로토콜을 호출
+- LSS (Ledger Service Server)
+    - PostgreSQL 데이터베이스로 Blockchain과 동일한 기능을 제공하는 Trust Repository 대안 서비스
+    - DID Document, VC Metadata 등록/조회 등의 API 제공 ([LSS] 참조)
+    - Blockchain 인프라 없이 OpenDID를 구성할 때 사용
+    - Trust Agent, Issuer Service는 `lss` 프로파일로 Blockchain 대신 LSS에 접근하며, 요청 시 `X-API-Key` 헤더로 인증
 
 
 <div style="page-break-after: always;"></div>
@@ -417,6 +441,19 @@ OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류�
 | (Client)<br>Wallet SDK | • Client Wallet 초기화/잠금/잠금해제<br>                    | DID 및 VC 관리             |
 |                        | • DID Document 생성/저장/조회<br>                           |                            |
 |                        | • VC 저장/조회<br>                                          |                            |
+| (Server)<br>OID4VCI SDK | • OID4VCI Credential Issuer<br>                           | OID4VCI 발급               |
+|                        | &nbsp;&nbsp;(Metadata, Credential Offer, Nonce, Credential)<br> |                       |
+|                        | • Authorization Server (Pre-Authorized Code, Authorization Code)<br> |                  |
+|                        | • Token Status List, Credential 폐기<br>                    |                            |
+| (Server)<br>OID4VC Formatter SDK | • 형식별 Credential 생성 (OpenDID VC, SD-JWT VC, mdoc)<br> | Credential 형식 선택 |
+|                        | • VP Token 검증<br>                                         |                            |
+| (Server)<br>SD-JWT VC SDK | • SD-JWT VC 생성 (선택적 공개)<br>                        | SD-JWT VC                  |
+|                        | • SD-JWT VC, Key Binding JWT 검증<br>                       |                            |
+| (Server)<br>mso_mdoc SDK | • ISO mdoc 생성 (MSO, COSE Sign1 서명)<br>                | ISO/IEC 18013-5            |
+|                        | • mdoc 검증<br>                                             |                            |
+
+OID4VC SDK(OID4VCI, OID4VC Formatter, SD-JWT VC, mso_mdoc)는 OID4VCI 기반 Credential 발급에 사용하며,
+Issuer Service의 OID4VCI 구성은 [5.2.3](#523-oid4vci)에서 설명한다.
 
 
 
@@ -441,7 +478,8 @@ Trust Agent는 OpenDID가 제공하는 SDK를 이용하여 등록, 발급, 목�
 |                     | &nbsp;&nbsp;- VC Plan list for a category<br>            |                                    |
 |                     | &nbsp;&nbsp;- VC Plan information<br>                    |                                    |
 |                     | &nbsp;&nbsp;- Allowed CApp package list for a wallet<br> |                                    |
-|                     | &nbsp;&nbsp;- Certificate VC by DID                      |                                    |
+|                     | &nbsp;&nbsp;- Certificate VC by DID<br>                  |                                    |
+|                     | • OID4VCI Issuer 등록 요청, 목록 조회                    |                                    |
 
 #### 5.1.1. Enroll Controller
 
@@ -583,6 +621,13 @@ Issuer에 의한 발급 개시(Issuer-init offer) 및 사용자에 의한 발급
 
 *[NOT yet documented]*
 
+■ 발급 중개를 거치지 않는 발급
+
+다음 발급 방식은 Trust Agent의 Issuance Controller를 거치지 않는다.
+
+- Proxy 모드 발급: 인가앱 사업자의 Proxy 서버가 인가앱과 Issuer Service 사이의 발급 요청을 중계한다. Trust Agent는 VC Plan 목록 조회에만 사용한다. ([5.2.1](#521-issuance-controller) 참조)
+- OID4VCI 발급: 월렛이 Issuer Service의 OID4VCI Endpoint를 직접 호출한다. Trust Agent는 OID4VCI Issuer 목록만 제공한다. ([5.2.3](#523-oid4vci) 참조)
+
 #### 5.1.3. List Controller
 
 List Controller는 목록 사업자(List Provider)가 수행하는 기능인데,
@@ -610,6 +655,21 @@ VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않�
 1. Certificate VC by DID
     - Provider의 did를 지정하여 가입증명서 원문을 조회
 
+■ OID4VCI Issuer 목록
+
+Trust Agent는 목록 사업자로서 OID4VCI Issuer를 등록·관리하고 월렛에 Issuer 목록을 제공한다.
+월렛은 이 목록에서 Issuer를 선택하여 사용자에 의한 발급을 시작한다.
+
+| API                                         | 호출자 | 기능                                                  |
+| ------------------------------------------- | ------ | ----------------------------------------------------- |
+| `POST /list/api/v1/oid4vci/issuers`         | Issuer | OID4VCI Issuer 등록 요청 (`REQUESTED`)                |
+| `GET /list/api/v1/oid4vci/issuers`          | 월렛   | `ACTIVE` 상태의 Issuer 목록 조회                      |
+| `GET /list/api/v1/oid4vci/issuers/detail`   | 월렛   | `credentialIssuer`로 `ACTIVE` 상태의 Issuer 조회      |
+
+TAS 관리자는 Admin Console에서 등록 요청을 승인(`ACTIVE`)하거나 반려(`REJECTED`)하며,
+승인된 Issuer를 정지(`SUSPENDED`)하거나 등록 취소(`REVOKED`)할 수 있다.
+등록 정보와 상태 전이는 [OID4VCI-ISSUANCE] 문서의 List Provider 등록 절을 참조한다.
+
 
 <div style="page-break-after: always;"></div>
 
@@ -618,11 +678,19 @@ VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않�
 ![](images/component_issuer_service.svg)
 
 Issuer Service는 OpenDID가 제공하는 SDK를 이용하여 VC 발급, VC 상태관리 API를 구현한 container이다.
+또한 OID4VC SDK를 이용하여 OID4VCI 기반의 Credential 발급과 상태관리 기능을 제공한다.
 
-| API Group           | 기능          | 비고 |
-| ------------------- | ------------- | ---- |
-| Issuance Controller | • VC 발급     |      |
-| VC Controller       | • VC 상태변경 |      |
+| API Group           | 기능                       | 비고                   |
+| ------------------- | -------------------------- | ---------------------- |
+| Issuance Controller | • VC 발급<br>              |                        |\
+|                     | • VC 발급 (Proxy 모드)     |                        |
+| VC Controller       | • VC 상태변경              |                        |
+| OID4VCI             | • Credential Issuer<br>    | [5.2.3](#523-oid4vci)  |\
+|                     | • Authorization Server<br> |                        |\
+|                     | • Status List Endpoint<br> |                        |\
+|                     | • Webview 발급             |                        |
+
+상기 Component diagram 그림은 OpenDID 발급 프로토콜의 구성만 표시하며, OID4VCI 구성은 [5.2.3](#523-oid4vci)의 그림을 참조한다.
 
 [ISSUE-VC] 문서에 정의된 VC 발급의 전체 절차를 요약하면 다음과 같다.
 
@@ -681,12 +749,73 @@ Trust Agent가 수행하는 KYC와는 무관하게 Issuer가 자체적으로 KYC
 
 ![](images/issue_vc.svg)
 
+■ Proxy 모드 발급
+
+Proxy 모드는 Trust Agent 대신 인가앱 사업자의 Proxy 서버가 인가앱과 Issuer Service 사이의 발급 요청을 중계하는 방식이다.
+Proxy 서버는 다음 API를 호출한다.
+
+- Inspect Propose Issue: 표준 절차와 같음
+- Generate Issue Profile (Proxy): 사용자 식별자(`userId`)로 IssueProfile 생성
+- Issue VC (Proxy): VC 발급
+- Complete VC: 표준 절차와 같음
+
+표준 절차와 다른 점은 다음과 같다.
+
+- 인가앱은 사용자 정보 대신 `userId`를 전달하며, Issuer Service는 CApp Service에서 `userId`로 사용자 PII를 조회하여 발급 대상 사용자를 식별한다.
+- Trust Agent가 생성하던 `authNonce` 대신 Issuer Service가 생성한 `issuerNonce`를 `authNonce`로 사용한다.
+- Issuer Service는 VC 발급 요청의 `didAuth` 서명과 `authNonce`를 검증하여 Holder DID를 확정한다.
+
+Proxy 접근 인증(세션, Access Token 등)은 Proxy 구현에 따른다. 상세 절차는 [ISSUE-VC-PROXY]를 참조한다.
+
 #### 5.2.2. VC Controller
 
 VC 생애주기(Lifecycle) 등 상세한 내용은 [VC-FORMAT] 문서를 참조한다.
 VC 생애주기 관리를 위한 API는 현재 정의되어 있지 않다.
 
 *[NOT yet documented]*
+
+OID4VCI로 발급한 Credential의 상태관리는 [5.2.3](#523-oid4vci)을 참조한다.
+
+#### 5.2.3. OID4VCI
+
+Issuer Service는 OID4VC SDK를 이용하여 OID4VCI 기반의 Credential 발급 기능을 제공한다.
+OpenDID 발급 프로토콜과 달리 월렛이 Issuer Service를 직접 호출하며, Trust Agent는 발급을 중개하지 않고 OID4VCI Issuer 목록만 제공한다.
+상세한 내용은 [OID4VCI-ISSUANCE] 문서를 참조한다.
+
+![OID4VCI 구성 요소](../concepts/images/oid4vci_components_ko.svg)
+
+| 구성 요소            | 기능                                                                              | 비고                         |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------------- |
+| Credential Issuer    | • Issuer Metadata 제공 (`/.well-known/openid-credential-issuer`)<br>              |                              |\
+|                      | • Credential Offer, Nonce, Credential Endpoint<br>                                |                              |\
+|                      | • Credential 폐기 Endpoint                                                        | 폐기는 OpenDID 확장          |
+| Authorization Server | • Pre-Authorized Code, Authorization Code grant로 Access Token 발급<br>           | Issuer Service에 내장        |\
+|                      | • Authorization Server Metadata 제공 (`/.well-known/oauth-authorization-server`)  |                              |
+| Status List Endpoint | • 서명된 Token Status List 제공 (`/status-lists/{listId}`)                        | `application/statuslist+jwt` |
+| Webview 발급         | • 사용자에 의한 발급 개시 시 Claim 입력 화면 제공 및 Credential Offer 생성        |                              |
+| Admin Console        | • Issuer Metadata, Credential Configuration, Client 설정<br>                      |                              |\
+|                      | • List Provider 등록<br>                                                          |                              |\
+|                      | • 발급 이력 조회 및 Credential 상태 변경                                          |                              |
+
+지원하는 Credential 형식은 다음과 같다.
+
+| Format          | Credential | 데이터 형식                                                                                       |
+| --------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md)  |
+| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md)              |
+
+발급 및 폐기 절차는 다음과 같다.
+
+| 절차                     | 설명                                                                     | 절차도 |
+| ------------------------ | ------------------------------------------------------------------------ | ------ |
+| Pre-Authorized Code 발급 | 발급 서비스가 Credential Offer를 생성하여 QR 등으로 사용자에게 전달      | [P230](../sequence/detailed/P230_oid4vci_issue_pre_authorized_ko.puml) |
+| Authorization Code 발급  | 월렛이 Authorization Server에서 사용자 인증 후 Access Token을 받아 발급  | [P231](../sequence/detailed/P231_oid4vci_issue_authorization_code_ko.puml) |
+| 사용자에 의한 발급 개시  | 월렛이 TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 Claim을 입력  | [P232](../sequence/detailed/P232_oid4vci_issue_user_init_ko.puml) |
+| Credential 폐기          | 월렛이 Holder DID 키로 서명한 폐기 토큰으로 폐기를 요청                  | [P240](../sequence/detailed/P240_oid4vci_revoke_credential_ko.puml) |
+
+Credential 상태는 Token Status List로 관리하며, 상태 값은 `VALID`, `SUSPENDED`, `INVALID`이다.
+Issuer 관리자는 Admin Console에서 상태를 변경하고, 월렛은 Credential 폐기 Endpoint로 폐기(`INVALID`)를 요청한다.
+상태 값과 Status List Token 형식은 [CRED-STATUS] 문서를 참조한다.
 
 
 <div style="page-break-after: always;"></div>
