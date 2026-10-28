@@ -2,11 +2,12 @@
 
 - Subject: Wallet Life Cycle
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v1.0.1
+- Date: 2026-10-22
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-10-22 | Add OID4VCI Credential lifecycle |
 | v1.0.1  | 2026-10-13 | Revise wording  |
 | v1.0.0  | 2024-10-18 | Initial version |
 
@@ -125,3 +126,41 @@ Revocation of VC (Verifiable Credential).
 This function is requested by Issuer.
 
 > *ZKP(Zero-Knowledge Proof)-based credential follow the data structure and trust model of VC(Verifiable Credential), and are operated in accordance with the VC's lifecycle management policies. Therefore, ZKP credential also follow the same lifecycle stages as VC.
+
+---
+### 4. OID4VCI Credential Lifecycle
+Credentials issued through OID4VCI (SD-JWT VC, mdoc) are managed with the Token Status List and have **3 states**.
+<br>
+![Image Description](./images/oid4vci_state_credential_status.svg)
+<!-- Spacing for line break -->
+
+### * OID4VCI Credential Lifecycle States
+* `Credential Issuance`
+* `Credential State Change`
+* `Credential Revocation`
+<br>
+
+#### - Credential Issuance
+When the wallet requests a Credential through OID4VCI, the Credential Issuer assigns an index in the Status List and issues the Credential in the `VALID` state.
+<br>
+This function is requested by the Wallet.
+
+#### - Credential State Change
+Suspends the Credential (`SUSPENDED`) or lifts the suspension (`VALID`).
+<br>
+This function is requested by the Issuer administrator.
+
+#### - Credential Revocation
+Revokes the Credential (`INVALID`). A revoked Credential cannot be made valid again.
+<br>
+This function is requested by the Issuer administrator or the Wallet.
+
+The state names differ from those of the VC lifecycle, but their meanings correspond as follows.
+
+| VC State   | OID4VCI Credential State | Description                                          |
+| ---------- | ------------------------ | ---------------------------------------------------- |
+| `ACTIVE`   | `VALID`                  | Usable                                               |
+| `INACTIVE` | `SUSPENDED`              | Temporarily suspended; can return to the normal state |
+| `REVOKED`  | `INVALID`                | Revoked; cannot transition to any other state        |
+
+> *The Verifier checks the state by retrieving the Status List Token with the Status List URI and index included in the Credential. Expiration is not a Status List state; it is determined by the validity period of the Credential (`exp` for SD-JWT VC, `validUntil` for mdoc). For details, refer to [OID4VCI Issuance](OID4VCI%20Issuance.md#5-credential-status-management).

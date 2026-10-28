@@ -21,8 +21,8 @@ Verifiable Credentials format
     - Definition of VC (Verifiable Credentials) data format
     - Definition of entity-specific certificate VC data
 - Author: Youngho Kang
-- Date: 2024-09-03
-- Version: v1.0.0
+- Date: 2026-10-22
+- Version: v1.1.0
 
 
 Revision History
@@ -31,6 +31,7 @@ Revision History
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
 | v1.0.0  | 2024-09-03 | Initial version                                         |
+| v1.1.0  | 2026-10-22 | Add reference to OID4VCI Credential status       |
 
 
 <div style="page-break-after: always;"></div>
@@ -105,6 +106,9 @@ Detailed retrieval methods are out of the scope of this document and are omitted
 | `REVOKED`   | Revoked    | • No longer in use and revoked<br>• Cannot transition to other states |
 
 ![VC Lifecycle](images/vc_lifecycle.svg)
+
+> **Note** SD-JWT VC and mdoc issued through OID4VCI use the Token Status List statuses (`VALID`, `SUSPENDED`, `INVALID`) instead of the states above.
+> For status values and status transitions, refer to [Credential Status format](../oid4vc%20credential%20format/Credential%20Status%20format.md).
 
 ### 2.2. Location of Claim Origin
 

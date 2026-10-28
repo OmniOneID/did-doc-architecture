@@ -22,8 +22,8 @@ Verifiable Credentials format
     - VC(Verifiable Credentials) 데이터 형식 정의
     - 엔티티별 가입증명서 VC 데이터 정의
 - 작성: 강영호
-- 일자: 2026-10-13
-- 버전: v1.0.1
+- 일자: 2026-10-22
+- 버전: v1.1.0
 
 
 개정이력
@@ -33,6 +33,7 @@ Verifiable Credentials format
 | ------ | ---------- | -------------------------------------------- |
 | v1.0.0 | 2024-09-03 | 초안                                         |
 | v1.0.1 | 2026-10-13 | 오타 수정, 링크 수정                               |
+| v1.1.0 | 2026-10-22 | OID4VCI Credential 상태 참조 추가            |
 
 
 <div style="page-break-after: always;"></div>
@@ -111,6 +112,9 @@ VC의 생애주기는 VC 저장매체에서 관리된다.
 | `REVOKED`  | 폐기   | • 더이상 사용하지 않아 폐기한 상태<br>• 다른 상태로 전이 불가능          |
 
 ![VC 생애주기](images/vc_lifecycle_ko.svg)
+
+> **참고** OID4VCI로 발급하는 SD-JWT VC와 mdoc은 위 상태 대신 Token Status List의 상태(`VALID`, `SUSPENDED`, `INVALID`)를 사용한다.
+> 상태 값과 상태 전이는 [Credential Status format](../oid4vc%20credential%20format/Credential%20Status%20format_ko.md)을 참조한다.
 
 
 ### 2.2. 클레임 원본의 위치 (location)

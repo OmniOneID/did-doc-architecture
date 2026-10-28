@@ -2,11 +2,12 @@
 
 - 주제 : Wallet 생명 주기
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-13
-- 버전 : v1.0.1
+- 일자 : 2026-10-22
+- 버전 : v1.1.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-10-22 | OID4VCI Credential 생명 주기 추가 |
 | v1.0.1  | 2026-10-13 | 오타 수정, 문구 수정 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
@@ -130,3 +131,41 @@ VC(Verifiable Credential)를 폐기한다.
 해당기능은 Issuer가 요청
 
 > *ZKP(Zero-Knowledge Proof) 기반 Credential은 VC(Verifiable Credential)의 데이터 구조와 신뢰 모델을 따르며, VC의 생명주기 관리 정책에 종속적으로 운용됩니다. 따라서, ZKP Credential 역시 VC와 동일한 생명주기 단계를 따릅니다.
+
+---
+### 4. OID4VCI Credential 생명 주기
+OID4VCI로 발급한 Credential(SD-JWT VC, mdoc)은 Token Status List로 상태를 관리하며 **3가지** 상태를 가진다.
+<br>
+![이미지 설명](./images/oid4vci_state_credential_status_ko.svg)
+<!-- 한줄 띄기 입니다. -->
+
+### * OID4VCI Credential 생명 주기별 상태
+* `Credential 발급`
+* `Credential 상태변경`
+* `Credential 폐기`
+<br>
+
+#### - Credential 발급
+월렛이 OID4VCI로 Credential을 요청하면 Credential Issuer는 Status List의 index를 할당하고 `VALID` 상태로 Credential을 발급한다.
+<br>
+해당기능은 월렛이 요청
+
+#### - Credential 상태변경
+Credential을 일시 정지(`SUSPENDED`)하거나 정지를 해제(`VALID`)한다.
+<br>
+해당기능은 Issuer 관리자가 요청
+
+#### - Credential 폐기
+Credential을 폐기(`INVALID`)한다. 폐기한 Credential은 다시 유효하게 할 수 없다.
+<br>
+해당기능은 Issuer 관리자 또는 월렛이 요청
+
+VC 생명 주기와 상태 이름은 다르지만 의미는 다음과 같이 대응한다.
+
+| VC 상태    | OID4VCI Credential 상태 | 설명                                  |
+| ---------- | ----------------------- | ------------------------------------- |
+| `ACTIVE`   | `VALID`                 | 사용 가능                             |
+| `INACTIVE` | `SUSPENDED`             | 일시 정지, 정상 상태로 복귀 가능      |
+| `REVOKED`  | `INVALID`               | 폐기, 다른 상태로 변경 불가           |
+
+> *검증자는 Credential에 포함된 Status List URI와 index로 Status List Token을 조회하여 상태를 확인한다. 유효기간 만료는 Status List의 상태가 아니며, Credential의 유효기간(SD-JWT VC의 `exp`, mdoc의 `validUntil`)으로 판단한다. 자세한 내용은 [OID4VCI 발급](OID4VCI%20Issuance_ko.md#5-credential-상태-관리)을 참조한다.
