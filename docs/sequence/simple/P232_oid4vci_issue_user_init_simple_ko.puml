@@ -1,0 +1,118 @@
+@startuml P232_oid4vci_issue_user_init_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P232 : OID4VCI VC 발급 (사용자 개시, Webview)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box TAS서버 #AliceBlue
+    participant "**TAS**\n(List Provider)" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box 발급 사업자 #AliceBlue
+    participant "**Webview 발급**" as WEB <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== 사전 조건 : List Provider 등록 ==
+rnote over TAS, CI
+    발급 사업자는 TAS에 Issuer를 등록하고,
+    TAS 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
+end rnote
+
+== P232-1 : Issuer 및 Credential 선택 ==
+activate WALLET
+WALLET -> TAS++: Issuer 목록 조회 요청
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Issuer 목록 조회 요청]**
+    end note
+return Issuer 목록 조회 응답
+rnote right of WALLET #Lavender
+    **[M232_RES : Issuer 목록 조회 응답]**
+end note
+WALLET -> CI++: Credential Issuer Metadata 조회 요청
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Credential Issuer Metadata 조회 요청]**
+    end note
+return Credential Issuer Metadata 조회 응답
+rnote right of WALLET #Lavender
+    **[M232_RES : Credential Issuer Metadata 조회 응답]**
+end note
+USER -> WALLET: Issuer 및 발급받을 Credential 선택
+
+== P232-2 : Webview 발급 세션 시작 ==
+WALLET -> WEB++: 발급 시작 요청 (Webview)
+    rnote right of WALLET #Lavender
+        **[M232_REQ : 발급 시작 요청]**
+    end note
+    WEB -> WEB: 발급 세션 생성
+return Claim 입력 화면
+rnote right of WALLET #Lavender
+    **[M232_RES : 발급 시작 응답]**
+end note
+
+== P232-3 : Claim 입력 및 Credential Offer 생성 ==
+USER -> WALLET: Claim 입력 및 확인 (Webview)
+WALLET -> WEB++: 입력 확인 요청
+    rnote right of WALLET #Lavender
+        **[M232_REQ : 입력 확인 요청]**
+    end note
+    WEB -> WEB: 입력값 검증 및 Claim 저장
+    WEB -> CI++: Credential Offer 생성 요청
+        CI -> AS++: Pre-Authorized Code 생성 요청
+        return Pre-Authorized Code 생성 응답
+    return Credential Offer 생성 응답
+return 302 Redirect (Credential Offer)
+rnote right of WALLET #Lavender
+    **[M232_RES : 입력 확인 응답]**
+end note
+
+== P232-4 : Credential 발급 ==
+rnote across #white
+    월렛은 P230-2(Credential Offer 조회) ~ P230-6(Credential 요청)을 수행 (tx_code 없이 Token 요청)
+    `P230_oid4vci_issue_pre_authorized_simple` 참고
+end note
+deactivate WALLET
+
+@enduml

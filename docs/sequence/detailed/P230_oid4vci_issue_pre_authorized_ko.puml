@@ -1,0 +1,230 @@
+@startuml P230_oid4vci_issue_pre_authorized_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P230 : OID4VCI VC 발급 (Pre-Authorized Code)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**월렛**" as wal <<Wallet>>
+end box
+
+box 발급 사업자 #AliceBlue
+    participant "**발급 서비스**" as svc <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== P230-1 : Credential Offer 생성 ==
+
+rnote over svc, as
+    발급 서비스는 발급 대상 사용자(userId)를 확인한 뒤 Credential Offer 생성을 요청한다.
+    사용자 확인 방법은 발급 사업자의 서비스에 따르며 본 규격의 범위가 아니다.
+end rnote
+
+svc -> ci ++: Credential Offer 생성 요청\n{userId, grantType = pre-authorized_code,\n credential_configuration_id, offerType, scheme}
+    ci -> as ++: Pre-Authorized Code 생성 요청\n{userId, txCodeRequired}
+        as -> as: * pre-authorized_code 생성 (유효시간 600초)\
+                \n* tx_code = 6자리 숫자 PIN 생성\
+                \n  (txCodeRequired = true 인 경우)
+    return {pre-authorized_code, tx_code}
+    ci -> ci: * requestId 생성\
+            \n* Credential Offer 저장 (1회 조회)
+    ci -> ci: Credential Offer URI 생성
+    rnote right of ci #MintCream
+        **credential_offer_uri**
+        {credential_issuer}/credential-offer/{requestId}/{configuration_id}
+
+        **QR 데이터 (by reference)**
+        openid-credential-offer://?credential_offer_uri=...
+    end note
+return {qrImage, qrData, txCode}
+
+svc -> user: QR 코드 표시
+svc -> user: tx_code(PIN) 안내 (별도 채널)
+
+|||
+== P230-2 : Credential Offer 조회 ==
+
+user -> wal: QR 스캔
+activate wal
+wal -> ci ++: GET credential_offer_uri
+    ci -> ci: Credential Offer 조회 및 소비
+    note right of ci
+        이미 조회한 Credential Offer는
+        다시 조회할 수 없다.
+    end note
+return Credential Offer
+rnote right of wal #MintCream
+    **CredentialOffer**
+    credential_issuer | credential_configuration_ids |
+    grants."urn:ietf:params:oauth:grant-type:pre-authorized_code"
+        = { pre-authorized_code, tx_code{input_mode, length, description} }
+end note
+
+|||
+== P230-3 : Metadata 조회 ==
+
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+rnote right of wal #MintCream
+    **IssuerMetadata**
+    credential_issuer | authorization_servers |
+    credential_endpoint | nonce_endpoint | credential_revocation_endpoint |
+    credential_response_encryption | credential_configurations_supported | ...
+end note
+
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata\n{token_endpoint, jwks_uri, ...}
+
+|||
+== P230-4 : Access Token 요청 ==
+
+user -[#Blue]\ wal: tx_code(PIN) 입력
+wal -> as ++: POST {token_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Token 요청]**
+    grant_type = urn:ietf:params:oauth:grant-type:pre-authorized_code
+    pre-authorized_code
+    tx_code (Credential Offer에 tx_code가 있는 경우)
+    authorization_details (선택)
+end note
+    as -> as: Pre-Authorized Code 확인\
+            \n* 존재 여부\
+            \n* 사용 여부, 유효시간\
+            \n* tx_code 일치 여부
+    as -> as: Pre-Authorized Code 소비
+    as -> as: access_token 생성\
+            \n* sub = userId\
+            \n* JWT 서명 (Authorization Server 키)
+    opt authorization_details 요청 시
+        as -> ci ++: Credential Identifier 조회\n{credential_configuration_id}
+        return {credential_identifiers}
+    end
+return Token 응답
+rnote right of wal #LightGray
+    **[API_RES : Token 응답]**
+    access_token | token_type | expires_in
+    authorization_details[{credential_configuration_id, credential_identifiers}] (선택)
+end note
+
+|||
+== P230-5 : c_nonce 요청 ==
+
+wal -> ci ++: POST {nonce_endpoint}
+    ci -> ci: c_nonce 생성 및 저장\
+            \n* 16바이트 난수 (base64url)\
+            \n* 유효시간 10분, 1회 사용
+return {c_nonce}
+
+|||
+== P230-6 : Credential 요청 ==
+
+wal -> wal: Proof JWT 생성
+rnote right of wal #MintCream
+    **Proof JWT**
+    header = { typ: "openid4vci-proof+jwt", alg: "ES256",
+               kid: Holder DID URL (예: did:omn:holder?versionId=1#pin) }
+    * kid의 키 이름은 #pin 또는 #bio
+      (Holder DID Document의 authentication에 등록된 키)
+    payload = { aud: credential_issuer, iat, nonce: c_nonce }
+end note
+user -[#Blue]\ wal: 사용자 인증(비표준)
+wal -> wal: Holder DID의 authentication 키로 Proof 서명
+
+opt Credential 응답 암호화 (encryption_required = true)
+    wal -> wal: 응답 암호화용 EC 키쌍 생성\
+            \n* credential_response_encryption =\
+            \n  {jwk, alg = ECDH-ES, enc = A256GCM}
+    note right of wal
+        월렛은 ECDH-ES만 지원하므로 alg = ECDH-ES를 명시한다.
+        요청에 alg가 없으면 Credential Issuer는 Issuer Metadata의
+        alg_values_supported에서 알고리즘을 선택하므로,
+        Metadata에는 ECDH-ES만 설정한다.
+    end note
+end
+
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token
+rnote right of wal #LightGray
+    **[API_REQ : Credential 요청]**
+    credential_configuration_id 또는 credential_identifier
+    proofs = { jwt: [ Proof JWT ] }
+    credential_response_encryption (선택)
+end note
+    ci -> ci: access_token 검증
+    ci -> ci: Proof 형식 확인\
+            \n* proofs에 Proof 유형 1개\
+            \n* header에 키 식별 값 1개 (Holder DID URL kid)
+    ci <-> BC: Holder DID Document 조회 / 응답 (kid의 DID)
+        rnote right of ci #MintCream
+            **DidDoc** : $doc
+        end note
+    ci -> ci: Proof 검증\
+            \n* kid가 authentication에 등록된 P-256 키인지 확인\
+            \n* Proof 서명 검증\
+            \n* 모든 Proof의 Holder DID 일치 확인\
+            \n* nonce = 발급한 c_nonce 확인
+    ci -> ci: 상태 관리 형식(dc+sd-jwt-did, mso_mdoc-did)은\nHolder DID kid 필수 확인
+    ci -> ci: c_nonce 소비 (재사용 불가)
+    ci -> ci: Status List index 할당\
+            \n* {status_list uri, idx}\
+            \n* subject_did = Holder DID 저장
+    ci -> ci: 사용자 Claim 조회\n(sub, credential type)
+    ci -> ci: Credential 생성 및 서명\
+            \n* SD-JWT VC 또는 mdoc\
+            \n* Holder 바인딩 = Proof 공개키\
+            \n* status.status_list{uri, idx} 포함\
+            \n* Issuer DID 키로 서명
+    ci -> ci: 발급 기록 갱신 (ISSUED)
+    opt Credential 응답 암호화
+        ci -> ci: Credential 응답 JWE 암호화\n(ECDH-ES, A256GCM)
+    end
+return Credential 응답
+rnote right of wal #LightGray
+    **[API_RES : Credential 응답]**
+    credentials = [ { credential } ]  (1건)
+    (암호화 시 compact JWE, Content-Type: application/jwt)
+end note
+note right of wal
+    Credential Issuer는 Proof 1개당 Credential 1건을 발급하며,
+    월렛은 Proof 1개로 요청하여 Credential 1건을 받는다.
+end note
+
+wal <-> BC: Issuer DID Document 조회 / 응답
+wal -> wal: Issuer DID 키로 Credential 서명 검증 및 저장
+deactivate wal
+
+|||
+@enduml

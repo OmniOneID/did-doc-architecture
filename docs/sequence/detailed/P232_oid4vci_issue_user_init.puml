@@ -1,0 +1,155 @@
+@startuml P232_oid4vci_issue_user_init
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P232 : OID4VCI VC Issuance (User-Initiated, Webview)</size>
+end title
+
+'=== Options ===
+' Autonumbering: ex) "<b>000." => Display a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**Wallet**" as wal <<Wallet>>
+end box
+
+participant "**TAS**\n(List Provider)" as tas <<Server>>
+
+box Issuing Provider #AliceBlue
+    participant "**Webview Issuance**" as web <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+|||
+== Precondition : List Provider Registration ==
+
+rnote over tas, ci
+    The Issuing Provider requests Issuer registration from the TAS (REQUESTED),
+    and once the TAS administrator approves it (ACTIVE), the Issuer is exposed in the wallet's Issuer list.
+    * credentialIssuer = Issuer DID
+    * credentialIssuerMetadataUri = {base}/.well-known/openid-credential-issuer
+    * userInitiationUri = {base}/oid4vci/issuance/start
+end rnote
+
+|||
+== P232-1 : Select Issuer and Credential ==
+
+activate wal
+wal -> tas ++: Retrieve Issuer list
+rnote right of wal #LightGray
+    **[API_REQ : Retrieve Issuer List]**
+    GET /list/api/v1/oid4vci/issuers
+end note
+    tas -> tas: Retrieve Issuers in ACTIVE status
+return Issuer list
+rnote right of wal #LightGray
+    **[API_RES : Issuer List]**
+    count
+    items = [ { credentialIssuer, credentialIssuerMetadataUri, userInitiationUri }, ... ]
+end note
+
+wal -> ci ++: GET credentialIssuerMetadataUri
+return Credential Issuer Metadata\n{credential_configurations_supported, ...}
+
+user -> wal: Select Issuer and the Credential to be issued
+
+|||
+== P232-2 : Start Webview Issuance Session ==
+
+wal -> web ++: GET userInitiationUri (Webview)
+rnote right of wal #LightGray
+    **[API_REQ : Start Issuance]**
+    did = Holder DID
+    userName
+    credential_configuration_id
+    credential_type (optional)
+end note
+    web -> web: Check Credential Configuration
+    web -> web: Create issuance session\
+            \n* session token (32 bytes)\
+            \n* form token (CSRF)\
+            \n* Valid for 10 minutes, status INPUT_REQUIRED
+    web -> web: Compose Claim input fields\
+            \n* Claim definitions of the Configuration\
+            \n  (path, display, value_type, mandatory)\
+            \n* Exclude Claims managed by the server\
+            \n* Display a sample image for portrait (jpeg)
+return Claim input screen
+
+|||
+== P232-3 : Enter Claims and Create Credential Offer ==
+
+user -> wal: Enter and confirm Claims (Webview)
+wal -> web ++: Request input confirmation
+rnote right of wal #LightGray
+    **[API_REQ : Confirm Input]**
+    POST /oid4vci/issuance/sessions/{token}/confirm
+    _form_token | claim input values
+end note
+    web -> web: Verify session and form token
+    web -> web: Validate input values\
+            \n* Mandatory fields, value format (date, number, boolean, list)\
+            \n* jpeg in Base64, up to 2MB
+    web -> web: Store Claims (Holder DID, credential type)\
+            \n* Replace previously stored Claims
+    web -> ci ++: Request Credential Offer creation\n{userId = Holder DID, credential_configuration_id,\n grantType = pre-authorized_code, txCodeRequired = false}
+        ci -> as ++: Request Pre-Authorized Code creation\n{userId, txCodeRequired = false}
+        return {pre-authorized_code}
+        ci -> ci: Store Credential Offer
+    return credential_offer_uri
+return 302 Redirect\nopenid-credential-offer://?credential_offer_uri=...
+
+|||
+== P232-4 : Credential Issuance ==
+
+rnote over wal, as
+    The wallet performs P230-2 (Retrieve Credential Offer) ~ P230-6 (Request Credential).
+    * Since the Credential Offer has no tx_code, the Token is requested without a tx_code.
+    * The sub of the access_token is the Holder DID, and the Credential Issuer uses this value to
+      retrieve the Claims stored in P232-3 and generate the Credential.
+end rnote
+
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+wal -> as ++: POST {token_endpoint}\n{grant_type = pre-authorized_code, pre-authorized_code}
+return {access_token}
+wal -> ci ++: POST {nonce_endpoint}
+return {c_nonce}
+wal -> wal: Generate Proof JWT
+user -[#Blue]\ wal: User authentication (non-standard)
+wal -> wal: Sign the Proof with the authentication key of the Holder DID
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token\n{credential_configuration_id, proofs.jwt[]}
+return Credential Response\n{credentials[{credential}]}
+wal -> wal: Verify Credential signature and store
+deactivate wal
+
+|||
+@enduml

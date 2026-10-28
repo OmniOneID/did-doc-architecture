@@ -1,0 +1,155 @@
+@startuml P232_oid4vci_issue_user_init_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P232 : OID4VCI VC 발급 (사용자 개시, Webview)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**월렛**" as wal <<Wallet>>
+end box
+
+participant "**TAS**\n(List Provider)" as tas <<Server>>
+
+box 발급 사업자 #AliceBlue
+    participant "**Webview 발급**" as web <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+|||
+== 사전 조건 : List Provider 등록 ==
+
+rnote over tas, ci
+    발급 사업자는 TAS에 Issuer 등록을 요청하고(REQUESTED),
+    TAS 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
+    * credentialIssuer = Issuer DID
+    * credentialIssuerMetadataUri = {base}/.well-known/openid-credential-issuer
+    * userInitiationUri = {base}/oid4vci/issuance/start
+end rnote
+
+|||
+== P232-1 : Issuer 및 Credential 선택 ==
+
+activate wal
+wal -> tas ++: Issuer 목록 조회
+rnote right of wal #LightGray
+    **[API_REQ : Issuer 목록 조회]**
+    GET /list/api/v1/oid4vci/issuers
+end note
+    tas -> tas: ACTIVE 상태의 Issuer 조회
+return Issuer 목록
+rnote right of wal #LightGray
+    **[API_RES : Issuer 목록]**
+    count
+    items = [ { credentialIssuer, credentialIssuerMetadataUri, userInitiationUri }, ... ]
+end note
+
+wal -> ci ++: GET credentialIssuerMetadataUri
+return Credential Issuer Metadata\n{credential_configurations_supported, ...}
+
+user -> wal: Issuer 및 발급받을 Credential 선택
+
+|||
+== P232-2 : Webview 발급 세션 시작 ==
+
+wal -> web ++: GET userInitiationUri (Webview)
+rnote right of wal #LightGray
+    **[API_REQ : 발급 시작]**
+    did = Holder DID
+    userName
+    credential_configuration_id
+    credential_type (선택)
+end note
+    web -> web: Credential Configuration 확인
+    web -> web: 발급 세션 생성\
+            \n* session token (32바이트)\
+            \n* form token (CSRF)\
+            \n* 유효시간 10분, 상태 INPUT_REQUIRED
+    web -> web: Claim 입력 항목 구성\
+            \n* Configuration의 Claim 정의\
+            \n  (path, display, value_type, mandatory)\
+            \n* 서버가 관리하는 Claim은 제외\
+            \n* portrait(jpeg)는 샘플 이미지 표시
+return Claim 입력 화면
+
+|||
+== P232-3 : Claim 입력 및 Credential Offer 생성 ==
+
+user -> wal: Claim 입력 및 확인 (Webview)
+wal -> web ++: 입력 확인 요청
+rnote right of wal #LightGray
+    **[API_REQ : 입력 확인]**
+    POST /oid4vci/issuance/sessions/{token}/confirm
+    _form_token | claim 입력값
+end note
+    web -> web: 세션 및 form token 확인
+    web -> web: 입력값 검증\
+            \n* 필수 항목, 값 형식(날짜, 숫자, boolean, 목록)\
+            \n* jpeg는 Base64, 최대 2MB
+    web -> web: Claim 저장 (Holder DID, credential type)\
+            \n* 기존에 저장된 Claim은 대체
+    web -> ci ++: Credential Offer 생성 요청\n{userId = Holder DID, credential_configuration_id,\n grantType = pre-authorized_code, txCodeRequired = false}
+        ci -> as ++: Pre-Authorized Code 생성 요청\n{userId, txCodeRequired = false}
+        return {pre-authorized_code}
+        ci -> ci: Credential Offer 저장
+    return credential_offer_uri
+return 302 Redirect\nopenid-credential-offer://?credential_offer_uri=...
+
+|||
+== P232-4 : Credential 발급 ==
+
+rnote over wal, as
+    월렛은 P230-2(Credential Offer 조회) ~ P230-6(Credential 요청)을 수행한다.
+    * Credential Offer에 tx_code가 없으므로 tx_code 없이 Token을 요청한다.
+    * access_token의 sub는 Holder DID이며, Credential Issuer는 이 값으로
+      P232-3에서 저장한 Claim을 조회하여 Credential을 생성한다.
+end rnote
+
+wal -> ci ++: GET credential_offer_uri
+return Credential Offer
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata
+wal -> as ++: POST {token_endpoint}\n{grant_type = pre-authorized_code, pre-authorized_code}
+return {access_token}
+wal -> ci ++: POST {nonce_endpoint}
+return {c_nonce}
+wal -> wal: Proof JWT 생성
+user -[#Blue]\ wal: 사용자 인증(비표준)
+wal -> wal: Holder DID의 authentication 키로 Proof 서명
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token\n{credential_configuration_id, proofs.jwt[]}
+return Credential 응답\n{credentials[{credential}]}
+wal -> wal: Credential 서명 검증 및 저장
+deactivate wal
+
+|||
+@enduml

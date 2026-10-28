@@ -1,0 +1,230 @@
+@startuml P230_oid4vci_issue_pre_authorized
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P230 : OID4VCI VC Issuance (Pre-Authorized Code)</size>
+end title
+
+'=== Options ===
+' Autonumbering: ex) "<b>000." => Display a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**Wallet**" as wal <<Wallet>>
+end box
+
+box Issuing Provider #AliceBlue
+    participant "**Issuance Service**" as svc <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== P230-1 : Create Credential Offer ==
+
+rnote over svc, as
+    The Issuance Service identifies the target user (userId) and then requests the creation of a Credential Offer.
+    How the user is identified depends on the Issuing Provider's service and is out of the scope of this specification.
+end rnote
+
+svc -> ci ++: Request Credential Offer creation\n{userId, grantType = pre-authorized_code,\n credential_configuration_id, offerType, scheme}
+    ci -> as ++: Request Pre-Authorized Code creation\n{userId, txCodeRequired}
+        as -> as: * Generate pre-authorized_code (valid for 600 seconds)\
+                \n* tx_code = Generate 6-digit numeric PIN\
+                \n  (when txCodeRequired = true)
+    return {pre-authorized_code, tx_code}
+    ci -> ci: * Generate requestId\
+            \n* Store Credential Offer (one-time retrieval)
+    ci -> ci: Generate Credential Offer URI
+    rnote right of ci #MintCream
+        **credential_offer_uri**
+        {credential_issuer}/credential-offer/{requestId}/{configuration_id}
+
+        **QR data (by reference)**
+        openid-credential-offer://?credential_offer_uri=...
+    end note
+return {qrImage, qrData, txCode}
+
+svc -> user: Display QR code
+svc -> user: Deliver tx_code (PIN) (separate channel)
+
+|||
+== P230-2 : Retrieve Credential Offer ==
+
+user -> wal: Scan QR
+activate wal
+wal -> ci ++: GET credential_offer_uri
+    ci -> ci: Retrieve and consume Credential Offer
+    note right of ci
+        A Credential Offer that has already been retrieved
+        cannot be retrieved again.
+    end note
+return Credential Offer
+rnote right of wal #MintCream
+    **CredentialOffer**
+    credential_issuer | credential_configuration_ids |
+    grants."urn:ietf:params:oauth:grant-type:pre-authorized_code"
+        = { pre-authorized_code, tx_code{input_mode, length, description} }
+end note
+
+|||
+== P230-3 : Retrieve Metadata ==
+
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+rnote right of wal #MintCream
+    **IssuerMetadata**
+    credential_issuer | authorization_servers |
+    credential_endpoint | nonce_endpoint | credential_revocation_endpoint |
+    credential_response_encryption | credential_configurations_supported | ...
+end note
+
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata\n{token_endpoint, jwks_uri, ...}
+
+|||
+== P230-4 : Request Access Token ==
+
+user -[#Blue]\ wal: Enter tx_code (PIN)
+wal -> as ++: POST {token_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Token Request]**
+    grant_type = urn:ietf:params:oauth:grant-type:pre-authorized_code
+    pre-authorized_code
+    tx_code (if the Credential Offer contains a tx_code)
+    authorization_details (optional)
+end note
+    as -> as: Verify Pre-Authorized Code\
+            \n* Existence\
+            \n* Whether already used, validity period\
+            \n* Whether tx_code matches
+    as -> as: Consume Pre-Authorized Code
+    as -> as: Generate access_token\
+            \n* sub = userId\
+            \n* Sign JWT (Authorization Server key)
+    opt When authorization_details is requested
+        as -> ci ++: Retrieve Credential Identifier\n{credential_configuration_id}
+        return {credential_identifiers}
+    end
+return Token Response
+rnote right of wal #LightGray
+    **[API_RES : Token Response]**
+    access_token | token_type | expires_in
+    authorization_details[{credential_configuration_id, credential_identifiers}] (optional)
+end note
+
+|||
+== P230-5 : Request c_nonce ==
+
+wal -> ci ++: POST {nonce_endpoint}
+    ci -> ci: Generate and store c_nonce\
+            \n* 16-byte random value (base64url)\
+            \n* Valid for 10 minutes, single use
+return {c_nonce}
+
+|||
+== P230-6 : Request Credential ==
+
+wal -> wal: Generate Proof JWT
+rnote right of wal #MintCream
+    **Proof JWT**
+    header = { typ: "openid4vci-proof+jwt", alg: "ES256",
+               kid: Holder DID URL (e.g. did:omn:holder?versionId=1#pin) }
+    * The kid key name is #pin or #bio
+      (a key registered in authentication of the Holder DID Document)
+    payload = { aud: credential_issuer, iat, nonce: c_nonce }
+end note
+user -[#Blue]\ wal: User authentication (non-standard)
+wal -> wal: Sign Proof with the authentication key of the Holder DID
+
+opt Credential Response encryption (encryption_required = true)
+    wal -> wal: Generate EC key pair for response encryption\
+            \n* credential_response_encryption =\
+            \n  {jwk, alg = ECDH-ES, enc = A256GCM}
+    note right of wal
+        The wallet supports only ECDH-ES, so it sets alg = ECDH-ES.
+        If the request has no alg, the Credential Issuer chooses an algorithm
+        from alg_values_supported in the Issuer Metadata,
+        so the Metadata lists ECDH-ES only.
+    end note
+end
+
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token
+rnote right of wal #LightGray
+    **[API_REQ : Credential Request]**
+    credential_configuration_id or credential_identifier
+    proofs = { jwt: [ Proof JWT ] }
+    credential_response_encryption (optional)
+end note
+    ci -> ci: Verify access_token
+    ci -> ci: Check Proof format\
+            \n* Exactly one Proof type in proofs\
+            \n* One key identifier in the header (Holder DID URL kid)
+    ci <-> BC: Retrieve / Respond Holder DID Document (DID of kid)
+        rnote right of ci #MintCream
+            **DidDoc** : $doc
+        end note
+    ci -> ci: Verify Proof\
+            \n* Check that kid is a P-256 key registered in authentication\
+            \n* Verify Proof signature\
+            \n* Check that the Holder DID is the same in all Proofs\
+            \n* Check nonce = issued c_nonce
+    ci -> ci: Check that a Holder DID kid is present\nfor status-managed formats (dc+sd-jwt-did, mso_mdoc-did)
+    ci -> ci: Consume c_nonce (cannot be reused)
+    ci -> ci: Allocate Status List index\
+            \n* {status_list uri, idx}\
+            \n* Store subject_did = Holder DID
+    ci -> ci: Retrieve user Claims\n(sub, credential type)
+    ci -> ci: Generate and sign Credential\
+            \n* SD-JWT VC or mdoc\
+            \n* Holder binding = Proof public key\
+            \n* Include status.status_list{uri, idx}\
+            \n* Sign with the Issuer DID key
+    ci -> ci: Update issuance record (ISSUED)
+    opt Credential Response encryption
+        ci -> ci: Encrypt Credential Response as JWE\n(ECDH-ES, A256GCM)
+    end
+return Credential Response
+rnote right of wal #LightGray
+    **[API_RES : Credential Response]**
+    credentials = [ { credential } ]  (one Credential)
+    (compact JWE when encrypted, Content-Type: application/jwt)
+end note
+note right of wal
+    The Credential Issuer issues one Credential per Proof,
+    and the wallet sends one Proof and receives one Credential.
+end note
+
+wal <-> BC: Retrieve / Respond Issuer DID Document
+wal -> wal: Verify Credential signature with the Issuer DID key and store
+deactivate wal
+
+|||
+@enduml

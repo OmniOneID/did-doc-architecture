@@ -1,0 +1,147 @@
+@startuml P230_oid4vci_issue_pre_authorized_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P230 : OID4VCI VC Issuance (Pre-Authorized Code)</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box Issuing Provider #AliceBlue
+    participant "**Issuance Service**" as SERVICE <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P230-1 : Create Credential Offer ==
+SERVICE -> CI++: Create Credential Offer request
+    rnote right of SERVICE #Lavender
+        **[M230_REQ : Create Credential Offer request]**
+    end note
+    CI -> AS++: Create Pre-Authorized Code request
+    return Create Pre-Authorized Code response
+    CI -> CI: Store Credential Offer
+return Create Credential Offer response
+rnote right of SERVICE #Lavender
+    **[M230_RES : Create Credential Offer response]**
+end note
+SERVICE -> USER: Display QR code and deliver tx_code (PIN)
+
+== P230-2 : Retrieve Credential Offer ==
+USER -> WALLET: Scan QR
+activate WALLET
+WALLET -> CI++: Retrieve Credential Offer request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Retrieve Credential Offer request]**
+    end note
+    CI -> CI: Consume Credential Offer (one-time retrieval)
+return Retrieve Credential Offer response
+rnote right of WALLET #Lavender
+    **[M230_RES : Retrieve Credential Offer response]**
+end note
+
+== P230-3 : Retrieve Metadata ==
+WALLET -> CI++: Retrieve Credential Issuer Metadata request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Retrieve Credential Issuer Metadata request]**
+    end note
+return Retrieve Credential Issuer Metadata response
+rnote right of WALLET #Lavender
+    **[M230_RES : Retrieve Credential Issuer Metadata response]**
+end note
+WALLET -> AS++: Retrieve Authorization Server Metadata request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Retrieve Authorization Server Metadata request]**
+    end note
+return Retrieve Authorization Server Metadata response
+rnote right of WALLET #Lavender
+    **[M230_RES : Retrieve Authorization Server Metadata response]**
+end note
+
+== P230-4 : Request Access Token ==
+USER -[#Blue]\ WALLET: Enter tx_code (PIN)
+WALLET -> AS++: Token request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Token request]**
+    end note
+    AS -> AS: Verify Pre-Authorized Code and generate access_token
+    opt When authorization_details is requested
+        AS -> CI++: Retrieve Credential Identifier request
+        return Retrieve Credential Identifier response
+    end
+return Token response
+rnote right of WALLET #Lavender
+    **[M230_RES : Token response]**
+end note
+
+== P230-5 : Request c_nonce ==
+WALLET -> CI++: c_nonce request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : c_nonce request]**
+    end note
+    CI -> CI: Generate c_nonce
+return c_nonce response
+rnote right of WALLET #Lavender
+    **[M230_RES : c_nonce response]**
+end note
+
+== P230-6 : Request Credential ==
+WALLET -> WALLET: Generate Proof JWT
+USER -[#Blue]\ WALLET: User authentication (non-standard)
+WALLET -> WALLET: Sign Proof with the Holder DID key
+WALLET -> CI++: Credential request
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Credential request]**
+    end note
+    CI <-> BC: Retrieve Holder DID Document
+    CI -> CI: Verify Proof
+    CI -> CI: Allocate Status List index and generate Credential
+return Credential response
+rnote right of WALLET #Lavender
+    **[M230_RES : Credential response]**
+end note
+WALLET <-> BC: Retrieve Issuer DID Document
+WALLET -> WALLET: Verify and store Credential
+deactivate WALLET
+
+@enduml

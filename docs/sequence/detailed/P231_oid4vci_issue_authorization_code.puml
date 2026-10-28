@@ -1,0 +1,158 @@
+@startuml P231_oid4vci_issue_authorization_code
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Configuration
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P231 : OID4VCI VC Issuance (Authorization Code)</size>
+end title
+
+'=== Options ===
+' Autonumbering: ex) "<b>000." => Display a 3-digit number with leading zeros
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Constants ===
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'=== Participants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+box Mobile #OldLace
+    participant "**Wallet**" as wal <<Wallet>>
+end box
+
+box Issuing Provider #AliceBlue
+    participant "**Issuance Service**" as svc <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+box Trust Repository
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== P231-1 : Create Credential Offer ==
+
+svc -> ci ++: Request Credential Offer creation\n{grantType = authorization_code,\n credential_configuration_id, offerType, scheme}
+    ci -> ci: Generate requestId
+    ci -> ci: Generate Credential Offer URI
+    rnote right of ci #MintCream
+        **credential_offer_uri**
+        {credential_issuer}/credential-offer/{requestId}/{configuration_id}
+    end note
+return {qrImage, qrData}
+svc -> user: Display QR code
+note right of svc
+    In the Authorization Code flow, the user logs in directly at the Authorization Server,
+    so neither a Pre-Authorized Code nor a tx_code is generated.
+end note
+
+|||
+== P231-2 : Retrieve Credential Offer ==
+
+user -> wal: Scan QR
+activate wal
+wal -> ci ++: GET credential_offer_uri
+    ci -> ci: Generate issuer_state
+return Credential Offer
+rnote right of wal #MintCream
+    **CredentialOffer**
+    credential_issuer | credential_configuration_ids |
+    grants.authorization_code = { issuer_state }
+end note
+note right of ci
+    A Credential Offer for the Authorization Code flow
+    is not stored and can be retrieved again.
+end note
+
+|||
+== P231-3 : Retrieve Metadata ==
+
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata\n{authorization_endpoint, token_endpoint, jwks_uri, ...}
+
+|||
+== P231-4 : Authorization Request ==
+
+wal -> as ++: GET {authorization_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Authorization Request]**
+    response_type = code
+    client_id
+    redirect_uri
+    scope = openid
+    authorization_details (optional)
+    issuer_state (value from the Credential Offer, not validated currently)
+    state, code_challenge, code_challenge_method (optional)
+end note
+    as -> user: Login screen
+    user -> as: Login (user authentication)
+    as -> as: Generate authorization code (code)
+return Redirect {redirect_uri}?code=...&state=...
+note right of wal
+    The redirect_uri must be the same as the Redirect URI
+    of the Client registered with the Authorization Server.
+end note
+
+|||
+== P231-5 : Request Access Token ==
+
+wal -> as ++: POST {token_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Token Request]**
+    grant_type = authorization_code
+    code | redirect_uri | client_id
+    Client authentication (client_secret_basic / client_secret_post)
+    or code_verifier (PKCE)
+end note
+    as -> as: Verify authorization code and Client
+    as -> as: Generate access_token\
+            \n* sub = logged-in user
+    opt When authorization_details is requested
+        as -> ci ++: Retrieve Credential Identifier\n{credential_configuration_id}
+        return {credential_identifiers}
+    end
+return Token Response
+rnote right of wal #LightGray
+    **[API_RES : Token Response]**
+    access_token | token_type | expires_in
+    authorization_details[{credential_configuration_id, credential_identifiers}] (optional)
+end note
+
+|||
+== P231-6 : Request c_nonce and Credential ==
+
+wal -> ci ++: POST {nonce_endpoint}
+return {c_nonce}
+wal -> wal: Generate Proof JWT and sign with the Holder DID key
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token\n{credential_configuration_id, proofs.jwt[]}
+    rnote right of ci #MintCream
+        Proof verification, Status List index allocation, Credential generation and
+        response encryption are the same as in P230-6 Request Credential.
+        User Claims are retrieved using the sub (logged-in user) of the access_token.
+    end note
+    ci <-> BC: Retrieve / Respond Holder DID Document
+return Credential Response\n{credentials[{credential}]}
+wal -> wal: Verify Credential signature and store
+deactivate wal
+
+|||
+@enduml

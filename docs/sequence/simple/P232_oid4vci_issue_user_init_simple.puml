@@ -1,0 +1,116 @@
+@startuml P232_oid4vci_issue_user_init_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P232 : OID4VCI VC Issuance (User-Initiated, Webview)</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box TAS Server #AliceBlue
+    participant "**TAS**\n(List Provider)" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box Issuing Provider #AliceBlue
+    participant "**Webview Issuance**" as WEB <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Precondition : List Provider Registration ==
+rnote over TAS, CI
+    The Issuing Provider registers the Issuer with the TAS,
+    and once the TAS administrator approves it (ACTIVE), the Issuer is exposed in the wallet's Issuer list.
+end rnote
+
+== P232-1 : Select Issuer and Credential ==
+activate WALLET
+WALLET -> TAS++: Retrieve Issuer list request
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Retrieve Issuer list request]**
+    end note
+return Retrieve Issuer list response
+rnote right of WALLET #Lavender
+    **[M232_RES : Retrieve Issuer list response]**
+end note
+WALLET -> CI++: Retrieve Credential Issuer Metadata request
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Retrieve Credential Issuer Metadata request]**
+    end note
+return Retrieve Credential Issuer Metadata response
+rnote right of WALLET #Lavender
+    **[M232_RES : Retrieve Credential Issuer Metadata response]**
+end note
+USER -> WALLET: Select Issuer and the Credential to be issued
+
+== P232-2 : Start Webview Issuance Session ==
+WALLET -> WEB++: Start issuance request (Webview)
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Start issuance request]**
+    end note
+    WEB -> WEB: Create issuance session
+return Claim input screen
+rnote right of WALLET #Lavender
+    **[M232_RES : Start issuance response]**
+end note
+
+== P232-3 : Enter Claims and Create Credential Offer ==
+USER -> WALLET: Enter and confirm Claims (Webview)
+WALLET -> WEB++: Confirm input request
+    rnote right of WALLET #Lavender
+        **[M232_REQ : Confirm input request]**
+    end note
+    WEB -> WEB: Validate input values and store Claims
+    WEB -> CI++: Create Credential Offer request
+        CI -> AS++: Create Pre-Authorized Code request
+        return Create Pre-Authorized Code response
+    return Create Credential Offer response
+return 302 Redirect (Credential Offer)
+rnote right of WALLET #Lavender
+    **[M232_RES : Confirm input response]**
+end note
+
+== P232-4 : Credential Issuance ==
+rnote across #white
+    The wallet performs P230-2 (Retrieve Credential Offer) ~ P230-6 (Request Credential) (Token is requested without a tx_code)
+    Refer to `P230_oid4vci_issue_pre_authorized_simple`
+end note
+deactivate WALLET
+
+@enduml

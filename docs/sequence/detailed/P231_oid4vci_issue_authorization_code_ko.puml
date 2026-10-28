@@ -1,0 +1,158 @@
+@startuml P231_oid4vci_issue_authorization_code_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P231 : OID4VCI VC 발급 (Authorization Code)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== 상수 ===
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+box 모바일 #OldLace
+    participant "**월렛**" as wal <<Wallet>>
+end box
+
+box 발급 사업자 #AliceBlue
+    participant "**발급 서비스**" as svc <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as ci <<Server>>
+    participant "**Authorization Server**" as as <<Server>>
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+|||
+== P231-1 : Credential Offer 생성 ==
+
+svc -> ci ++: Credential Offer 생성 요청\n{grantType = authorization_code,\n credential_configuration_id, offerType, scheme}
+    ci -> ci: requestId 생성
+    ci -> ci: Credential Offer URI 생성
+    rnote right of ci #MintCream
+        **credential_offer_uri**
+        {credential_issuer}/credential-offer/{requestId}/{configuration_id}
+    end note
+return {qrImage, qrData}
+svc -> user: QR 코드 표시
+note right of svc
+    Authorization Code 흐름은 사용자가 Authorization Server에서
+    직접 로그인하므로 Pre-Authorized Code와 tx_code를 생성하지 않는다.
+end note
+
+|||
+== P231-2 : Credential Offer 조회 ==
+
+user -> wal: QR 스캔
+activate wal
+wal -> ci ++: GET credential_offer_uri
+    ci -> ci: issuer_state 생성
+return Credential Offer
+rnote right of wal #MintCream
+    **CredentialOffer**
+    credential_issuer | credential_configuration_ids |
+    grants.authorization_code = { issuer_state }
+end note
+note right of ci
+    Authorization Code 흐름의 Credential Offer는
+    저장하지 않으며 다시 조회할 수 있다.
+end note
+
+|||
+== P231-3 : Metadata 조회 ==
+
+wal -> ci ++: GET /.well-known/openid-credential-issuer
+return Credential Issuer Metadata
+wal -> as ++: GET /.well-known/oauth-authorization-server
+return Authorization Server Metadata\n{authorization_endpoint, token_endpoint, jwks_uri, ...}
+
+|||
+== P231-4 : 인가 요청 ==
+
+wal -> as ++: GET {authorization_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Authorization Request]**
+    response_type = code
+    client_id
+    redirect_uri
+    scope = openid
+    authorization_details (선택)
+    issuer_state (Credential Offer의 값, 현재 검증하지 않음)
+    state, code_challenge, code_challenge_method (선택)
+end note
+    as -> user: 로그인 화면
+    user -> as: 로그인 (사용자 인증)
+    as -> as: 인가 코드(code) 생성
+return Redirect {redirect_uri}?code=...&state=...
+note right of wal
+    redirect_uri는 Authorization Server에 등록된
+    Client의 Redirect URI와 같아야 한다.
+end note
+
+|||
+== P231-5 : Access Token 요청 ==
+
+wal -> as ++: POST {token_endpoint}
+rnote right of wal #LightGray
+    **[API_REQ : Token 요청]**
+    grant_type = authorization_code
+    code | redirect_uri | client_id
+    Client 인증 (client_secret_basic / client_secret_post)
+    또는 code_verifier (PKCE)
+end note
+    as -> as: 인가 코드 및 Client 확인
+    as -> as: access_token 생성\
+            \n* sub = 로그인한 사용자
+    opt authorization_details 요청 시
+        as -> ci ++: Credential Identifier 조회\n{credential_configuration_id}
+        return {credential_identifiers}
+    end
+return Token 응답
+rnote right of wal #LightGray
+    **[API_RES : Token 응답]**
+    access_token | token_type | expires_in
+    authorization_details[{credential_configuration_id, credential_identifiers}] (선택)
+end note
+
+|||
+== P231-6 : c_nonce 요청 및 Credential 요청 ==
+
+wal -> ci ++: POST {nonce_endpoint}
+return {c_nonce}
+wal -> wal: Proof JWT 생성 및 Holder DID 키로 서명
+wal -> ci ++: POST {credential_endpoint}\nAuthorization: Bearer access_token\n{credential_configuration_id, proofs.jwt[]}
+    rnote right of ci #MintCream
+        Proof 검증, Status List index 할당, Credential 생성 및
+        응답 암호화는 P230-6 Credential 요청과 같다.
+        사용자 Claim은 access_token의 sub(로그인한 사용자)로 조회한다.
+    end note
+    ci <-> BC: Holder DID Document 조회 / 응답
+return Credential 응답\n{credentials[{credential}]}
+wal -> wal: Credential 서명 검증 및 저장
+deactivate wal
+
+|||
+@enduml

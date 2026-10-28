@@ -1,0 +1,149 @@
+@startuml P230_oid4vci_issue_pre_authorized_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P230 : OID4VCI VC 발급 (Pre-Authorized Code)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box 발급 사업자 #AliceBlue
+    participant "**발급 서비스**" as SERVICE <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P230-1 : Credential Offer 생성 ==
+SERVICE -> CI++: Credential Offer 생성 요청
+    rnote right of SERVICE #Lavender
+        **[M230_REQ : Credential Offer 생성 요청]**
+    end note
+    CI -> AS++: Pre-Authorized Code 생성 요청
+    return Pre-Authorized Code 생성 응답
+    CI -> CI: Credential Offer 저장
+return Credential Offer 생성 응답
+rnote right of SERVICE #Lavender
+    **[M230_RES : Credential Offer 생성 응답]**
+end note
+SERVICE -> USER: QR 코드 표시 및 tx_code(PIN) 안내
+
+== P230-2 : Credential Offer 조회 ==
+USER -> WALLET: QR 스캔
+activate WALLET
+WALLET -> CI++: Credential Offer 조회 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Credential Offer 조회 요청]**
+    end note
+    CI -> CI: Credential Offer 소비 (1회 조회)
+return Credential Offer 조회 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : Credential Offer 조회 응답]**
+end note
+
+== P230-3 : Metadata 조회 ==
+WALLET -> CI++: Credential Issuer Metadata 조회 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Credential Issuer Metadata 조회 요청]**
+    end note
+return Credential Issuer Metadata 조회 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : Credential Issuer Metadata 조회 응답]**
+end note
+WALLET -> AS++: Authorization Server Metadata 조회 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Authorization Server Metadata 조회 요청]**
+    end note
+return Authorization Server Metadata 조회 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : Authorization Server Metadata 조회 응답]**
+end note
+
+== P230-4 : Access Token 요청 ==
+USER -[#Blue]\ WALLET: tx_code(PIN) 입력
+WALLET -> AS++: Token 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Token 요청]**
+    end note
+    AS -> AS: Pre-Authorized Code 확인 및 access_token 생성
+    opt authorization_details 요청 시
+        AS -> CI++: Credential Identifier 조회 요청
+        return Credential Identifier 조회 응답
+    end
+return Token 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : Token 응답]**
+end note
+
+== P230-5 : c_nonce 요청 ==
+WALLET -> CI++: c_nonce 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : c_nonce 요청]**
+    end note
+    CI -> CI: c_nonce 생성
+return c_nonce 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : c_nonce 응답]**
+end note
+
+== P230-6 : Credential 요청 ==
+WALLET -> WALLET: Proof JWT 생성
+USER -[#Blue]\ WALLET: 사용자 인증(비표준)
+WALLET -> WALLET: Holder DID 키로 Proof 서명
+WALLET -> CI++: Credential 요청
+    rnote right of WALLET #Lavender
+        **[M230_REQ : Credential 요청]**
+    end note
+    CI <-> BC: Holder DID Document 조회
+    CI -> CI: Proof 검증
+    CI -> CI: Status List index 할당 및 Credential 생성
+return Credential 응답
+rnote right of WALLET #Lavender
+    **[M230_RES : Credential 응답]**
+end note
+WALLET <-> BC: Issuer DID Document 조회
+WALLET -> WALLET: Credential 검증 및 저장
+deactivate WALLET
+
+@enduml

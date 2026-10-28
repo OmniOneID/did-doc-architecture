@@ -1,0 +1,151 @@
+@startuml P231_oid4vci_issue_authorization_code_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P231 : OID4VCI VC 발급 (Authorization Code)</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box 발급 사업자 #AliceBlue
+    participant "**발급 서비스**" as SERVICE <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 상수
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "별도 문서 참조"
+!$doc = "데이터명세 문서 참조"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P231-1 : Credential Offer 생성 ==
+SERVICE -> CI++: Credential Offer 생성 요청
+    rnote right of SERVICE #Lavender
+        **[M231_REQ : Credential Offer 생성 요청]**
+    end note
+return Credential Offer 생성 응답
+rnote right of SERVICE #Lavender
+    **[M231_RES : Credential Offer 생성 응답]**
+end note
+SERVICE -> USER: QR 코드 표시
+
+== P231-2 : Credential Offer 조회 ==
+USER -> WALLET: QR 스캔
+activate WALLET
+WALLET -> CI++: Credential Offer 조회 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Credential Offer 조회 요청]**
+    end note
+    CI -> CI: issuer_state 생성
+return Credential Offer 조회 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : Credential Offer 조회 응답]**
+end note
+
+== P231-3 : Metadata 조회 ==
+WALLET -> CI++: Credential Issuer Metadata 조회 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Credential Issuer Metadata 조회 요청]**
+    end note
+return Credential Issuer Metadata 조회 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : Credential Issuer Metadata 조회 응답]**
+end note
+WALLET -> AS++: Authorization Server Metadata 조회 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Authorization Server Metadata 조회 요청]**
+    end note
+return Authorization Server Metadata 조회 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : Authorization Server Metadata 조회 응답]**
+end note
+
+== P231-4 : 인가 요청 ==
+WALLET -> AS++: 인가 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : 인가 요청]**
+    end note
+    AS -> USER: 로그인 화면
+    USER -> AS: 로그인 (사용자 인증)
+    AS -> AS: 인가 코드(code) 생성
+return 인가 응답 (Redirect)
+rnote right of WALLET #Lavender
+    **[M231_RES : 인가 응답]**
+end note
+
+== P231-5 : Access Token 요청 ==
+WALLET -> AS++: Token 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Token 요청]**
+    end note
+    AS -> AS: 인가 코드 및 Client 확인, access_token 생성
+    opt authorization_details 요청 시
+        AS -> CI++: Credential Identifier 조회 요청
+        return Credential Identifier 조회 응답
+    end
+return Token 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : Token 응답]**
+end note
+
+== P231-6 : c_nonce 요청 및 Credential 요청 ==
+WALLET -> CI++: c_nonce 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : c_nonce 요청]**
+    end note
+return c_nonce 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : c_nonce 응답]**
+end note
+WALLET -> WALLET: Proof JWT 생성 및 서명
+WALLET -> CI++: Credential 요청
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Credential 요청]**
+    end note
+    CI <-> BC: Holder DID Document 조회
+    CI -> CI: Proof 검증 및 Credential 생성 (P230-6과 같음)
+return Credential 응답
+rnote right of WALLET #Lavender
+    **[M231_RES : Credential 응답]**
+end note
+WALLET -> WALLET: Credential 검증 및 저장
+deactivate WALLET
+
+@enduml

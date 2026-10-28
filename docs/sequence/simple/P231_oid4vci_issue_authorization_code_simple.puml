@@ -1,0 +1,149 @@
+@startuml P231_oid4vci_issue_authorization_code_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P231 : OID4VCI VC Issuance (Authorization Code)</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Panticipants ===
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+end box
+
+box Issuing Provider #AliceBlue
+    participant "**Issuance Service**" as SERVICE <<Server>> #WhiteSmoke
+    participant "**Credential Issuer**" as CI <<Server>> #WhiteSmoke
+    participant "**Authorization Server**" as AS <<Server>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Constants
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!$refdoc = "Refer to separate document"
+!$doc = "Refer to data specification document"
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P231-1 : Create Credential Offer ==
+SERVICE -> CI++: Create Credential Offer request
+    rnote right of SERVICE #Lavender
+        **[M231_REQ : Create Credential Offer request]**
+    end note
+return Create Credential Offer response
+rnote right of SERVICE #Lavender
+    **[M231_RES : Create Credential Offer response]**
+end note
+SERVICE -> USER: Display QR code
+
+== P231-2 : Retrieve Credential Offer ==
+USER -> WALLET: Scan QR
+activate WALLET
+WALLET -> CI++: Retrieve Credential Offer request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Retrieve Credential Offer request]**
+    end note
+    CI -> CI: Generate issuer_state
+return Retrieve Credential Offer response
+rnote right of WALLET #Lavender
+    **[M231_RES : Retrieve Credential Offer response]**
+end note
+
+== P231-3 : Retrieve Metadata ==
+WALLET -> CI++: Retrieve Credential Issuer Metadata request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Retrieve Credential Issuer Metadata request]**
+    end note
+return Retrieve Credential Issuer Metadata response
+rnote right of WALLET #Lavender
+    **[M231_RES : Retrieve Credential Issuer Metadata response]**
+end note
+WALLET -> AS++: Retrieve Authorization Server Metadata request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Retrieve Authorization Server Metadata request]**
+    end note
+return Retrieve Authorization Server Metadata response
+rnote right of WALLET #Lavender
+    **[M231_RES : Retrieve Authorization Server Metadata response]**
+end note
+
+== P231-4 : Authorization Request ==
+WALLET -> AS++: Authorization request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Authorization request]**
+    end note
+    AS -> USER: Login screen
+    USER -> AS: Login (user authentication)
+    AS -> AS: Generate authorization code (code)
+return Authorization response (Redirect)
+rnote right of WALLET #Lavender
+    **[M231_RES : Authorization response]**
+end note
+
+== P231-5 : Request Access Token ==
+WALLET -> AS++: Token request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Token request]**
+    end note
+    AS -> AS: Verify authorization code and Client, generate access_token
+    opt When authorization_details is requested
+        AS -> CI++: Retrieve Credential Identifier request
+        return Retrieve Credential Identifier response
+    end
+return Token response
+rnote right of WALLET #Lavender
+    **[M231_RES : Token response]**
+end note
+
+== P231-6 : Request c_nonce and Credential ==
+WALLET -> CI++: c_nonce request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : c_nonce request]**
+    end note
+return c_nonce response
+rnote right of WALLET #Lavender
+    **[M231_RES : c_nonce response]**
+end note
+WALLET -> WALLET: Generate and sign Proof JWT
+WALLET -> CI++: Credential request
+    rnote right of WALLET #Lavender
+        **[M231_REQ : Credential request]**
+    end note
+    CI <-> BC: Retrieve Holder DID Document
+    CI -> CI: Verify Proof and generate Credential (same as P230-6)
+return Credential response
+rnote right of WALLET #Lavender
+    **[M231_RES : Credential response]**
+end note
+WALLET -> WALLET: Verify and store Credential
+deactivate WALLET
+
+@enduml
