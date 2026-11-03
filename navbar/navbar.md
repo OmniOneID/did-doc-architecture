@@ -2,5 +2,6 @@
   - [English](javascript:goToEnglish())
   - [Korean](javascript:goToKorean())
 - Versions
+  - [v3.0.0](javascript:goToSelectedVersion('V3.0.0'))
   - [v2.0.0](javascript:goToSelectedVersion('V2.0.0'))
   - [v1.0.0](javascript:goToSelectedVersion('V1.0.0'))
