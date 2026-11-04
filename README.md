@@ -83,12 +83,17 @@ For more information, refer to the following documents:
 1. [did-cli-tool-server](https://github.com/OmniOneID/did-cli-tool-server)
 1. [did-common-sdk-server](https://github.com/OmniOneID/did-common-sdk-server)
 1. [did-zkp-sdk-server](https://github.com/OmniOneID/did-zkp-sdk-server)
+1. [did-issuer-sdk-server](https://github.com/OmniOneID/did-issuer-sdk-server)
+1. [did-ta-sdk-server](https://github.com/OmniOneID/did-ta-sdk-server)
+1. [did-verifier-sdk-server](https://github.com/OmniOneID/did-verifier-sdk-server)
 
 #### Mobile SDK 
 
 1. [did-client-sdk-aos](https://github.com/OmniOneID/did-client-sdk-aos)
 1. [did-client-sdk-ios](https://github.com/OmniOneID/did-client-sdk-ios)
 1. [did-client-sdk-aos-kotlin](https://github.com/OmniOneID/did-client-sdk-aos-kotlin)
+1. [did-proximity-sdk-android](https://github.com/OmniOneID/did-proximity-sdk-android)
+1. [did-proximity-sdk-ios](https://github.com/OmniOneID/did-proximity-sdk-ios)
 
 #### Server Application 
 
@@ -102,11 +107,14 @@ For more information, refer to the following documents:
 1. [did-wallet-server](https://github.com/OmniOneID/did-wallet-server)
 1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
 1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
+1. [did-omn-resolver-driver-server](https://github.com/OmniOneID/did-omn-resolver-driver-server)
 
 #### Mobile Application 
 
 1. [did-ca-aos](https://github.com/OmniOneID/did-ca-aos)
 1. [did-ca-ios](https://github.com/OmniOneID/did-ca-ios)
+1. [did-proximity-verifier-android](https://github.com/OmniOneID/did-proximity-verifier-android)
+1. [did-proximity-verifier-ios](https://github.com/OmniOneID/did-proximity-verifier-ios)
 
 ## 6. Folder Structure
 ```
