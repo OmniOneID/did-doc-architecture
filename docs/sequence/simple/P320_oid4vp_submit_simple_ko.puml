@@ -1,0 +1,84 @@
+@startuml P320_oid4vp_submit_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>OID4VP 기반 VP 제출</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+
+box 모바일 #OldLace
+    participant "**월렛**" as wal <<Wallet>>
+    participant "**인가앱**" as ca <<App>>
+end box
+participant "**검증 사업자**" as vf <<Server>>
+
+box 신뢰저장소
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+== P320-1 : 월렛 호출 ==
+
+vf -> user: QR 표시 또는 딥링크 전달 (request_uri)
+user -> ca: QR 스캔 또는 딥링크 실행
+activate ca
+
+== P320-2 : Authorization Request 조회 및 검증 ==
+
+ca -> vf ++: GET request_uri
+return Request Object (서명된 JWT)
+ca <-> BC: Verifier DID Document 조회 / 응답
+ca -> ca: Request Object 서명 검증
+
+== P320-3 : Credential 매칭 ==
+
+ca -> wal ++: Credential 매칭 요청 (dcql_query)
+return 매칭 결과
+
+== P320-4 : 사용자 동의 및 인증 ==
+
+ca -> user: 제출할 Credential 및 Claim 표시
+user -> ca: 동의 및 사용자 인증 (PIN 또는 생체)
+
+== P320-5 : VP Token 생성 ==
+
+ca -> wal ++: VP Token 생성 요청
+wal -> wal: 형식별 제출 데이터 생성\n(SD-JWT VC / mdoc / OpenDID VC)
+opt direct_post.jwt
+    wal -> wal: JWE 암호화
+end
+return 응답 본문
+
+== P320-6 : 응답 전달 ==
+
+ca -> vf ++: POST response_uri (vp_token 또는 response)
+return HTTP 2xx
+ca -> user: 제출 결과 표시
+deactivate ca
+
+@enduml

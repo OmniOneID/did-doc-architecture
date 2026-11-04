@@ -1,0 +1,143 @@
+@startuml P320_oid4vp_submit_ko
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P320 : OID4VP 기반 VP 제출 </size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as USER
+
+box 모바일 #OldLace
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke
+end box
+
+box 검증서버 #AliceBlue
+    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
+end box
+
+box 신뢰저장소
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P320-1 : 월렛 호출 ==
+
+SP -> USER : QR 표시 또는 딥링크 전달
+rnote right of USER #Lavender
+    openid4vp://?request_uri=<Request Object URI>
+end note
+USER -> CA : QR 스캔 또는 딥링크 실행
+activate CA
+CA -> CA : request_uri 추출
+
+== P320-2 : Authorization Request 조회 및 검증 ==
+
+CA -> SP ++ : GET request_uri
+return Request Object (서명된 JWT)
+rnote right of CA #MintCream
+    header.kid = did:<method>:<id>?versionId=<version>#<key id>
+end note
+
+CA <-> BC : Verifier DID Document 조회 / 응답\n(kid의 versionId 지정)
+CA -> CA : Request Object 서명 검증\
+            \n* kid의 key id와 일치하는 verificationMethod의 P-256 키 사용
+CA -> CA : Authorization Request 확인
+rnote right of CA #MintCream
+    dcql_query, nonce, client_id,
+    response_mode, response_uri, state,
+    client_metadata
+end note
+
+== P320-3 : Credential 매칭 ==
+
+CA -> WALLET ++ : Credential 매칭 요청\n{dcql_query}
+WALLET -> WALLET : DCQL 매칭\
+            \n* 형식 혼합 요청 거부\
+            \n* ACTIVE 상태 Credential만 후보\
+            \n* claims 미지정 시 공개 가능한 Claim 전체
+return 매칭 결과\n{Credential 후보, 요청 Claim}
+
+== P320-4 : 사용자 동의 및 인증 ==
+
+CA -> USER : 제출할 Credential 및 Claim 표시\
+            \n* 요청 Claim: 필수\
+            \n* 요청 외 Claim: 선택 (기본 제외)
+USER -> CA : 동의 및 추가 Claim 선택
+CA -> USER : 사용자 인증 (PIN 또는 생체)
+rnote right of USER #MintCream
+    제출 Credential의 Holder 바인딩 키 기준
+    * PIN 키 바인딩 포함 : PIN
+    * 모두 생체 키 바인딩 : 생체 인증
+    * 바인딩 키 없음 (OpenDID VC) : PIN 또는 생체 인증 선택
+end note
+USER -> CA : 인증
+
+== P320-5 : VP Token 생성 ==
+
+CA -> WALLET ++ : VP Token 생성 요청\n{Authorization Request, 선택 Credential 및 Claim}
+WALLET -> WALLET : 형식별 제출 데이터 생성
+rnote right of WALLET #MintCream
+    * SD-JWT VC : Issuer-signed JWT~Disclosure~KB-JWT
+        KB-JWT {aud = client_id, nonce, iat, sd_hash}
+    * mdoc : DeviceResponse (deviceSignature)
+        SessionTranscript = OpenID4VPHandover
+        (client_id, nonce, jwkThumbprint, response_uri)
+    * OpenDID VC : OpenDID VP
+        proof.domain = client_id, proof.challenge = nonce
+        verifierNonce = nonce
+end note
+WALLET -> WALLET : vp_token 구성\n{<credential query id> : [제출 데이터]}
+
+opt response_mode = direct_post.jwt
+    WALLET -> WALLET : {vp_token, state} JWE 암호화
+    rnote right of WALLET #MintCream
+        alg = ECDH-ES
+        enc = A256GCM (우선) / A128GCM
+        키 = client_metadata.jwks의 EC P-256 키
+    end note
+end
+
+return 응답 본문
+
+== P320-6 : 응답 전달 ==
+
+CA -> SP ++ : POST response_uri\n(application/x-www-form-urlencoded)
+rnote right of CA #Lavender
+    * direct_post : vp_token, state
+    * direct_post.jwt : response (JWE)
+end note
+return HTTP 2xx
+
+CA -> USER : 제출 결과 표시
+deactivate CA
+
+@enduml

@@ -20,8 +20,8 @@ Software Architecture
 
 - 주제: C4 model을 이용한 Software Architecture 설명
 - 작성: 강영호
-- 일자: 2026-10-22
-- 버전: v1.1.0
+- 일자: 2026-11-04
+- 버전: v1.2.0
 
 개정이력
 ---
@@ -31,6 +31,7 @@ Software Architecture
 | v1.0.0 | 2024-09-03 | 최초 작성 |
 | v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정 |
 | v1.1.0 | 2026-10-22 | OID4VCI 발급, Proxy 모드 발급, OID4VCI Issuer 목록, LSS, OID4VC SDK 추가 |
+| v1.2.0 | 2026-11-04 | OID4VP 제출, mdoc 근접 제출, mdoc 리더 앱, Client Wallet SDK OID4VC 기능, Proximity SDK 추가 |
 
 
 목차
@@ -111,6 +112,8 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 | [CRED-STATUS] | (OpenDID) Credential Status format                | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
 | [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [P210_issue_vc_proxy_ko.puml](../sequence/detailed/P210_issue_vc_proxy_ko.puml) |
 | [LSS]        | (OpenDID) Ledger Service Server                    | https://github.com/OmniOneID/did-ledger-service-server |
+| [OID4VP-PRESENTATION] | (OpenDID) OID4VP 기반 VP 제출              | [OID4VP 제출](../concepts/OID4VP%20Presentation_ko.md) |
+| [MDOC-PROXIMITY] | (OpenDID) mdoc 근접 제출                       | [mdoc 근접 제출](../concepts/mdoc%20Proximity%20Presentation_ko.md) |
 
 <div style="page-break-after: always;"></div>
 
@@ -283,12 +286,13 @@ Container를 분류하면 다음과 같다.
 | **Issuer**                  | • Issuer Service<br>                         |    Y     |\
 |                             | • Issuer Legacy                              |          |
 | **Verifier**                | • Verifier Service<br>                       |    Y     |\
-|                             | • Verifier Legacy                            |          |
+|                             | • Verifier Legacy<br>                        |          |\
+|                             | • mdoc 리더 앱 (선택)                        |          |
 | **Supplements**             | • User Service<br>                           |          |\
 |                             | • CLI Tool for Wallet<br>                    |          |\
 |                             | • LSS (Ledger Service Server)                |          |
 
-> 상기 Container diagram 그림에는 OpenDID 3.0에서 추가된 Proxy, LSS와 Issuer Service의 OID4VCI 구성 요소가 표시되어 있지 않다. 각 요소는 해당 절에서 설명한다.
+> 상기 Container diagram 그림에는 OpenDID 3.0에서 추가된 Proxy, LSS, mdoc 리더 앱과 Issuer Service의 OID4VCI 구성 요소가 표시되어 있지 않다. 각 요소는 해당 절에서 설명한다.
 
 ### 4.1. Core
 
@@ -343,6 +347,7 @@ CApp group은 사용자용 모바일 앱과 관련된 다음의 요소를 포함
 - CApp (인가앱)
     - CApp Provider로 등록된 사업자가 운영하는 사용자용 모바일 앱
     - 등록된 Wallet Provider가 제공하는 client wallet을 반드시 사용해야 함
+    - OpenDID 프로토콜 외에 OID4VCI 발급, OID4VP 제출, mdoc 근접 제출을 지원 ([OID4VCI-ISSUANCE], [OID4VP-PRESENTATION], [MDOC-PROXIMITY] 참조)
 - CApp Service
     - WalletToken 및 ServerToken 생성 시 token seed 정보를 서명하여 인가앱의 authenticity 증명
     - 인가앱이 client wallet이나 TA 서비스 이용 시마다 CApp Service의 서명이 필요함
@@ -374,9 +379,13 @@ Verifier group은 신분증 제출 및 검증과 관련된 다음의 요소를 �
 - Verifier Service
     - OpenDID에서 제공하는 SDK를 이용하여 Verifier API를 구현한 서버
     - Verifier Legacy에 Verifier API를 추가로 구현하는 것도 가능
+    - OpenDID 제출 프로토콜 외에 OID4VP 제출을 지원 ([OID4VP-PRESENTATION] 참조)
 - Verifier Legacy
     - 사용자의 신원확인 후 사용자에게 고유의 서비스를 제공하는 Verifier의 기존 서버
     - 다양한 신원확인 서비스가 존재하며, Verifier Service는 그 중의 하나
+- mdoc 리더 앱 (선택)
+    - ISO/IEC 18013-5 근접 제출로 mdoc을 요청하고 검증하는 모바일 앱
+    - Trust Agent가 제공하는 신뢰 발급자 목록과 발급자 DID Document로 발급자를 판정 ([MDOC-PROXIMITY] 참조)
 
 하나의 도메인에는 최소 1개 이상의 Verifier group이 필요하다.
 
@@ -441,6 +450,13 @@ OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류�
 | (Client)<br>Wallet SDK | • Client Wallet 초기화/잠금/잠금해제<br>                    | DID 및 VC 관리             |
 |                        | • DID Document 생성/저장/조회<br>                           |                            |
 |                        | • VC 저장/조회<br>                                          |                            |
+|                        | • OID4VCI Credential(SD-JWT VC, mdoc) 발급 요청, 저장/조회/삭제<br> |                     |
+|                        | • OID4VP VP Token 생성 (SD-JWT VC, mdoc, OpenDID VC)<br>    |                            |
+|                        | • mdoc 근접 제출 DeviceResponse 생성<br>                     |                            |
+|                        | • Credential 폐기 요청                                      |                            |
+| (Client)<br>Proximity SDK | • ISO/IEC 18013-5 Device Engagement (QR, NFC)<br>        | mdoc 근접 제출             |
+|                        | • 세션 암호화 및 전송 (BLE, L2CAP, NFC, Wi-Fi Aware)<br>    |                            |
+|                        | • mdoc 리더의 DeviceResponse 검증                           |                            |
 | (Server)<br>OID4VCI SDK | • OID4VCI Credential Issuer<br>                           | OID4VCI 발급               |
 |                        | &nbsp;&nbsp;(Metadata, Credential Offer, Nonce, Credential)<br> |                       |
 |                        | • Authorization Server (Pre-Authorized Code, Authorization Code)<br> |                  |
@@ -454,6 +470,7 @@ OpenDID SDK는 모든 container가 공통적으로 사용하며, SDK의 종류�
 
 OID4VC SDK(OID4VCI, OID4VC Formatter, SD-JWT VC, mso_mdoc)는 OID4VCI 기반 Credential 발급에 사용하며,
 Issuer Service의 OID4VCI 구성은 [5.2.3](#523-oid4vci)에서 설명한다.
+Client Wallet SDK의 OID4VC 기능은 월렛의 OID4VP 제출과 mdoc 근접 제출에, Client Proximity SDK는 월렛과 mdoc 리더 앱의 mdoc 근접 제출에 사용하며, 상세는 [OID4VP-PRESENTATION], [MDOC-PROXIMITY]를 참조한다.
 
 
 
@@ -930,8 +947,8 @@ CApp은 OpenDID가 제공하는 SDK(Android, iOS 각각)를 이용하여 구현�
 | Module     | 기능                         | 비고 |
 | ---------- | ---------------------------- | ---- |
 | DID Module | • 사용자 신원 관련 기능      |      |
-| VC Module  | • VC 발급(opt ZKP), 상태변경 |      |
-| VP Module  | • VP 또는 영지식증명(ZKP) 제출   |      |
+| VC Module  | • VC 발급(opt ZKP), 상태변경<br>• OID4VCI Credential 발급, 상태 확인, 폐기 요청 |      |
+| VP Module  | • VP 또는 영지식증명(ZKP) 제출<br>• OID4VP 제출, mdoc 근접 제출 |      |
 
 상기 모듈은 기능적으로 분류한 것이며 실제 소프트웨어 모듈은 더욱 다양하며 서로 유기적으로 연결되어 있다.
 또한 client wallet은 파일 형태의 wallet만 고려하였다.
@@ -954,6 +971,8 @@ VC Module은 VC와 관련된 다음의 기능을 담당한다.
 - VC 발급, 삭제, 재발급
 - VC 조회, 상태변경
 - VC 발급에 필요한 부가기능 (KYC 등)
+- OID4VCI Credential(SD-JWT VC, mdoc) 발급 및 저장 ([OID4VCI-ISSUANCE] 참조)
+- Token Status List 기반 Credential 상태 확인, Credential 폐기 요청
 
 #### 5.4.3. VP Module
 
@@ -962,6 +981,8 @@ VP Module은 VP와 관련된 다음의 기능을 담당한다.
 - VerifyOffer 입수 (QR Scan, PUSH 메시지 처리 등)
 - VP 생성
 - VP 제출 (전달매체, 모드, 응대장치 종류별)
+- OID4VP 제출 ([OID4VP-PRESENTATION] 참조)
+- mdoc 근접 제출 ([MDOC-PROXIMITY] 참조)
 
 
 <div style="page-break-after: always;"></div>

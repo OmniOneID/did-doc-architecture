@@ -2,11 +2,12 @@
 
 - 주제 : Open DID Token
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-13
-- 버전 : v1.0.1
+- 일자 : 2026-11-04
+- 버전 : v1.1.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-11-04 | 로컬 Wallet Token 추가 |
 | v1.0.1  | 2026-10-13 | 이미지 참조 수정 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
@@ -87,6 +88,14 @@ def object WalletTokenData: "wallet token data"
     + AssertProof     "proof"     : "provider proof - 인가앱 사업자 서명"
 }
 ```
+
+#### 로컬 Wallet Token
+OpenDID 3.0부터 월렛은 인가앱 서비스를 거치지 않고 Wallet Token을 발급할 수 있습니다. 이를 로컬 Wallet Token이라고 합니다.
+
+* **용도**: VC 조회와 VP 제출 용도로만 발급합니다. 사용할 수 있는 `purpose`는 `ListVc`(11), `DetailVc`(12), `PresentVp`(10), `ListVcAndPresentVp`(14)입니다.
+* **발급 조건**: 개인화(Personalize)가 완료된 월렛에서만 발급할 수 있습니다.
+* **유효시간**: 30분입니다.
+* **유지**: 월렛은 Wallet Token을 하나만 유지합니다. 로컬 Wallet Token과 인가앱 서비스를 거쳐 발급한 Wallet Token은 서로를 대체합니다.
 
 ### Server Token
 Server Token은 App이 TA 등의 서비스에 접근할 수 있게 하는 Token이며, 서비스 서버가 발급합니다.

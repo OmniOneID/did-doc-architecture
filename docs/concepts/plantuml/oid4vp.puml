@@ -1,0 +1,67 @@
+@startuml oid4vp_components
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "User" as user
+
+rectangle "Wallet" {
+    component "CApp\n- Retrieve request_uri\n- Verify Request Object signature\n- Send response" as ca
+    component "Wallet SDK\n- DCQL matching\n- VP Token generation\n- Response body (JWE) generation" as sdk
+}
+
+component "Verifier server\n- Provide Request Object\n- response_uri" as verifier
+database "Trust Repository\n(DID Document)" as repo
+
+user -right-> ca
+ca -down-> sdk : Matching · VP Token generation
+ca -right-> verifier : Retrieve Request Object\nSend VP Token
+ca --> repo : Retrieve Verifier DID Document
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vp_seq_presentation
+autonumber "<b>(#)</b>"
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+box Wallet #OldLace
+    participant "**CApp**" as ca <<App>>
+    participant "**Wallet SDK**" as sdk <<SDK>>
+end box
+participant "**Verifier server**" as vf <<Server>>
+participant "**Trust Repository**" as repo <<Storage>>
+
+== Wallet Invocation ==
+vf -> user: QR code or deep link\nopenid4vp://?request_uri=...
+user -> ca: Scan QR code or open deep link
+
+== Retrieving and Verifying the Authorization Request ==
+ca -> vf ++: GET request_uri
+return Request Object (signed JWT)
+ca -> repo: Retrieve Verifier DID Document (kid)
+ca -> ca: Verify Request Object signature
+
+== Credential Matching ==
+ca -> sdk ++: dcql_query
+return Matching result
+
+== User Consent and Authentication ==
+ca -> user: Display Credentials and Claims to present
+user -> ca: Consent and authentication (PIN or biometric)
+
+== VP Token Generation and Response Delivery ==
+ca -> sdk ++: Request VP Token generation
+sdk -> sdk: Generate presentation data for each format\n(bound to client_id and nonce)
+return Response body\n(direct_post / direct_post.jwt)
+ca -> vf ++: POST response_uri
+return HTTP 2xx
+@enduml

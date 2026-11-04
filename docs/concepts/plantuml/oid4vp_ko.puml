@@ -1,0 +1,67 @@
+@startuml oid4vp_components_ko
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "사용자" as user
+
+rectangle "월렛" {
+    component "인가앱\n- request_uri 조회\n- Request Object 서명 검증\n- 응답 전송" as ca
+    component "Wallet SDK\n- DCQL 매칭\n- VP Token 생성\n- 응답 본문(JWE) 생성" as sdk
+}
+
+component "Verifier 서버\n- Request Object 제공\n- response_uri" as verifier
+database "신뢰저장소\n(DID Document)" as repo
+
+user -right-> ca
+ca -down-> sdk : 매칭 · VP Token 생성
+ca -right-> verifier : Request Object 조회\nVP Token 전송
+ca --> repo : Verifier DID Document 조회
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml oid4vp_seq_presentation_ko
+autonumber "<b>(#)</b>"
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+box 월렛 #OldLace
+    participant "**인가앱**" as ca <<App>>
+    participant "**Wallet SDK**" as sdk <<SDK>>
+end box
+participant "**Verifier 서버**" as vf <<Server>>
+participant "**신뢰저장소**" as repo <<Storage>>
+
+== 월렛 호출 ==
+vf -> user: QR 또는 딥링크\nopenid4vp://?request_uri=...
+user -> ca: QR 스캔 또는 딥링크 실행
+
+== Authorization Request 조회 및 검증 ==
+ca -> vf ++: GET request_uri
+return Request Object (서명된 JWT)
+ca -> repo: Verifier DID Document 조회 (kid)
+ca -> ca: Request Object 서명 검증
+
+== Credential 매칭 ==
+ca -> sdk ++: dcql_query
+return 매칭 결과
+
+== 사용자 동의 및 인증 ==
+ca -> user: 제출할 Credential 및 Claim 표시
+user -> ca: 동의 및 인증 (PIN 또는 생체)
+
+== VP Token 생성 및 응답 전달 ==
+ca -> sdk ++: VP Token 생성 요청
+sdk -> sdk: 형식별 제출 데이터 생성\n(client_id, nonce 바인딩)
+return 응답 본문\n(direct_post / direct_post.jwt)
+ca -> vf ++: POST response_uri
+return HTTP 2xx
+@enduml

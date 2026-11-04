@@ -1,0 +1,124 @@
+@startuml P330_mdoc_proximity_present_ko
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P330 : mdoc 근접 제출 </size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as USER
+
+box 모바일 (소지자) #OldLace
+    participant "**인가앱**" as CA <<App>> #WhiteSmoke
+    participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Proximity SDK**\n(소지자)" as PH <<SDK>> #WhiteSmoke
+end box
+
+box mdoc 리더 #AliceBlue
+    participant "**Proximity SDK**\n(리더)" as PR <<SDK>> #WhiteSmoke
+    participant "**mdoc 리더 앱**" as RD <<App>> #WhiteSmoke
+end box
+
+participant "**Trust Agent**" as TA <<WAS>> #WhiteSmoke
+
+box 신뢰저장소
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 내용
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== 사전준비 : 신뢰 발급자 목록 ==
+
+RD -> TA ++ : 신뢰 발급자 목록 요청
+return 신뢰 발급자 목록
+rnote right of RD #MintCream
+    항목 : 발급자 DID, 이름, 허용 docType
+end note
+RD <-> BC : 발급자 DID Document 조회 / 응답
+RD -> RD : 목록 및 DID Document 저장\
+            \n* 모두 수신한 경우에만 교체
+
+== P330-1 : Device Engagement ==
+
+USER -> CA : 근접 제출 시작
+activate CA
+CA -> PH ++ : Device Engagement 시작
+alt QR
+    PH -> RD : Device Engagement QR 표시 / 스캔
+else NFC handover
+    PH -> PR : Device Engagement 전달\n(static 또는 negotiated handover)
+end
+rnote right of PH #Lavender
+    OS별 지원 범위는 [mdoc Proximity Presentation] 5.1 참조
+end note
+
+== P330-2 : 세션 수립 ==
+
+PH <-> PR : 전송 채널 연결\n(BLE / L2CAP / NFC / Wi-Fi Aware)
+PH -> PH : 세션 키 생성 (ECDH + HKDF)
+PR -> PR : 세션 키 생성 (ECDH + HKDF)
+
+== P330-3 : DeviceRequest 및 매칭 ==
+
+RD -> PR : DeviceRequest 전송 요청\n{docType, 데이터 요소, intent_to_retain = false}
+PR -> PH : DeviceRequest (세션 암호화)
+PH -> CA : DeviceRequest (복호화)
+CA -> WALLET ++ : DeviceRequest 매칭 요청
+return 매칭 결과
+
+== P330-4 : DeviceResponse ==
+
+CA -> WALLET ++ : DeviceResponse 생성 요청
+WALLET -> WALLET : DeviceResponse 생성\
+            \n* DeviceAuth = deviceSignature (기기 키 서명)
+return DeviceResponse
+CA -> PH : DeviceResponse 전송 요청
+PH -> PR : DeviceResponse (세션 암호화)
+deactivate PH
+deactivate CA
+
+== P330-5 : 검증 ==
+
+PR -> RD : DeviceResponse 수신 (복호화)
+RD -> PR ++ : 문서별 신뢰 판정 및 검증 요청\n(저장된 신뢰 발급자 목록, 발급자 DID Document 사용)
+rnote right of PR #MintCream
+    문서별 검증 순서
+    1. issuerAuth 서명 헤더 kid가 DID URL인지 확인
+    2. kid의 DID가 신뢰 발급자 목록에 있는지 확인
+    3. docType이 허용 docType에 있는지 확인
+    4. 저장된 발급자 DID Document에서 공개키 확보
+    5. issuerAuth 서명 검증
+    6. DeviceAuth (deviceSignature 또는 deviceMac) 검증
+end note
+return 검증 결과
+RD -> RD : 결과 표시\
+            \n* 발급자 신뢰 여부, DeviceAuth 결과\
+            \n* 유효기간, 제출된 데이터 요소
+
+@enduml

@@ -1,0 +1,124 @@
+@startuml P330_mdoc_proximity_present
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P330 : mdoc Proximity Presentation </size>
+end title
+
+'=== Options ===
+' Auto-numbering: ex) "<b>000." => pads with zeros to display a 3-digit number
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as USER
+
+box Mobile (Holder) #OldLace
+    participant "**CApp**" as CA <<App>> #WhiteSmoke
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**Proximity SDK**\n(Holder)" as PH <<SDK>> #WhiteSmoke
+end box
+
+box mdoc Reader #AliceBlue
+    participant "**Proximity SDK**\n(Reader)" as PR <<SDK>> #WhiteSmoke
+    participant "**mdoc Reader App**" as RD <<App>> #WhiteSmoke
+end box
+
+participant "**Trust Agent**" as TA <<WAS>> #WhiteSmoke
+
+box Trust Repository
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Preliminary : Trusted Issuer List ==
+
+RD -> TA ++ : Request trusted issuer list
+return Trusted issuer list
+rnote right of RD #MintCream
+    Entry : issuer DID, name, allowed docTypes
+end note
+RD <-> BC : Retrieve / respond issuer DID Documents
+RD -> RD : Store list and DID Documents\
+            \n* Replaced only when all are received
+
+== P330-1 : Device Engagement ==
+
+USER -> CA : Start proximity presentation
+activate CA
+CA -> PH ++ : Start Device Engagement
+alt QR
+    PH -> RD : Display / scan Device Engagement QR code
+else NFC handover
+    PH -> PR : Deliver Device Engagement\n(static or negotiated handover)
+end
+rnote right of PH #Lavender
+    For support by OS, refer to 5.1 of [mdoc Proximity Presentation]
+end note
+
+== P330-2 : Session Establishment ==
+
+PH <-> PR : Connect transport channel\n(BLE / L2CAP / NFC / Wi-Fi Aware)
+PH -> PH : Derive session keys (ECDH + HKDF)
+PR -> PR : Derive session keys (ECDH + HKDF)
+
+== P330-3 : DeviceRequest and Matching ==
+
+RD -> PR : Request to send DeviceRequest\n{docType, data elements, intent_to_retain = false}
+PR -> PH : DeviceRequest (session encryption)
+PH -> CA : DeviceRequest (decrypted)
+CA -> WALLET ++ : Request DeviceRequest matching
+return Matching result
+
+== P330-4 : DeviceResponse ==
+
+CA -> WALLET ++ : Request DeviceResponse generation
+WALLET -> WALLET : Generate DeviceResponse\
+            \n* DeviceAuth = deviceSignature (device key signature)
+return DeviceResponse
+CA -> PH : Request to send DeviceResponse
+PH -> PR : DeviceResponse (session encryption)
+deactivate PH
+deactivate CA
+
+== P330-5 : Verification ==
+
+PR -> RD : Receive DeviceResponse (decrypted)
+RD -> PR ++ : Request trust decision and verification for each document\n(using the stored trusted issuer list and issuer DID Documents)
+rnote right of PR #MintCream
+    Verification order for each document
+    1. Check that the kid in the issuerAuth signature header is a DID URL
+    2. Check that the DID of the kid is in the trusted issuer list
+    3. Check that the docType is in the allowed docTypes
+    4. Obtain the public key from the stored issuer DID Document
+    5. Verify the issuerAuth signature
+    6. Verify DeviceAuth (deviceSignature or deviceMac)
+end note
+return Verification result
+RD -> RD : Display result\
+            \n* Issuer trusted or not, DeviceAuth result\
+            \n* Validity period, presented data elements
+
+@enduml

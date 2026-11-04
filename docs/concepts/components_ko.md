@@ -2,11 +2,12 @@
 
 - 주제 : Open DID 구성도
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-22
-- 버전 : v1.1.0
+- 일자 : 2026-11-04
+- 버전 : v1.2.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v1.2.0  | 2026-11-04 | OID4VP 제출, mdoc 근접 제출 추가 |
 | v1.1.0  | 2026-10-22 | OID4VCI 발급, Proxy 모드 발급, LSS 추가 |
 | v1.0.1  | 2026-10-13 | 오타 수정 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
@@ -44,6 +45,10 @@ Open DID 시스템의 구성 요소로는 엔티티, 서비스, 사업자가 있
     * **엔티티** : Issuer, OP, List
     * **설명** : OID4VCI(OpenID for Verifiable Credential Issuance) 표준으로 SD-JWT VC와 mdoc 형식의 Credential을 발급하고, Token Status List로 Credential 상태를 관리하는 서비스입니다. Issuer 엔티티는 Credential을 발급하고, OP 엔티티는 발급에 필요한 Access Token을 발급하며, List 엔티티는 월렛에 OID4VCI 발급사업자 목록을 제공합니다. OpenDID는 이 서비스를 구현하기 위한 SDK로 OID4VCI SDK, OID4VC Formatter SDK, SD-JWT VC SDK, mso_mdoc SDK를 제공합니다. 자세한 내용은 [OID4VCI 발급](OID4VCI%20Issuance_ko.md)을 참조하세요.
 
+* **OID4VP 및 mdoc 근접 Credential 제출 서비스**
+    * **엔티티** : Verifier, Wallet, List
+    * **설명** : OID4VP(OpenID for Verifiable Presentations) 표준으로 SD-JWT VC, mdoc, OpenDID VC 형식의 Credential을 제출받아 검증하고, ISO/IEC 18013-5 근접 제출로 mdoc을 제출받아 검증하는 서비스입니다. Wallet 엔티티는 요청에 맞는 Credential을 제출하고, Verifier 엔티티는 제출된 Credential을 검증하며, List 엔티티는 mdoc 리더에 신뢰 발급자 목록을 제공합니다. 자세한 내용은 [OID4VP 제출](OID4VP%20Presentation_ko.md)과 [mdoc 근접 제출](mdoc%20Proximity%20Presentation_ko.md)을 참조하세요.
+
 ## 전체 구성도
 아래의 그림은 Open DID의 전체 구성도 입니다. Open DID를 구성하는 엔티티를 명확히 보여주기 위해, 각 사업자가 하나의 서비스를 제공하고, 그 서비스는 하나의 엔티티의 기능만 제공하는 것으로 가정합니다.
 
@@ -65,6 +70,8 @@ Open DID 시스템의 구성 요소로는 엔티티, 서비스, 사업자가 있
 #### 검증 사업자
 1.	디지털 신분증 검증: 사용자의 디지털 신분증을 요청하고 검증한 후, 사용자가 서비스를 이용할 권한이 있는지 확인한다.
 2.	서비스 제공: 유효한 디지털 신분증을 가진 사용자에게 서비스를 제공한다.
+3.	OID4VP 제출 검증: OID4VP 표준으로 SD-JWT VC, mdoc, OpenDID VC 형식의 Credential을 제출받아 검증한다.
+4.	mdoc 근접 검증(선택): mdoc 리더 앱으로 ISO/IEC 18013-5 근접 제출을 요청하고, 제출된 mdoc을 검증한다.
 
 #### 검색 사업자
 1.	월렛 목록 제공: 사용자가 자신의 디지털 신분증을 관리할 수 있는 월렛의 목록을 제공한다.
@@ -90,6 +97,7 @@ Open DID 시스템의 구성 요소로는 엔티티, 서비스, 사업자가 있
 1.	발급사업자 목록 제공: VC 발급을 위한 발급사업자의 목록을 제공한다.
 2.	VC 목록 제공: VC 발급을 위한 VC의 목록을 제공한다.
 3.	OID4VCI 발급사업자 목록 제공: OID4VCI 발급사업자의 등록 요청을 승인·관리하고, 월렛에 승인된 발급사업자 목록을 제공한다. OpenDID에서는 TAS가 목록 사업자 역할을 수행한다.
+4.	mdoc 신뢰 발급자 목록 제공: mdoc 리더에 신뢰 발급자 목록(발급자 DID, 허용 docType)을 제공한다.
 
 #### KYC 사업자
 1.	사용자 인증: 디지털 신분증을 이용하기 위한 사용자의 인증을 수행한다.

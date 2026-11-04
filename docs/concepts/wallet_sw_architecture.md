@@ -4,11 +4,12 @@
 
 - Subject: Wallet SW Architecture
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v2.0.1
+- Date: 2026-11-04
+- Version: v2.1.0
 
 | Version | Date       | Changes                                     |
 |--------|------------|---------------------------------------------|
+| v2.1.0 | 2026-11-04 | Add OID4VC functions and Proximity SDK      |
 | v2.0.1 | 2026-10-13 | Fix typos, Revise wording                   |
 | v2.0.0 | 2025-06-23 | Added ZKP and Reflected the SDK integration |
 | v1.0.0 | 2024-10-18 | Initial version                             |
@@ -52,6 +53,16 @@ The above SDK structure is a relationship structure diagram between the OpenDID 
 |                | CryptoUtils    | - Generate random values and key pairs, encryption/decryption common utility |
 | DataModel      | VO Objects     | - Data formats and serialization/deserialization                               |
 
+Starting with OpenDID 3.0, the Wallet SDK provides OID4VC functions.
+
+- Request issuance of, store, retrieve, delete, and request revocation of OID4VCI Credentials (SD-JWT VC, mdoc)
+- Match Credentials (DCQL) and generate VP Tokens for OID4VP
+- Match DeviceRequests and generate DeviceResponses for mdoc proximity presentation
+
+It also provides the issuance of local Wallet Tokens that do not go through the CApp Service (refer to [Open DID Token](./token.md)).
+
+For mdoc proximity presentation, the Proximity SDK, which handles Device Engagement, session encryption, and transport, is used together.
+
 
 
 
@@ -68,4 +79,10 @@ Please refer to the VP Submission Protocol for detailed instructions. [Presentat
 ## 1.4 ZKP Submission Description
 Please refer to the ZKP Submission Protocol for detailed instructions. [Presentation-ZKP](./Presentation%20of%20ZKP%20Proof.md)
 ![wallet_sw_archietecture](./images/wallet_sw_architecture_submit_zkp.svg)
+## 1.5 OID4VCI Issuance Description
+For detailed explanation, refer to the OID4VCI issuance document. [OID4VCI-Issuance](./OID4VCI%20Issuance.md)
+## 1.6 OID4VP Presentation Description
+For detailed explanation, refer to the OID4VP presentation document. [OID4VP-Presentation](./OID4VP%20Presentation.md)
+## 1.7 mdoc Proximity Presentation Description
+For detailed explanation, refer to the mdoc proximity presentation document. [mdoc-Proximity-Presentation](./mdoc%20Proximity%20Presentation.md)
 <br>

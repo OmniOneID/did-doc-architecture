@@ -2,11 +2,12 @@
 
 - Subject: Explanation of Wallet
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-11-04
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-11-04 | Add local Wallet Token |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -28,6 +29,8 @@ The process for issuing a Wallet Token is as follows:
 1. App Verification: The Wallet verifies whether the App is an authorized App through the Certified App Service. (The Certified App Service must be registered in the Open DID system)
 2. User Verification: The Wallet verifies whether the User can access the Wallet through the Certified App Service.
 3. Wallet Token Generation: The Wallet generates the Wallet Token.
+
+Starting with OpenDID 3.0, a local Wallet Token that does not go through the Certified App Service can be issued for VC retrieval and VP presentation. For details, refer to [Open DID Token](./token.md).
 
 The Wallet Token has a validity period and can only be used within that period.
 

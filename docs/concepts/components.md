@@ -2,11 +2,12 @@
 
 - Subject: Open DID Architecture
 - Author: OpenSource Development Team
-- Date: 2026-10-22
-- Version: v1.1.0
+- Date: 2026-11-04
+- Version: v1.2.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.2.0  | 2026-11-04 | Add OID4VP presentation and mdoc proximity presentation |
 | v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, and LSS |
 | v1.0.0  | 2024-10-18 | Initial version |
 
@@ -43,6 +44,10 @@ Services combine the functions of various entities into products. Services can b
     * **Entities**: Issuer, OP, List
     * **Description**: A service that issues Credentials in the SD-JWT VC and mdoc formats with the OID4VCI (OpenID for Verifiable Credential Issuance) standard and manages the Credential status with the Token Status List. The Issuer entity issues Credentials, the OP entity issues the Access Tokens required for issuance, and the List entity provides the list of OID4VCI Issuers to wallets. OpenDID provides the OID4VCI SDK, OID4VC Formatter SDK, SD-JWT VC SDK, and mso_mdoc SDK to implement this service. For details, refer to [OID4VCI Issuance](OID4VCI%20Issuance.md).
 
+* **OID4VP and mdoc Proximity Credential Presentation Service**
+    * **Entities**: Verifier, Wallet, List
+    * **Description**: A service that receives and verifies Credentials in the SD-JWT VC, mdoc, and OpenDID VC formats with the OID4VP (OpenID for Verifiable Presentations) standard, and receives and verifies mdocs through ISO/IEC 18013-5 proximity presentation. The Wallet entity presents Credentials that match the request, the Verifier entity verifies the presented Credentials, and the List entity provides the trusted issuer list to mdoc readers. For details, refer to [OID4VP Presentation](OID4VP%20Presentation.md) and [mdoc Proximity Presentation](mdoc%20Proximity%20Presentation.md).
+
 ## Overall Architecture
 The diagram below represents the overall architecture of Open DID. To clearly illustrate the entities that make up Open DID, each provider is assumed to offer a single service, and that service provides the function of a single entity.
 
@@ -64,6 +69,8 @@ Providers are entities that combine various services to offer comprehensive solu
 #### Verifier
 1.	Digital ID Verification: Requests and verifies the user's digital ID to check if the user is authorized to use the service.
 2.	Service Provision: Provides services to users with valid digital IDs.
+3.	OID4VP Presentation Verification: Receives and verifies Credentials in the SD-JWT VC, mdoc, and OpenDID VC formats with the OID4VP standard.
+4.	mdoc Proximity Verification (optional): Requests ISO/IEC 18013-5 proximity presentation with the mdoc reader app and verifies the presented mdocs.
 
 #### Search Provider
 1.	Wallet List Provision: Provides a list of wallets where the user can manage their digital IDs.
@@ -89,6 +96,7 @@ Providers are entities that combine various services to offer comprehensive solu
 1.	Issuer List Provision: Provides a list of issuers for VC issuance.
 2.	VC List Provision: Provides a list of VCs for issuance.
 3.	OID4VCI Issuer List Provision: Approves and manages registration requests from OID4VCI Issuers, and provides the list of approved Issuers to wallets. In OpenDID, the TAS performs the role of the List Provider.
+4.	mdoc Trusted Issuer List Provision: Provides the trusted issuer list (issuer DID, allowed docTypes) to mdoc readers.
 
 #### KYC Provider
 1.	User Authentication: Performs user authentication for the use of digital IDs.

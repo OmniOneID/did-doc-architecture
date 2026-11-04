@@ -2,11 +2,12 @@
 
 - Subject: Open DID Token
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v1.0.1
+- Date: 2026-11-04
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-11-04 | Add local Wallet Token |
 | v1.0.1  | 2026-10-13 | Fix image references |
 | v1.0.0  | 2024-10-18 | Initial version |
 
@@ -87,6 +88,14 @@ def object WalletTokenData: "wallet token data"
     + AssertProof     "proof"     : "provider proof - CApp provider signature"
 }
 ```
+
+#### Local Wallet Token
+Starting with OpenDID 3.0, the wallet can issue a Wallet Token without going through the CApp Service. This is called a local Wallet Token.
+
+* **Purpose**: Issued only for VC retrieval and VP presentation. The available `purpose` values are `ListVc` (11), `DetailVc` (12), `PresentVp` (10), and `ListVcAndPresentVp` (14).
+* **Issuance condition**: Can be issued only by a wallet that has completed personalization (Personalize).
+* **Validity**: 30 minutes.
+* **Retention**: The wallet keeps only one Wallet Token. A local Wallet Token and a Wallet Token issued through the CApp Service replace each other.
 
 ### Server Token
 Server Token is a token that allows an app to access services like TA (Trusted Application), issued by the service server.

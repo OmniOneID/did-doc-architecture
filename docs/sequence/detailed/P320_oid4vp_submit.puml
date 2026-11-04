@@ -1,0 +1,143 @@
+@startuml P320_oid4vp_submit
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P320 : OID4VP-based VP Presentation </size>
+end title
+
+'=== Options ===
+' Auto-numbering: ex) "<b>000." => pads with zeros to display a 3-digit number
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**CApp**" as CA <<App>> #WhiteSmoke
+end box
+
+box Verifier Server #AliceBlue
+    participant "**Verifier**" as SP <<WAS>> #WhiteSmoke
+end box
+
+box Trust Repository
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== P320-1 : Wallet Invocation ==
+
+SP -> USER : Display QR code or deliver deep link
+rnote right of USER #Lavender
+    openid4vp://?request_uri=<Request Object URI>
+end note
+USER -> CA : Scan QR code or open deep link
+activate CA
+CA -> CA : Extract request_uri
+
+== P320-2 : Retrieving and Verifying the Authorization Request ==
+
+CA -> SP ++ : GET request_uri
+return Request Object (signed JWT)
+rnote right of CA #MintCream
+    header.kid = did:<method>:<id>?versionId=<version>#<key id>
+end note
+
+CA <-> BC : Retrieve / respond Verifier DID Document\n(versionId of the kid)
+CA -> CA : Verify Request Object signature\
+            \n* Use the P-256 key of the verificationMethod that matches the key id of the kid
+CA -> CA : Check Authorization Request
+rnote right of CA #MintCream
+    dcql_query, nonce, client_id,
+    response_mode, response_uri, state,
+    client_metadata
+end note
+
+== P320-3 : Credential Matching ==
+
+CA -> WALLET ++ : Request Credential matching\n{dcql_query}
+WALLET -> WALLET : DCQL matching\
+            \n* Reject requests that mix formats\
+            \n* Only Credentials in the ACTIVE state are candidates\
+            \n* All disclosable Claims if claims is not specified
+return Matching result\n{Credential candidates, requested Claims}
+
+== P320-4 : User Consent and Authentication ==
+
+CA -> USER : Display Credentials and Claims to present\
+            \n* Requested Claims: mandatory\
+            \n* Other Claims: optional (excluded by default)
+USER -> CA : Consent and select additional Claims
+CA -> USER : User authentication (PIN or biometric)
+rnote right of USER #MintCream
+    Based on the Holder binding keys of the Credentials to present
+    * Includes PIN key binding : PIN
+    * All bound to the biometric key : Biometric authentication
+    * No binding key (OpenDID VC) : Select PIN or biometric authentication
+end note
+USER -> CA : Authenticate
+
+== P320-5 : VP Token Generation ==
+
+CA -> WALLET ++ : Request VP Token generation\n{Authorization Request, selected Credentials and Claims}
+WALLET -> WALLET : Generate presentation data for each format
+rnote right of WALLET #MintCream
+    * SD-JWT VC : Issuer-signed JWT~Disclosures~KB-JWT
+        KB-JWT {aud = client_id, nonce, iat, sd_hash}
+    * mdoc : DeviceResponse (deviceSignature)
+        SessionTranscript = OpenID4VPHandover
+        (client_id, nonce, jwkThumbprint, response_uri)
+    * OpenDID VC : OpenDID VP
+        proof.domain = client_id, proof.challenge = nonce
+        verifierNonce = nonce
+end note
+WALLET -> WALLET : Build vp_token\n{<credential query id> : [presentation data]}
+
+opt response_mode = direct_post.jwt
+    WALLET -> WALLET : Encrypt {vp_token, state} as JWE
+    rnote right of WALLET #MintCream
+        alg = ECDH-ES
+        enc = A256GCM (preferred) / A128GCM
+        key = EC P-256 key in client_metadata.jwks
+    end note
+end
+
+return Response body
+
+== P320-6 : Response Delivery ==
+
+CA -> SP ++ : POST response_uri\n(application/x-www-form-urlencoded)
+rnote right of CA #Lavender
+    * direct_post : vp_token, state
+    * direct_post.jwt : response (JWE)
+end note
+return HTTP 2xx
+
+CA -> USER : Display presentation result
+deactivate CA
+
+@enduml

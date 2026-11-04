@@ -3,11 +3,12 @@
 
 - 주제 : 월렛 소프트웨어 아키텍쳐
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-13
-- 버전 : v2.0.1
+- 일자 : 2026-11-04
+- 버전 : v2.1.0
 
 | 버전     | 일자         | 변경                       |
 |--------|------------|--------------------------|
+| v2.1.0 | 2026-11-04 | OID4VC 기능 및 Proximity SDK 추가 |
 | v2.0.1 | 2026-10-13 | 오타 수정                    |
 | v2.0.0 | 2025-06-23 | ZKP 내용 추가 및 SDK 통합 내용 반영 |
 | v1.0.0 | 2024-10-18 | 최초 작성                    |
@@ -51,6 +52,16 @@ CA(Certified App)는 신뢰 가능한 월렛 기능을 제공하기 위해서 �
 |                  | CryptoUtils      | - 랜덤값 및 키쌍 생성, 암/복호화 공통 유틸                                   |
 | DataModel        | VO Objects       | - 데이터 포맷 및 직렬화/역직렬화                                           |
 
+OpenDID 3.0부터 Wallet SDK는 OID4VC 기능을 제공한다.
+
+- OID4VCI Credential(SD-JWT VC, mdoc) 발급 요청, 저장/조회/삭제, 폐기 요청
+- OID4VP Credential 매칭(DCQL) 및 VP Token 생성
+- mdoc 근접 제출의 DeviceRequest 매칭 및 DeviceResponse 생성
+
+또한 인가앱 서비스를 거치지 않는 로컬 Wallet Token 발급 기능을 제공한다([Open DID Token](./token_ko.md) 참조).
+
+mdoc 근접 제출에서는 Device Engagement, 세션 암호화, 전송을 담당하는 Proximity SDK를 함께 사용한다.
+
 
 
 
@@ -66,4 +77,10 @@ CA(Certified App)는 신뢰 가능한 월렛 기능을 제공하기 위해서 �
 ## 1.4 ZKP 제출 설명
 자세한 설명은 ZKP제출 프로토콜을 참고한다. [ZKP제출](./Presentation%20of%20ZKP%20Proof_ko.md)
 ![wallet_sw_archietecture](./images/wallet_sw_architecture_submit_zkp.svg)
+## 1.5 OID4VCI 발급 설명
+자세한 설명은 OID4VCI 발급 문서를 참고한다. [OID4VCI 발급](./OID4VCI%20Issuance_ko.md)
+## 1.6 OID4VP 제출 설명
+자세한 설명은 OID4VP 제출 문서를 참고한다. [OID4VP 제출](./OID4VP%20Presentation_ko.md)
+## 1.7 mdoc 근접 제출 설명
+자세한 설명은 mdoc 근접 제출 문서를 참고한다. [mdoc 근접 제출](./mdoc%20Proximity%20Presentation_ko.md)
 <br>

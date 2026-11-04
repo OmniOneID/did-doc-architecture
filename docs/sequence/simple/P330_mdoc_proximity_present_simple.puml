@@ -1,0 +1,73 @@
+@startuml P330_mdoc_proximity_present_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>mdoc Proximity Presentation</size>
+end title
+
+'=== Options ===
+' Auto-numbering: ex) "<b>000." => pads with zeros to display a 3-digit number
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+participant "**Wallet**\n(Holder)" as wal <<Wallet>>
+participant "**mdoc Reader**" as rd <<App>>
+participant "**Trust Agent**" as ta <<Server>>
+
+box Trust Repository
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+== Preliminary : Trusted Issuer List ==
+
+rd -> ta ++: Request trusted issuer list
+return Trusted issuer list
+rd <-> BC: Retrieve / respond issuer DID Documents
+rd -> rd: Store list and DID Documents
+
+== P330-1 : Device Engagement ==
+
+user -> wal: Start proximity presentation
+wal -> rd: Device Engagement (QR or NFC)
+
+== P330-2 : Session Establishment ==
+
+wal <-> rd: Connect transport channel and derive session keys
+
+== P330-3 : DeviceRequest and Matching ==
+
+rd -> wal: DeviceRequest
+wal -> wal: Match stored mdocs
+
+== P330-4 : DeviceResponse ==
+
+wal -> wal: Generate DeviceResponse (deviceSignature)
+wal -> rd: DeviceResponse
+
+== P330-5 : Verification ==
+
+rd -> rd: Issuer trust decision and signature verification
+rd -> rd: Display verification result
+
+@enduml

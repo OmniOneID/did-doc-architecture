@@ -1,0 +1,72 @@
+@startuml mdoc_proximity_components_ko
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "사용자" as user
+
+rectangle "월렛 (소지자)" {
+    component "인가앱" as ca
+    component "Wallet SDK\n- DeviceRequest 매칭\n- DeviceResponse 생성" as sdk
+    component "Proximity SDK (소지자)\n- Device Engagement\n- 세션 암호화 · 전송" as ph
+}
+
+rectangle "mdoc 리더" {
+    component "리더 앱\n- 신뢰 발급자 목록 ·\n  DID Document 저장" as rd
+    component "Proximity SDK (리더)\n- Device Engagement\n- 세션 암호화 · 전송\n- DeviceResponse 검증" as pr
+}
+
+component "Trust Agent\n(신뢰 발급자 목록)" as ta
+database "신뢰저장소\n(발급자 DID Document)" as repo
+
+user -right-> ca
+ca -down-> sdk
+ca -down-> ph
+ph -right-> pr : QR · NFC\nBLE · L2CAP · NFC · Wi-Fi Aware
+rd -down-> ta : 신뢰 발급자 목록 조회
+rd -down-> repo : 발급자 DID Document 조회
+rd -left-> pr
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml mdoc_proximity_seq_ko
+autonumber "<b>(#)</b>"
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**사용자**" as user
+participant "**월렛**\n(소지자)" as wal <<Wallet>>
+participant "**mdoc 리더**" as rd <<App>>
+participant "**Trust Agent**" as ta <<Server>>
+participant "**신뢰저장소**" as repo <<Storage>>
+
+== 사전준비 ==
+rd -> ta ++: 신뢰 발급자 목록 요청
+return {발급자 DID, 이름, 허용 docType}
+rd -> repo: 발급자 DID Document 조회
+rd -> rd: 목록 및 DID Document 저장
+
+== Device Engagement 및 세션 수립 ==
+user -> wal: 근접 제출 시작
+wal -> rd: Device Engagement (QR 또는 NFC)
+wal <-> rd: 전송 채널 연결, 세션 키 생성 (ECDH + HKDF)
+
+== 요청 및 응답 ==
+rd -> wal: DeviceRequest\n{docType, 데이터 요소, intent_to_retain = false}
+wal -> wal: 저장된 mdoc 매칭
+wal -> wal: DeviceResponse 생성 (deviceSignature)
+wal -> rd: DeviceResponse (세션 암호화)
+
+== 검증 ==
+rd -> rd: 발급자 신뢰 판정\n* kid의 DID가 목록에 있는지, docType 허용 여부
+rd -> rd: issuerAuth 서명 검증 (발급자 DID Document의 키)
+rd -> rd: DeviceAuth 검증
+rd -> rd: 검증 결과 표시
+@enduml

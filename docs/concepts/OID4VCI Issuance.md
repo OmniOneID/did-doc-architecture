@@ -20,12 +20,13 @@ OID4VCI-based VC Issuance
 
 - Subject: Explanation of OID4VCI-based VC Issuance Concept
 - Author: OpenSource Development Team
-- Date: 2026-10-21
-- Version: v1.0.0
+- Date: 2026-11-04
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2026-10-21 | Initial version |
+| v1.1.0  | 2026-11-04 | Add wallet support scope |
 
 <br>
 
@@ -58,6 +59,7 @@ Table of Contents
     - [5.4. Credential Revocation by Wallet](#54-credential-revocation-by-wallet)
     - [5.5. Status Check by Verifier](#55-status-check-by-verifier)
 - [6. Implementation Scope and Constraints](#6-implementation-scope-and-constraints)
+- [7. Wallet Support Scope](#7-wallet-support-scope)
 
 <!-- /TOC -->
 
@@ -427,3 +429,32 @@ The OID4VCI implementation of OpenDID 3.0 is limited to the following scope.
 | Proof type | Only the signature of a `jwt` Proof is verified. |
 | Authorization Server | PAR (Pushed Authorization Request) and OpenID Connect are not supported. |
 | Authorization method for user-initiated issuance | Only the Pre-Authorized Code is used. |
+
+
+<div style="page-break-after: always;"></div>
+
+## 7. Wallet Support Scope
+
+The OID4VCI support scope of the OpenDID 3.0 wallet is as follows.
+
+| Item | Wallet Behavior |
+| ---- | --------------- |
+| Authorization method | Only the Pre-Authorized Code flow is supported. The Authorization Code flow is not supported. |
+| tx_code | Only numeric input is supported. |
+| User-initiated issuance | The user selects an Issuer from the TAS Issuer list and enters information in the Webview, and the wallet receives a Credential Offer. |
+| Proof | The Holder key is specified with `kid` (Holder DID URL, `did:<method>:<id>?versionId=<version>#<key id>`) instead of `jwk`. The PIN key or biometric key is used, and the key must be registered in `authentication` of the Holder DID Document. |
+| Credential response encryption | Requested only when the Issuer Metadata requires response encryption. `A256GCM` is used for `enc`. |
+| Credential request encryption | Not supported. |
+| Verification of issued Credentials | The Issuer signature is verified with the key in the Issuer DID Document referenced by the `kid`. For mdoc, the digests, the validity period, and the device key binding are verified before storing. |
+| Status check | The wallet checks the signature, `typ`, `sub`, `exp`, and the status value of the Status List Token. |
+| Revocation request | When the user deletes a Credential, the wallet requests revocation from the Issuer (refer to [5.4](#54-credential-revocation-by-wallet)). |
+| Deferred issuance, DPoP | Not supported. |
+
+The ways of receiving a Credential Offer differ by OS as follows.
+
+| Receiving method | iOS | Android |
+| ---------------- | --- | ------- |
+| `credential_offer_uri` | O | O |
+| `credential_offer` passed by value | X | O |
+| Deep link `openid-credential-offer` | O | X |
+| Issuer list → Webview → Credential Offer | O | O |

@@ -20,8 +20,8 @@ Software Architecture
 
 - Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
-- Date: 2026-10-22  
-- Version: v1.1.0  
+- Date: 2026-11-04  
+- Version: v1.2.0  
 
 Revision History
 ---
@@ -31,6 +31,7 @@ Revision History
 | v1.0.0  | 2024-09-03 | Initial version |
 | v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
 | v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, OID4VCI Issuer list, LSS, and OID4VC SDKs |
+| v1.2.0  | 2026-11-04 | Add OID4VP presentation, mdoc proximity presentation, mdoc reader app, OID4VC functions of the Client Wallet SDK, and Proximity SDK |
 
 
 Table of Contents
@@ -107,6 +108,8 @@ This four-step approach enables a hierarchical understanding of the entire syste
 | [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
 | [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [P210_issue_vc_proxy.puml](../sequence/detailed/P210_issue_vc_proxy.puml) |
 | [LSS] | (OpenDID) Ledger Service Server | https://github.com/OmniOneID/did-ledger-service-server |
+| [OID4VP-PRESENTATION] | (OpenDID) OID4VP-based VP Presentation | [OID4VP Presentation](../concepts/OID4VP%20Presentation.md) |
+| [MDOC-PROXIMITY] | (OpenDID) mdoc Proximity Presentation | [mdoc Proximity Presentation](../concepts/mdoc%20Proximity%20Presentation.md) |
 
 <div style="page-break-after: always;"></div>
 
@@ -261,12 +264,13 @@ The diagram categorizes containers as follows:
 | **Issuer**                  | • Issuer Service<br>                         |    Y     |\
 |                             | • Issuer Legacy                              |          |
 | **Verifier**                | • Verifier Service<br>                       |    Y     |\
-|                             | • Verifier Legacy                            |          |
+|                             | • Verifier Legacy<br>                        |          |\
+|                             | • mdoc Reader App (optional)                 |          |
 | **Supplements**             | • User Service<br>                           |          |\
 |                             | • CLI Tool for Wallet<br>                    |          |\
 |                             | • LSS (Ledger Service Server)                |          |
 
-> The Container Diagram above does not show the Proxy, the LSS, or the OID4VCI components of the Issuer Service added in OpenDID 3.0. Each of them is described in its own section.
+> The Container Diagram above does not show the Proxy, the LSS, the mdoc Reader App, or the OID4VCI components of the Issuer Service added in OpenDID 3.0. Each of them is described in its own section.
 
 ### 4.1. Core
 
@@ -318,6 +322,7 @@ The Certified App (CApp) group involves mobile applications for users:
 - CApp:
     - A mobile app operated by a CApp Provider registered as a business.
     - Must use the client wallet provided by a registered Wallet Provider.
+    - Supports OID4VCI issuance, OID4VP presentation, and mdoc proximity presentation in addition to the OpenDID protocols (refer to [OID4VCI-ISSUANCE], [OID4VP-PRESENTATION], and [MDOC-PROXIMITY]).
 - CApp Service:
     - Signs token seed information to generate WalletTokens and ServerTokens, proving the app’s authenticity.
     - CApp Services must sign every interaction with client wallets or Trust Agent services.
@@ -349,9 +354,13 @@ The Verifier group consists of components for identity verification:
 - Verifier Service:
     - A server implementing the Verifier API using the OpenDID SDK.
     - Verifier APIs can also be integrated into Verifier Legacy systems.
+    - Supports OID4VP presentation in addition to the OpenDID presentation protocol (refer to [OID4VP-PRESENTATION]).
 - Verifier Legacy:
     - Legacy systems used to confirm identities and provide tailored services to users.
     - Various identity verification services exist, and the Verifier Service is one of them.
+- mdoc Reader App (optional):
+    - A mobile app that requests and verifies mdocs through ISO/IEC 18013-5 proximity presentation.
+    - Decides whether to trust the issuer using the trusted issuer list provided by the Trust Agent and the issuer DID Documents (refer to [MDOC-PROXIMITY]).
 
 Each domain must have at least one Verifier group.
 
@@ -411,7 +420,14 @@ The OpenDID SDK is used across all containers and includes the following types:
 |                        | • Issue and verify ZKPs (Zero-Knowledge Proofs)    |        |
 | Client Wallet SDK      | • Manage client wallets (lock/unlock)<br>          | For DID and VC management |
 |                        | • Create, store, and retrieve DID Documents<br>    |       |
-|                        | • Store and retrieve VCs                           |       |
+|                        | • Store and retrieve VCs<br>                       |       |
+|                        | • Request issuance of, store, retrieve, and delete OID4VCI Credentials (SD-JWT VC, mdoc)<br> |       |
+|                        | • Generate OID4VP VP Tokens (SD-JWT VC, mdoc, OpenDID VC)<br> |       |
+|                        | • Generate DeviceResponses for mdoc proximity presentation<br> |       |
+|                        | • Request Credential revocation                    |       |
+| Client Proximity SDK   | • ISO/IEC 18013-5 Device Engagement (QR, NFC)<br>  | mdoc proximity presentation |
+|                        | • Session encryption and transport (BLE, L2CAP, NFC, Wi-Fi Aware)<br> |       |
+|                        | • Verify DeviceResponses on the mdoc reader        |       |
 | OID4VCI SDK            | • OID4VCI Credential Issuer<br>                     | OID4VCI issuance |
 |                        | &nbsp;&nbsp;(Metadata, Credential Offer, Nonce, Credential)<br> |       |
 |                        | • Authorization Server (Pre-Authorized Code, Authorization Code)<br> |       |
@@ -425,6 +441,7 @@ The OpenDID SDK is used across all containers and includes the following types:
 
 The OID4VC SDKs (OID4VCI, OID4VC Formatter, SD-JWT VC, mso_mdoc) are used for OID4VCI-based Credential issuance.
 The OID4VCI components of the Issuer Service are described in [5.2.3](#523-oid4vci).
+The OID4VC functions of the Client Wallet SDK are used for OID4VP presentation and mdoc proximity presentation by the wallet, and the Client Proximity SDK is used for mdoc proximity presentation by the wallet and the mdoc reader app. For details, refer to [OID4VP-PRESENTATION] and [MDOC-PROXIMITY].
 
 
 
@@ -857,8 +874,8 @@ A Certified App (CApp) is a mobile application built using the OpenDID SDK (avai
 | Module     | Functionality            | Notes |
 | ---------- | ------------------------ | ----- |
 | DID Module | • Identity-related features |      |
-| VC Module  | • VC issuance and status updates (opt ZKP) | |
-| VP Module  | • VP or ZKP submission          |      |
+| VC Module  | • VC issuance and status updates (opt ZKP)<br>• OID4VCI Credential issuance, status check, and revocation request | |
+| VP Module  | • VP or ZKP submission<br>• OID4VP presentation, mdoc proximity presentation |      |
 
 These modules are conceptual categories. In practice, software modules may be more diverse and interconnected. Only file-based wallets are considered for the client wallet in this case.
 
@@ -880,6 +897,8 @@ The VC Module handles tasks related to VCs:
 - Issue, delete, and reissue VCs
 - Retrieve VCs and update their statuses
 - Support additional functions (e.g., KYC) required for issuance
+- Issue and store OID4VCI Credentials (SD-JWT VC, mdoc) (refer to [OID4VCI-ISSUANCE])
+- Check Credential status based on the Token Status List and request Credential revocation
 
 #### 5.4.3. VP Module
 
@@ -888,6 +907,8 @@ The VP Module manages tasks related to VPs:
 - Receive VerifyOffers (via QR scan, push messages, etc.)
 - Create VPs
 - Submit VPs based on the transmission media, mode, and type of service device
+- OID4VP presentation (refer to [OID4VP-PRESENTATION])
+- mdoc proximity presentation (refer to [MDOC-PROXIMITY])
 
 
 <div style="page-break-after: always;"></div>

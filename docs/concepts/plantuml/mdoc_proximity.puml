@@ -1,0 +1,72 @@
+@startuml mdoc_proximity_components
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam padding 4
+
+actor "User" as user
+
+rectangle "Wallet (Holder)" {
+    component "CApp" as ca
+    component "Wallet SDK\n- DeviceRequest matching\n- DeviceResponse generation" as sdk
+    component "Proximity SDK (Holder)\n- Device Engagement\n- Session encryption · transport" as ph
+}
+
+rectangle "mdoc Reader" {
+    component "Reader app\n- Store trusted issuer list ·\n  DID Documents" as rd
+    component "Proximity SDK (Reader)\n- Device Engagement\n- Session encryption · transport\n- DeviceResponse verification" as pr
+}
+
+component "Trust Agent\n(Trusted issuer list)" as ta
+database "Trust Repository\n(Issuer DID Document)" as repo
+
+user -right-> ca
+ca -down-> sdk
+ca -down-> ph
+ph -right-> pr : QR · NFC\nBLE · L2CAP · NFC · Wi-Fi Aware
+rd -down-> ta : Retrieve trusted issuer list
+rd -down-> repo : Retrieve issuer DID Documents
+rd -left-> pr
+@enduml
+
+'--------------------------------------------------------------------------------
+
+@startuml mdoc_proximity_seq
+autonumber "<b>(#)</b>"
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 400
+
+actor "**User**" as user
+participant "**Wallet**\n(Holder)" as wal <<Wallet>>
+participant "**mdoc Reader**" as rd <<App>>
+participant "**Trust Agent**" as ta <<Server>>
+participant "**Trust Repository**" as repo <<Storage>>
+
+== Preliminary ==
+rd -> ta ++: Request trusted issuer list
+return {issuer DID, name, allowed docTypes}
+rd -> repo: Retrieve issuer DID Documents
+rd -> rd: Store list and DID Documents
+
+== Device Engagement and Session Establishment ==
+user -> wal: Start proximity presentation
+wal -> rd: Device Engagement (QR or NFC)
+wal <-> rd: Connect transport channel, derive session keys (ECDH + HKDF)
+
+== Request and Response ==
+rd -> wal: DeviceRequest\n{docType, data elements, intent_to_retain = false}
+wal -> wal: Match stored mdocs
+wal -> wal: Generate DeviceResponse (deviceSignature)
+wal -> rd: DeviceResponse (session encryption)
+
+== Verification ==
+rd -> rd: Issuer trust decision\n* DID of the kid in the list, docType allowed
+rd -> rd: Verify issuerAuth signature (key in the issuer DID Document)
+rd -> rd: Verify DeviceAuth
+rd -> rd: Display verification result
+@enduml

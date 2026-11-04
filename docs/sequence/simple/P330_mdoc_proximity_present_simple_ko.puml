@@ -1,0 +1,73 @@
+@startuml P330_mdoc_proximity_present_simple_ko
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' 설정
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID 기술 규격
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>mdoc 근접 제출</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**사용자**" as user
+participant "**월렛**\n(소지자)" as wal <<Wallet>>
+participant "**mdoc 리더**" as rd <<App>>
+participant "**Trust Agent**" as ta <<Server>>
+
+box 신뢰저장소
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+== 사전준비 : 신뢰 발급자 목록 ==
+
+rd -> ta ++: 신뢰 발급자 목록 요청
+return 신뢰 발급자 목록
+rd <-> BC: 발급자 DID Document 조회 / 응답
+rd -> rd: 목록 및 DID Document 저장
+
+== P330-1 : Device Engagement ==
+
+user -> wal: 근접 제출 시작
+wal -> rd: Device Engagement (QR 또는 NFC)
+
+== P330-2 : 세션 수립 ==
+
+wal <-> rd: 전송 채널 연결 및 세션 키 생성
+
+== P330-3 : DeviceRequest 및 매칭 ==
+
+rd -> wal: DeviceRequest
+wal -> wal: 저장된 mdoc 매칭
+
+== P330-4 : DeviceResponse ==
+
+wal -> wal: DeviceResponse 생성 (deviceSignature)
+wal -> rd: DeviceResponse
+
+== P330-5 : 검증 ==
+
+rd -> rd: 발급자 신뢰 판정 및 서명 검증
+rd -> rd: 검증 결과 표시
+
+@enduml

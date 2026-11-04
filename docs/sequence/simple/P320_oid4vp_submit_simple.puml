@@ -1,0 +1,84 @@
+@startuml P320_oid4vp_submit_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>OID4VP-based VP Presentation</size>
+end title
+
+'=== Options ===
+' Auto-numbering: ex) "<b>000." => pads with zeros to display a 3-digit number
+autonumber "<b>(#)</b>"
+' Hide the participant box at the bottom of the page
+'hide footbox
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+actor "**User**" as user
+
+box Mobile #OldLace
+    participant "**Wallet**" as wal <<Wallet>>
+    participant "**CApp**" as ca <<App>>
+end box
+participant "**Verifier**" as vf <<Server>>
+
+box Trust Repository
+    participant "**DID Document**" as BC <<Storage>> #WhiteSmoke
+end box
+
+== P320-1 : Wallet Invocation ==
+
+vf -> user: Display QR code or deliver deep link (request_uri)
+user -> ca: Scan QR code or open deep link
+activate ca
+
+== P320-2 : Retrieving and Verifying the Authorization Request ==
+
+ca -> vf ++: GET request_uri
+return Request Object (signed JWT)
+ca <-> BC: Retrieve / respond Verifier DID Document
+ca -> ca: Verify Request Object signature
+
+== P320-3 : Credential Matching ==
+
+ca -> wal ++: Request Credential matching (dcql_query)
+return Matching result
+
+== P320-4 : User Consent and Authentication ==
+
+ca -> user: Display Credentials and Claims to present
+user -> ca: Consent and user authentication (PIN or biometric)
+
+== P320-5 : VP Token Generation ==
+
+ca -> wal ++: Request VP Token generation
+wal -> wal: Generate presentation data for each format\n(SD-JWT VC / mdoc / OpenDID VC)
+opt direct_post.jwt
+    wal -> wal: JWE encryption
+end
+return Response body
+
+== P320-6 : Response Delivery ==
+
+ca -> vf ++: POST response_uri (vp_token or response)
+return HTTP 2xx
+ca -> user: Display presentation result
+deactivate ca
+
+@enduml

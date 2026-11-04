@@ -20,12 +20,13 @@ OID4VCI 기반 VC 발급
 
 - 주제 : OID4VCI 기반 VC 발급의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-21
-- 버전 : v1.0.0
+- 일자 : 2026-11-04
+- 버전 : v1.1.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2026-10-21 | 최초 작성 |
+| v1.1.0  | 2026-11-04 | 월렛 지원 범위 추가 |
 
 <br>
 
@@ -58,6 +59,7 @@ OID4VCI 기반 VC 발급
     - [5.4. 월렛에 의한 Credential 폐기](#54-월렛에-의한-credential-폐기)
     - [5.5. 검증자의 상태 확인](#55-검증자의-상태-확인)
 - [6. 구현 범위 및 제약](#6-구현-범위-및-제약)
+- [7. 월렛 지원 범위](#7-월렛-지원-범위)
 
 <!-- /TOC -->
 
@@ -427,3 +429,32 @@ OpenDID 3.0의 OID4VCI 구현은 다음 범위로 제한된다.
 | Proof 유형 | `jwt` Proof만 서명을 검증한다. |
 | Authorization Server | PAR(Pushed Authorization Request)와 OpenID Connect를 지원하지 않는다. |
 | 사용자 주도 발급의 인가 방식 | Pre-Authorized Code만 사용한다. |
+
+
+<div style="page-break-after: always;"></div>
+
+## 7. 월렛 지원 범위
+
+OpenDID 3.0 월렛의 OID4VCI 지원 범위는 다음과 같다.
+
+| 항목 | 월렛 동작 |
+| ---- | --------- |
+| 인가 방식 | Pre-Authorized Code 흐름만 지원한다. Authorization Code 흐름은 지원하지 않는다. |
+| tx_code | 숫자 입력만 지원한다. |
+| 사용자 주도 발급 | TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 정보를 입력하면 Credential Offer를 받는다. |
+| Proof | Holder 키를 `jwk` 대신 `kid`(Holder DID URL, `did:<method>:<id>?versionId=<version>#<key id>`)로 지정한다. PIN 키 또는 생체 키를 사용하며, 해당 키는 Holder DID Document의 `authentication`에 등록되어 있어야 한다. |
+| Credential 응답 암호화 | Issuer Metadata에서 응답 암호화를 필수로 요구하는 경우에만 요청한다. `enc`는 `A256GCM`을 사용한다. |
+| Credential 요청 암호화 | 지원하지 않는다. |
+| 발급 Credential 검증 | Issuer 서명을 `kid`가 가리키는 Issuer DID Document의 키로 검증한다. mdoc은 digest, 유효기간, 기기 키 바인딩을 검증한 뒤 저장한다. |
+| 상태 확인 | 월렛이 Status List Token의 서명, `typ`, `sub`, `exp`와 상태 값을 확인한다. |
+| 폐기 요청 | 사용자가 Credential을 삭제할 때 Issuer에 폐기를 요청한다([5.4](#54-월렛에-의한-credential-폐기) 참조). |
+| 지연 발급, DPoP | 지원하지 않는다. |
+
+Credential Offer 수신 방식은 OS별로 다음과 같다.
+
+| 수신 방식 | iOS | Android |
+| --------- | --- | ------- |
+| `credential_offer_uri` | O | O |
+| 값으로 전달된 `credential_offer` | X | O |
+| 딥링크 `openid-credential-offer` | O | X |
+| Issuer 목록 → Webview → Credential Offer | O | O |
