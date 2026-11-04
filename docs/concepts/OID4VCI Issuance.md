@@ -102,7 +102,7 @@ The OID4VCI-based VC issuance sequence is as follows:
 | [TOKEN-STATUS]    | Token Status List                                             | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/ |
 | [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      |          |
 | [VC-ISSUANCE]     | (OpenDID) VC Issuance                                         | [VC Issuance.md](VC%20Issuance.md) |
-| [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format.md](../data%20standard/did%20document%20format/DID%20Document%20format.md) |
+| [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format.md](./../data%20standard/did%20document%20format/DID%20Document%20format.md) |
 | [ISSUER-API]      | (OpenDID) Issuer API                                          | did-issuer-server `docs/api/Issuer_API.md` |
 | [OID4VCI-SDK]     | (OpenDID) OID4VCI SDK Server API / Integration Guide          | did-oid4vci-sdk-server `docs/api/` |
 

@@ -87,9 +87,9 @@ The OID4VP-based VP presentation proceeds in the following order.
 | [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [RFC7516]          | JSON Web Encryption (JWE)                                | https://www.rfc-editor.org/rfc/rfc7516 |
 | [PRESENT-VP]       | (OpenDID) Presentation of VP                             | [Presentation of VP.md](Presentation%20of%20VP.md) |
-| [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format.md](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md) |
-| [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format.md](../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
-| [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format.md](../data%20standard/verifiable%20credential%20format/VP%20format.md) |
+| [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format.md](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md) |
+| [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
+| [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format.md](./../data%20standard/verifiable%20credential%20format/VP%20format.md) |
 | [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP-based VP Presentation Sequence (P320) | [P320_oid4vp_submit.puml](../sequence/detailed/P320_oid4vp_submit.puml) |
 
 ### 1.2. Terminology

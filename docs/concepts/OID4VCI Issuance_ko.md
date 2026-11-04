@@ -102,7 +102,7 @@ OID4VCI 기반 VC 발급 순서는 다음과 같다.
 | [TOKEN-STATUS]    | Token Status List                                             | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/ |
 | [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      |      |
 | [VC-ISSUANCE]     | (OpenDID) VC 발급                                             | [VC Issuance_ko.md](VC%20Issuance_ko.md) |
-| [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format_ko.md](../data%20standard/did%20document%20format/DID%20Document%20format_ko.md) |
+| [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format_ko.md](./../data%20standard/did%20document%20format/DID%20Document%20format_ko.md) |
 | [ISSUER-API]      | (OpenDID) Issuer API                                          | did-issuer-server `docs/api/Issuer_API_ko.md` |
 | [OID4VCI-SDK]     | (OpenDID) OID4VCI SDK Server API / Integration Guide          | did-oid4vci-sdk-server `docs/api/` |
 

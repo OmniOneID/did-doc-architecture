@@ -104,12 +104,12 @@ This four-step approach enables a hierarchical understanding of the entire syste
 | [ISSUE-VC] | (OpenDID) VC Issuance | [VC Issuance](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance.md?ref_type=heads) |
 | [PRESENT-VP] | (OpenDID) VP Presentation | [VP Presentation](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP.md?ref_type=heads) |
 | [VC-FORMAT] | (OpenDID) VC Format | [VC Format](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format.md?ref_type=heads) |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI Issuance | [OID4VCI Issuance](../concepts/OID4VCI%20Issuance.md) |
-| [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI Issuance | [OID4VCI Issuance](./../concepts/OID4VCI%20Issuance.md) |
+| [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
 | [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [P210_issue_vc_proxy.puml](../sequence/detailed/P210_issue_vc_proxy.puml) |
 | [LSS] | (OpenDID) Ledger Service Server | https://github.com/OmniOneID/did-ledger-service-server |
-| [OID4VP-PRESENTATION] | (OpenDID) OID4VP-based VP Presentation | [OID4VP Presentation](../concepts/OID4VP%20Presentation.md) |
-| [MDOC-PROXIMITY] | (OpenDID) mdoc Proximity Presentation | [mdoc Proximity Presentation](../concepts/mdoc%20Proximity%20Presentation.md) |
+| [OID4VP-PRESENTATION] | (OpenDID) OID4VP-based VP Presentation | [OID4VP Presentation](./../concepts/OID4VP%20Presentation.md) |
+| [MDOC-PROXIMITY] | (OpenDID) mdoc Proximity Presentation | [mdoc Proximity Presentation](./../concepts/mdoc%20Proximity%20Presentation.md) |
 
 <div style="page-break-after: always;"></div>
 
@@ -756,8 +756,8 @@ The supported Credential formats are as follows.
 
 | Format          | Credential | Data Format                                                                                    |
 | --------------- | ---------- | ---------------------------------------------------------------------------------------------- |
-| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md)  |
-| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](../data%20standard/oid4vc%20credential%20format/mdoc%20format.md)              |
+| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md)  |
+| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](./../data%20standard/oid4vc%20credential%20format/mdoc%20format.md)              |
 
 The issuance and revocation procedures are as follows.
 

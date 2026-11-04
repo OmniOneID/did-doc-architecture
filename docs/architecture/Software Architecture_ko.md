@@ -108,12 +108,12 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 | [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance_ko.md?ref_type=heads)                     |
 | [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP_ko.md?ref_type=heads)                    |
 | [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md?ref_type=heads)                     |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 발급                       | [OID4VCI 발급](../concepts/OID4VCI%20Issuance_ko.md) |
-| [CRED-STATUS] | (OpenDID) Credential Status format                | [Credential Status format](../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 발급                       | [OID4VCI 발급](./../concepts/OID4VCI%20Issuance_ko.md) |
+| [CRED-STATUS] | (OpenDID) Credential Status format                | [Credential Status format](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
 | [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [P210_issue_vc_proxy_ko.puml](../sequence/detailed/P210_issue_vc_proxy_ko.puml) |
 | [LSS]        | (OpenDID) Ledger Service Server                    | https://github.com/OmniOneID/did-ledger-service-server |
-| [OID4VP-PRESENTATION] | (OpenDID) OID4VP 기반 VP 제출              | [OID4VP 제출](../concepts/OID4VP%20Presentation_ko.md) |
-| [MDOC-PROXIMITY] | (OpenDID) mdoc 근접 제출                       | [mdoc 근접 제출](../concepts/mdoc%20Proximity%20Presentation_ko.md) |
+| [OID4VP-PRESENTATION] | (OpenDID) OID4VP 기반 VP 제출              | [OID4VP 제출](./../concepts/OID4VP%20Presentation_ko.md) |
+| [MDOC-PROXIMITY] | (OpenDID) mdoc 근접 제출                       | [mdoc 근접 제출](./../concepts/mdoc%20Proximity%20Presentation_ko.md) |
 
 <div style="page-break-after: always;"></div>
 
@@ -818,8 +818,8 @@ OpenDID 발급 프로토콜과 달리 월렛이 Issuer Service를 직접 호출�
 
 | Format          | Credential | 데이터 형식                                                                                       |
 | --------------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md)  |
-| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md)              |
+| `dc+sd-jwt-did` | SD-JWT VC  | [SD-JWT VC format](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md)  |
+| `mso_mdoc-did`  | ISO mdoc   | [mdoc format](./../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md)              |
 
 발급 및 폐기 절차는 다음과 같다.
 

@@ -87,9 +87,9 @@ OID4VP 기반 VP 제출 순서는 다음과 같다.
 | [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [RFC7516]          | JSON Web Encryption (JWE)                                | https://www.rfc-editor.org/rfc/rfc7516 |
 | [PRESENT-VP]       | (OpenDID) VP 제출                                        | [Presentation of VP_ko.md](Presentation%20of%20VP_ko.md) |
-| [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format_ko.md](../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md) |
-| [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format_ko.md](../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
-| [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format_ko.md](../data%20standard/verifiable%20credential%20format/VP%20format_ko.md) |
+| [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format_ko.md](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md) |
+| [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format_ko.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
+| [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format_ko.md](./../data%20standard/verifiable%20credential%20format/VP%20format_ko.md) |
 | [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP 기반 VP 제출 절차도 (P320)            | [P320_oid4vp_submit_ko.puml](../sequence/detailed/P320_oid4vp_submit_ko.puml) |
 
 ### 1.2. 용어

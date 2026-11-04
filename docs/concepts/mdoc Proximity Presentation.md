@@ -81,7 +81,7 @@ The mdoc proximity presentation proceeds in the following order.
 | Reference Name         | Document Title                                           | Location |
 | ---------------------- | -------------------------------------------------------- | -------- |
 | [ISO-18013-5]          | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
-| [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format.md](../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
+| [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
 | [OID4VCI-ISSUANCE]     | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](OID4VCI%20Issuance.md) |
 | [OID4VP-PRESENTATION]  | (OpenDID) OID4VP-based VP Presentation                   | [OID4VP Presentation.md](OID4VP%20Presentation.md) |
 | [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc Proximity Presentation Sequence (P330)    | [P330_mdoc_proximity_present.puml](../sequence/detailed/P330_mdoc_proximity_present.puml) |

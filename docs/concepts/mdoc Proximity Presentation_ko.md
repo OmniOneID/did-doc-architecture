@@ -81,7 +81,7 @@ mdoc 근접 제출 순서는 다음과 같다.
 | 참조명                 | 문서명                                                   | 위치 |
 | ---------------------- | -------------------------------------------------------- | ---- |
 | [ISO-18013-5]          | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
-| [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format_ko.md](../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
+| [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format_ko.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
 | [OID4VCI-ISSUANCE]     | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](OID4VCI%20Issuance_ko.md) |
 | [OID4VP-PRESENTATION]  | (OpenDID) OID4VP 기반 VP 제출                            | [OID4VP Presentation_ko.md](OID4VP%20Presentation_ko.md) |
 | [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc 근접 제출 절차도 (P330)                   | [P330_mdoc_proximity_present_ko.puml](../sequence/detailed/P330_mdoc_proximity_present_ko.puml) |
