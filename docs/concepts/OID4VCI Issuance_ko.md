@@ -20,13 +20,12 @@ OID4VCI 기반 VC 발급
 
 - 주제 : OID4VCI 기반 VC 발급의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-11-04
-- 버전 : v1.1.0
+- 일자 : 2026-10-21
+- 버전 : v1.0.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2026-10-21 | 최초 작성 |
-| v1.1.0  | 2026-11-04 | 월렛 지원 범위 추가 |
 
 <br>
 
@@ -60,6 +59,7 @@ OID4VCI 기반 VC 발급
     - [5.5. 검증자의 상태 확인](#55-검증자의-상태-확인)
 - [6. 구현 범위 및 제약](#6-구현-범위-및-제약)
 - [7. 월렛 지원 범위](#7-월렛-지원-범위)
+- [8. 표준과의 차이](#8-표준과의-차이)
 
 <!-- /TOC -->
 
@@ -458,3 +458,14 @@ Credential Offer 수신 방식은 OS별로 다음과 같다.
 | 값으로 전달된 `credential_offer` | X | O |
 | 딥링크 `openid-credential-offer` | O | X |
 | Issuer 목록 → Webview → Credential Offer | O | O |
+
+<div style="page-break-after: always;"></div>
+
+## 8. 표준과의 차이
+
+OpenDID 3.0의 OID4VCI는 DID 기반 신뢰 구조를 적용하기 위해 [OID4VCI]와 다음 부분이 다르다.
+
+| 항목 | [OID4VCI] | OpenDID |
+| ---- | --------- | ------- |
+| Credential 형식 식별자 | `dc+sd-jwt`, `mso_mdoc` | `dc+sd-jwt-did`, `mso_mdoc-did`를 사용한다([4.6](#46-credential-형식) 참조). 월렛은 확장 식별자만 처리하므로, 표준 식별자로 발급하는 Issuer와는 연동되지 않는다. |
+| Credential 폐기 | 월렛이 Issuer에 폐기를 요청하는 절차를 정의하지 않는다. | Issuer Metadata의 `credential_revocation_endpoint`와 Holder DID로 서명한 폐기 토큰으로 폐기를 요청한다([5.4](#54-월렛에-의한-credential-폐기) 참조). |

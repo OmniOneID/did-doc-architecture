@@ -108,6 +108,7 @@ For more information, refer to the following documents:
 1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
 1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 1. [did-omn-resolver-driver-server](https://github.com/OmniOneID/did-omn-resolver-driver-server)
+1. [did-proxy-server](https://github.com/OmniOneID/did-proxy-server)
 
 #### Mobile Application 
 
@@ -115,6 +116,21 @@ For more information, refer to the following documents:
 1. [did-ca-ios](https://github.com/OmniOneID/did-ca-ios)
 1. [did-proximity-verifier-android](https://github.com/OmniOneID/did-proximity-verifier-android)
 1. [did-proximity-verifier-ios](https://github.com/OmniOneID/did-proximity-verifier-ios)
+
+#### PoC
+
+These are projects that validated new technologies separately from the OPEN DID components.
+
+1. [poc-oid4vc](https://github.com/OmniOneID/poc-oid4vc): Validation of OID4VC-based issuance and presentation, and mdoc proximity presentation
+    - Goals: Understand the OID4VC issuance and verification flows, evaluate the feasibility of building a DID-based VC ecosystem, and validate ISO/IEC 18013-5 mdoc proximity presentation
+    - Target standards: OID4VCI 1.0, OID4VP 1.0, ISO/IEC 18013-5 (1st edition)
+    - Target formats: SD-JWT VC, mdoc
+    - Components: Issuer and Verifier servers, Android and iOS wallet apps, Android and iOS mdoc reader apps, Android SD-JWT VC and mdoc SDKs
+    - The results are reflected in the OID4VC features of OpenDID 3.0
+1. [poc-pqc](https://github.com/OmniOneID/poc-pqc): Validation of applying post-quantum cryptography (PQC)
+    - Goal: Validate whether the DID and VC system of OPEN DID can be migrated to PQC in preparation for the quantum-computing threat
+    - Algorithms: ML-DSA-44 (FIPS 204) for signatures, ML-KEM-768 (FIPS 203) for key exchange
+    - Phases: Phase 1 per-component technical validation → Phase 2 wallet-centric protocol validation (Mock server) → Phase 3 integration with OPEN DID v2.0 servers and performance measurement
 
 ## 6. Folder Structure
 ```

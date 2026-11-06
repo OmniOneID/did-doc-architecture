@@ -53,6 +53,7 @@ OID4VP 기반 VP 제출
         - [4.5.3. OpenDID VC](#453-opendid-vc)
     - [4.6. 응답 전달](#46-응답-전달)
 - [5. 구현 범위 및 제약](#5-구현-범위-및-제약)
+- [6. 표준과의 차이](#6-표준과의-차이)
 
 <!-- /TOC -->
 
@@ -316,3 +317,18 @@ OpenDID 3.0의 OID4VP 구현은 다음 범위로 제한된다.
 | DCQL | 하나의 요청에 서로 다른 형식의 Credential을 섞을 수 없다. |
 | Transaction Data | `transaction_data`는 지원하지 않는다. |
 | Digital Credentials API | 지원하지 않는다. |
+
+<div style="page-break-after: always;"></div>
+
+## 6. 표준과의 차이
+
+OpenDID 3.0의 OID4VP는 [OID4VP]와 다음 부분이 다르다.
+
+| 항목 | [OID4VP] | OpenDID |
+| ---- | -------- | ------- |
+| Credential 형식 식별자 | `dc+sd-jwt`, `mso_mdoc` | `dc+sd-jwt-did`, `mso_mdoc-did`를 사용한다([3.2](#32-지원-credential-형식) 참조). 표준 식별자로 요청하는 검증자와는 연동되지 않는다. |
+| W3C VC 형식 | `jwt_vc_json`, `ldp_vc` | 지원하지 않는다. OpenDID VC는 `opendid_vc`로 제출한다([4.5.3](#453-opendid-vc) 참조). |
+| `claims`를 생략한 DCQL | 선택적으로 공개하는 Claim은 요청하지 않은 것으로 본다. | 공개할 수 있는 Claim 전체를 요청한 것으로 본다([4.3](#43-credential-매칭-dcql) 참조). |
+| 서로 다른 형식이 섞인 DCQL | 허용한다. | 요청을 거부한다. |
+| `direct_post.jwt`의 기본 `enc` | `A128GCM` | `A256GCM`([4.6](#46-응답-전달) 참조) |
+| mdoc 원격 제출의 SessionTranscript | ISO/IEC 18013-7의 OID4VP 프로파일을 별도로 정의한다. | [OID4VP]의 OpenID4VPHandover를 사용한다([4.5.2](#452-mdoc) 참조). ISO/IEC 18013-7 프로파일을 사용하는 검증자와는 DeviceAuth 검증이 맞지 않는다. |

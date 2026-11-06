@@ -20,13 +20,12 @@ OID4VCI-based VC Issuance
 
 - Subject: Explanation of OID4VCI-based VC Issuance Concept
 - Author: OpenSource Development Team
-- Date: 2026-11-04
-- Version: v1.1.0
+- Date: 2026-10-21
+- Version: v1.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
 | v1.0.0  | 2026-10-21 | Initial version |
-| v1.1.0  | 2026-11-04 | Add wallet support scope |
 
 <br>
 
@@ -60,6 +59,7 @@ Table of Contents
     - [5.5. Status Check by Verifier](#55-status-check-by-verifier)
 - [6. Implementation Scope and Constraints](#6-implementation-scope-and-constraints)
 - [7. Wallet Support Scope](#7-wallet-support-scope)
+- [8. Differences from the Standard](#8-differences-from-the-standard)
 
 <!-- /TOC -->
 
@@ -458,3 +458,14 @@ The ways of receiving a Credential Offer differ by OS as follows.
 | `credential_offer` passed by value | X | O |
 | Deep link `openid-credential-offer` | O | X |
 | Issuer list → Webview → Credential Offer | O | O |
+
+<div style="page-break-after: always;"></div>
+
+## 8. Differences from the Standard
+
+To apply the DID-based trust structure, the OID4VCI of OpenDID 3.0 differs from [OID4VCI] in the following parts.
+
+| Item | [OID4VCI] | OpenDID |
+| ---- | --------- | ------- |
+| Credential format identifiers | `dc+sd-jwt`, `mso_mdoc` | Uses `dc+sd-jwt-did` and `mso_mdoc-did` (refer to [4.6](#46-credential-formats)). Since the wallet processes only the extended identifiers, it does not interoperate with Issuers that issue with the standard identifiers. |
+| Credential revocation | Does not define a procedure in which the wallet requests revocation from the Issuer. | The wallet requests revocation with the `credential_revocation_endpoint` in the Issuer Metadata and a revocation token signed with the Holder DID (refer to [5.4](#54-credential-revocation-by-wallet)). |

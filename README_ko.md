@@ -108,6 +108,7 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-ledger-service-server](https://github.com/OmniOneID/did-ledger-service-server)
 1. [did-orchestrator-server](https://github.com/OmniOneID/did-orchestrator-server)
 1. [did-omn-resolver-driver-server](https://github.com/OmniOneID/did-omn-resolver-driver-server)
+1. [did-proxy-server](https://github.com/OmniOneID/did-proxy-server)
 
 #### Mobile Application 
 
@@ -115,6 +116,21 @@ OpenDID 표준은 상호운용성을 촉진하고, 보안성을 강화하며, �
 1. [did-ca-ios](https://github.com/OmniOneID/did-ca-ios)
 1. [did-proximity-verifier-android](https://github.com/OmniOneID/did-proximity-verifier-android)
 1. [did-proximity-verifier-ios](https://github.com/OmniOneID/did-proximity-verifier-ios)
+
+#### PoC
+
+OPEN DID 구성요소와 별도로 신규 기술을 검증한 프로젝트입니다.
+
+1. [poc-oid4vc](https://github.com/OmniOneID/poc-oid4vc): OID4VC 기반 발급·제출 및 mdoc 근접 제출 검증
+    - 목적: OID4VC 발급·검증 흐름 확인, DID 기반 VC 생태계 구축 가능성 평가, ISO/IEC 18013-5 mdoc 근접 제출 검증
+    - 대상 표준: OID4VCI 1.0, OID4VP 1.0, ISO/IEC 18013-5(1판)
+    - 대상 형식: SD-JWT VC, mdoc
+    - 구성: Issuer·Verifier 서버, Android·iOS 월렛 앱, Android·iOS mdoc 리더 앱, Android SD-JWT VC·mdoc SDK
+    - 검증 결과는 OpenDID 3.0의 OID4VC 기능에 반영
+1. [poc-pqc](https://github.com/OmniOneID/poc-pqc): 양자내성암호(PQC) 적용 검증
+    - 목적: 양자 컴퓨팅 위협에 대비해 OPEN DID의 DID·VC 체계를 PQC로 전환할 수 있는지 검증
+    - 알고리즘: 서명 ML-DSA-44(FIPS 204), 키 교환 ML-KEM-768(FIPS 203)
+    - 단계: 1단계 구성요소별 기술 검증 → 2단계 월렛 중심 프로토콜 검증(Mock 서버) → 3단계 OPEN DID v2.0 서버 연동 및 성능 측정
 
 ## 6. Folder Structure
 ```

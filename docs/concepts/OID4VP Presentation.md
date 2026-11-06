@@ -53,6 +53,7 @@ Table of Contents
         - [4.5.3. OpenDID VC](#453-opendid-vc)
     - [4.6. Response Delivery](#46-response-delivery)
 - [5. Implementation Scope and Constraints](#5-implementation-scope-and-constraints)
+- [6. Differences from the Standard](#6-differences-from-the-standard)
 
 <!-- /TOC -->
 
@@ -316,3 +317,18 @@ The OID4VP implementation of OpenDID 3.0 is limited to the following scope.
 | DCQL | Credentials of different formats cannot be mixed in a single request. |
 | Transaction Data | `transaction_data` is not supported. |
 | Digital Credentials API | Not supported. |
+
+<div style="page-break-after: always;"></div>
+
+## 6. Differences from the Standard
+
+The OID4VP of OpenDID 3.0 differs from [OID4VP] in the following parts.
+
+| Item | [OID4VP] | OpenDID |
+| ---- | -------- | ------- |
+| Credential format identifiers | `dc+sd-jwt`, `mso_mdoc` | Uses `dc+sd-jwt-did` and `mso_mdoc-did` (refer to [3.2](#32-supported-credential-formats)). It does not interoperate with verifiers that request with the standard identifiers. |
+| W3C VC formats | `jwt_vc_json`, `ldp_vc` | Not supported. OpenDID VCs are presented with `opendid_vc` (refer to [4.5.3](#453-opendid-vc)). |
+| DCQL without `claims` | Selectively disclosable claims are regarded as not requested. | All claims that can be disclosed are regarded as requested (refer to [4.3](#43-credential-matching-dcql)). |
+| DCQL mixing different formats | Allowed. | The request is rejected. |
+| Default `enc` of `direct_post.jwt` | `A128GCM` | `A256GCM` (refer to [4.6](#46-response-delivery)) |
+| SessionTranscript for remote mdoc presentation | ISO/IEC 18013-7 defines a separate OID4VP profile. | Uses the OpenID4VPHandover of [OID4VP] (refer to [4.5.2](#452-mdoc)). DeviceAuth verification does not match with verifiers that use the ISO/IEC 18013-7 profile. |

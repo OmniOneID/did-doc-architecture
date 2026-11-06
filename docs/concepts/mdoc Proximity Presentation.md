@@ -53,6 +53,7 @@ Table of Contents
 - [5. Implementation Scope and Constraints](#5-implementation-scope-and-constraints)
     - [5.1. Support by OS](#51-support-by-os)
     - [5.2. Unsupported Features](#52-unsupported-features)
+- [6. Differences from the Standard](#6-differences-from-the-standard)
 
 <!-- /TOC -->
 
@@ -258,3 +259,13 @@ As the verification result, the mdoc reader displays whether the issuer is trust
 | mdoc reader authentication (readerAuth) | The mdoc reader does not generate readerAuth. |
 | Online presentation (ISO/IEC 18013-7) | Not supported. |
 | Server retrieval | Not supported. |
+
+<div style="page-break-after: always;"></div>
+
+## 6. Differences from the Standard
+
+The mdoc proximity presentation of OpenDID 3.0 differs from [ISO-18013-5] in the following parts.
+
+| Item | [ISO-18013-5] | OpenDID |
+| ---- | ------------- | ------- |
+| Issuer trust decision | Decided with the x5chain certificate in issuerAuth and the IACA certificate. | Decided with the `kid` (DID URL) in issuerAuth, the trusted issuer list, and the issuer DID Document (refer to [3.2](#32-trusted-issuer-list) and [4.5](#45-verification-by-the-mdoc-reader)). It cannot mutually verify with issuers and readers that decide trust based on certificates. |
