@@ -31,9 +31,8 @@ Verifiable Credentials format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
+| v1.1.0 | 2026-10-22 | OID4VCI Credential 상태 참조 추가, 오타·링크 수정 |
 | v1.0.0 | 2024-09-03 | 초안                                         |
-| v1.0.1 | 2026-10-13 | 오타 수정, 링크 수정                               |
-| v1.1.0 | 2026-10-22 | OID4VCI Credential 상태 참조 추가            |
 
 
 <div style="page-break-after: always;"></div>

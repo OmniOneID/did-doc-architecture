@@ -3,12 +3,11 @@
 - Subject: Open DID Architecture
 - Author: OpenSource Development Team
 - Date: 2026-11-04
-- Version: v1.2.0
+- Version: v1.1.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.2.0  | 2026-11-04 | Add OID4VP presentation and mdoc proximity presentation |
-| v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, and LSS |
+| v1.1.0  | 2026-11-04 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>

@@ -7,8 +7,7 @@
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-10-22 | Add OID4VCI Credential lifecycle |
-| v1.0.1  | 2026-10-13 | Revise wording  |
+| v1.1.0  | 2026-10-22 | Add OID4VCI Credential lifecycle, Revise wording |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>

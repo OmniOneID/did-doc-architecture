@@ -20,18 +20,16 @@ Software Architecture
 
 - 주제: C4 model을 이용한 Software Architecture 설명
 - 작성: 강영호
-- 일자: 2026-11-04
-- 버전: v1.2.0
+- 일자: 2026-11-10
+- 버전: v1.1.0
 
 개정이력
 ---
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
+| v1.1.0 | 2026-11-10 | OID4VCI 발급, OID4VP 제출, mdoc 근접 제출 추가, 오탈자·링크 수정 |
 | v1.0.0 | 2024-09-03 | 최초 작성 |
-| v1.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정 |
-| v1.1.0 | 2026-10-22 | OID4VCI 발급, Proxy 모드 발급, OID4VCI Issuer 목록, LSS, OID4VC SDK 추가 |
-| v1.2.0 | 2026-11-04 | OID4VP 제출, mdoc 근접 제출, mdoc 리더 앱, Client Wallet SDK OID4VC 기능, Proximity SDK 추가 |
 
 
 목차
@@ -102,16 +100,16 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 
 | 참조명       | 문서명                                             | 위치                 |
 | ------------ | -------------------------------------------------- | -------------------- |
-| [C4-MODEL]   | The C4 model for visualising software architecture | https://c4model.com/ |
-| [DATA-SPEC]  | (OpenDID) 데이터 명세서(Data Specification)        |  [데이터 명세서](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/data%20specification/Data%20Specification_ko.md?ref_type=heads)                    |
-| [USER-REG]   | (OpenDID) 사용자 등록                              |  [사용자 등록](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/User%20Registration_ko.md?ref_type=heads)                    |
-| [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance_ko.md?ref_type=heads)                     |
-| [PRESENT-VP] | (OpenDID) vp 제출                                  |  [VP 제출](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP_ko.md?ref_type=heads)                    |
-| [VC-FORMAT]  | (OpenDID) VC format                                | [VC 포맷](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format_ko.md?ref_type=heads)                     |
+| [C4-MODEL]   | The C4 model for visualising software architecture | [C4 model](https://c4model.com/) |
+| [DATA-SPEC]  | (OpenDID) 데이터 명세서(Data Specification)        |  [데이터 명세서](./../data%20standard/data%20specification/Data%20Specification_ko.md)                    |
+| [USER-REG]   | (OpenDID) 사용자 등록                              |  [사용자 등록](./../concepts/User%20Registration_ko.md)                    |
+| [ISSUE-VC]   | (OpenDID) VC 발급                                  | [VC 발급](./../concepts/VC%20Issuance_ko.md)                     |
+| [PRESENT-VP] | (OpenDID) VP 제출                                  |  [VP 제출](./../concepts/Presentation%20of%20VP_ko.md)                    |
+| [VC-FORMAT]  | (OpenDID) VC 포맷                                  | [VC 포맷](./../data%20standard/verifiable%20credential%20format/VC%20format_ko.md)                     |
 | [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 발급                       | [OID4VCI 발급](./../concepts/OID4VCI%20Issuance_ko.md) |
-| [CRED-STATUS] | (OpenDID) Credential Status format                | [Credential Status format](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
-| [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [P210_issue_vc_proxy_ko.puml](../sequence/detailed/P210_issue_vc_proxy_ko.puml) |
-| [LSS]        | (OpenDID) Ledger Service Server                    | https://github.com/OmniOneID/did-ledger-service-server |
+| [CRED-STATUS] | (OpenDID) Credential Status 포맷                  | [Credential Status 포맷](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [Proxy 모드 VC 발급 절차도](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P210_issue_vc_proxy_ko.puml) |
+| [LSS]        | (OpenDID) Ledger Service Server                    | [LSS](https://github.com/OmniOneID/did-ledger-service-server) |
 | [OID4VP-PRESENTATION] | (OpenDID) OID4VP 기반 VP 제출              | [OID4VP 제출](./../concepts/OID4VP%20Presentation_ko.md) |
 | [MDOC-PROXIMITY] | (OpenDID) mdoc 근접 제출                       | [mdoc 근접 제출](./../concepts/mdoc%20Proximity%20Presentation_ko.md) |
 
@@ -825,10 +823,10 @@ OpenDID 발급 프로토콜과 달리 월렛이 Issuer Service를 직접 호출�
 
 | 절차                     | 설명                                                                     | 절차도 |
 | ------------------------ | ------------------------------------------------------------------------ | ------ |
-| Pre-Authorized Code 발급 | 발급 서비스가 Credential Offer를 생성하여 QR 등으로 사용자에게 전달      | [P230](../sequence/detailed/P230_oid4vci_issue_pre_authorized_ko.puml) |
-| Authorization Code 발급  | 월렛이 Authorization Server에서 사용자 인증 후 Access Token을 받아 발급  | [P231](../sequence/detailed/P231_oid4vci_issue_authorization_code_ko.puml) |
-| 사용자에 의한 발급 개시  | 월렛이 TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 Claim을 입력  | [P232](../sequence/detailed/P232_oid4vci_issue_user_init_ko.puml) |
-| Credential 폐기          | 월렛이 Holder DID 키로 서명한 폐기 토큰으로 폐기를 요청                  | [P240](../sequence/detailed/P240_oid4vci_revoke_credential_ko.puml) |
+| Pre-Authorized Code 발급 | 발급 서비스가 Credential Offer를 생성하여 QR 등으로 사용자에게 전달      | [P230](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P230_oid4vci_issue_pre_authorized_ko.puml) |
+| Authorization Code 발급  | 월렛이 Authorization Server에서 사용자 인증 후 Access Token을 받아 발급  | [P231](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P231_oid4vci_issue_authorization_code_ko.puml) |
+| 사용자에 의한 발급 개시  | 월렛이 TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 Claim을 입력  | [P232](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P232_oid4vci_issue_user_init_ko.puml) |
+| Credential 폐기          | 월렛이 Holder DID 키로 서명한 폐기 토큰으로 폐기를 요청                  | [P240](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P240_oid4vci_revoke_credential_ko.puml) |
 
 Credential 상태는 Token Status List로 관리하며, 상태 값은 `VALID`, `SUSPENDED`, `INVALID`이다.
 Issuer 관리자는 Admin Console에서 상태를 변경하고, 월렛은 Credential 폐기 Endpoint로 폐기(`INVALID`)를 요청한다.

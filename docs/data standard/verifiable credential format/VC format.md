@@ -30,8 +30,8 @@ Revision History
 
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
-| v1.0.0  | 2024-09-03 | Initial version                                         |
 | v1.1.0  | 2026-10-22 | Add reference to OID4VCI Credential status       |
+| v1.0.0  | 2024-09-03 | Initial version                                         |
 
 
 <div style="page-break-after: always;"></div>

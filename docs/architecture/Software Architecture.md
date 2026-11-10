@@ -20,18 +20,16 @@ Software Architecture
 
 - Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
-- Date: 2026-11-04  
-- Version: v1.2.0  
+- Date: 2026-11-10  
+- Version: v1.1.0  
 
 Revision History
 ---
 
 | Version | Date       | Change Details  |
 | ------- | ---------- | --------------- |
+| v1.1.0  | 2026-11-10 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation, Fix typos and links |
 | v1.0.0  | 2024-09-03 | Initial version |
-| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
-| v1.1.0  | 2026-10-22 | Add OID4VCI issuance, Proxy mode issuance, OID4VCI Issuer list, LSS, and OID4VC SDKs |
-| v1.2.0  | 2026-11-04 | Add OID4VP presentation, mdoc proximity presentation, mdoc reader app, OID4VC functions of the Client Wallet SDK, and Proximity SDK |
 
 
 Table of Contents
@@ -98,16 +96,16 @@ This four-step approach enables a hierarchical understanding of the entire syste
 
 | Reference Name | Document Name | Location |
 | -------------- | ------------- | -------- |
-| [C4-MODEL] | The C4 model for visualising software architecture | https://c4model.com/ |
-| [DATA-SPEC] | (OpenDID) Data Specification | [Data Specification](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/data%20specification/Data%20Specification.md?ref_type=heads) |
-| [USER-REG] | (OpenDID) User Registration | [User Registration](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/User%20Registration.md?ref_type=heads) |
-| [ISSUE-VC] | (OpenDID) VC Issuance | [VC Issuance](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/VC%20Issuance.md?ref_type=heads) |
-| [PRESENT-VP] | (OpenDID) VP Presentation | [VP Presentation](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/concepts/Presentation%20of%20VP.md?ref_type=heads) |
-| [VC-FORMAT] | (OpenDID) VC Format | [VC Format](https://github.com/OmniOneID/did-doc-architecture/blob/main/docs/data%20standard/verifiable%20credential%20format/VC%20format.md?ref_type=heads) |
+| [C4-MODEL] | The C4 model for visualising software architecture | [C4 model](https://c4model.com/) |
+| [DATA-SPEC] | (OpenDID) Data Specification | [Data Specification](./../data%20standard/data%20specification/Data%20Specification.md) |
+| [USER-REG] | (OpenDID) User Registration | [User Registration](./../concepts/User%20Registration.md) |
+| [ISSUE-VC] | (OpenDID) VC Issuance | [VC Issuance](./../concepts/VC%20Issuance.md) |
+| [PRESENT-VP] | (OpenDID) VP Presentation | [VP Presentation](./../concepts/Presentation%20of%20VP.md) |
+| [VC-FORMAT] | (OpenDID) VC Format | [VC Format](./../data%20standard/verifiable%20credential%20format/VC%20format.md) |
 | [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI Issuance | [OID4VCI Issuance](./../concepts/OID4VCI%20Issuance.md) |
 | [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
-| [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [P210_issue_vc_proxy.puml](../sequence/detailed/P210_issue_vc_proxy.puml) |
-| [LSS] | (OpenDID) Ledger Service Server | https://github.com/OmniOneID/did-ledger-service-server |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [Proxy Mode VC Issuance Sequence](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P210_issue_vc_proxy.puml) |
+| [LSS] | (OpenDID) Ledger Service Server | [LSS](https://github.com/OmniOneID/did-ledger-service-server) |
 | [OID4VP-PRESENTATION] | (OpenDID) OID4VP-based VP Presentation | [OID4VP Presentation](./../concepts/OID4VP%20Presentation.md) |
 | [MDOC-PROXIMITY] | (OpenDID) mdoc Proximity Presentation | [mdoc Proximity Presentation](./../concepts/mdoc%20Proximity%20Presentation.md) |
 
@@ -763,10 +761,10 @@ The issuance and revocation procedures are as follows.
 
 | Procedure                       | Description                                                                         | Sequence |
 | ------------------------------- | ----------------------------------------------------------------------------------- | -------- |
-| Pre-Authorized Code issuance    | The issuance service creates a Credential Offer and delivers it to the user by QR code, etc. | [P230](../sequence/detailed/P230_oid4vci_issue_pre_authorized.puml) |
-| Authorization Code issuance     | The wallet receives an Access Token after user authentication at the Authorization Server | [P231](../sequence/detailed/P231_oid4vci_issue_authorization_code.puml) |
-| User-initiated issuance         | The wallet selects an Issuer from the TAS Issuer list and enters Claims in the Webview | [P232](../sequence/detailed/P232_oid4vci_issue_user_init.puml) |
-| Credential revocation           | The wallet requests revocation with a revocation token signed with the Holder DID key | [P240](../sequence/detailed/P240_oid4vci_revoke_credential.puml) |
+| Pre-Authorized Code issuance    | The issuance service creates a Credential Offer and delivers it to the user by QR code, etc. | [P230](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P230_oid4vci_issue_pre_authorized.puml) |
+| Authorization Code issuance     | The wallet receives an Access Token after user authentication at the Authorization Server | [P231](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P231_oid4vci_issue_authorization_code.puml) |
+| User-initiated issuance         | The wallet selects an Issuer from the TAS Issuer list and enters Claims in the Webview | [P232](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P232_oid4vci_issue_user_init.puml) |
+| Credential revocation           | The wallet requests revocation with a revocation token signed with the Holder DID key | [P240](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P240_oid4vci_revoke_credential.puml) |
 
 The Credential status is managed with the Token Status List, and the status values are `VALID`, `SUSPENDED`, and `INVALID`.
 The Issuer administrator changes the status in the Admin Console, and the wallet requests revocation (`INVALID`) through the Credential revocation Endpoint.

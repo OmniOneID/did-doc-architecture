@@ -7,8 +7,7 @@
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-11-04 | Add local Wallet Token |
-| v1.0.1  | 2026-10-13 | Fix image references |
+| v1.1.0  | 2026-11-04 | Add local Wallet Token, Fix image references |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>

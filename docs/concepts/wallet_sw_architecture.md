@@ -9,8 +9,7 @@
 
 | Version | Date       | Changes                                     |
 |--------|------------|---------------------------------------------|
-| v2.1.0 | 2026-11-04 | Add OID4VC functions and Proximity SDK      |
-| v2.0.1 | 2026-10-13 | Fix typos, Revise wording                   |
+| v2.1.0 | 2026-11-04 | Add OID4VC functions and Proximity SDK, Fix typos |
 | v2.0.0 | 2025-06-23 | Added ZKP and Reflected the SDK integration |
 | v1.0.0 | 2024-10-18 | Initial version                             |
 
