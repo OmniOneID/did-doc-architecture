@@ -6,8 +6,11 @@
   - [키 운영 설명](/V3.0.0/docs/concepts/KeyManagement_ko.md)
   - [VP 제출](/V3.0.0/docs/concepts/Presentation%20of%20VP_ko.md)
   - [ZKP Proof 제출](/V3.0.0/docs/concepts/Presentation%20of%20ZKP%20Proof_ko.md)
+  - [OID4VP 기반 VP 제출](/V3.0.0/docs/concepts/OID4VP%20Presentation_ko.md)
+  - [mdoc 근접 제출](/V3.0.0/docs/concepts/mdoc%20Proximity%20Presentation_ko.md)
   - [사용자 등록](/V3.0.0/docs/concepts/User%20Registration_ko.md)
   - [VC 발급](/V3.0.0/docs/concepts/VC%20Issuance_ko.md)
+  - [OID4VCI 기반 VC 발급](/V3.0.0/docs/concepts/OID4VCI%20Issuance_ko.md)
   - [블록체인 연동](/V3.0.0/docs/concepts/blockchain_access_ko.md)
   - [Open DID 구성도](/V3.0.0/docs/concepts/components_ko.md)
   - [Wallet 생명 주기](/V3.0.0/docs/concepts/life_cycle_ko.md)
@@ -39,6 +42,10 @@
   - ZKP Schema Definition 포맷
     - [Credential Definition 포맷](/V3.0.0/docs/data%20standard/zkp%20schema%20definition%20format/CredentialDefinition%20format_ko.md)
     - [Credential Schema 포맷](/V3.0.0/docs/data%20standard/zkp%20schema%20definition%20format/CredentialSchema%20format_ko.md)
+  - OID4VC Credential 포맷
+    - [SD-JWT VC 포맷](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md)
+    - [mdoc 포맷](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md)
+    - [Credential Status 포맷](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md)
 - 가이드
   - API
     - [OpenDID API 문서 작성 가이드](/V3.0.0/docs/guide/api/API%20Documentation%20Writing%20Guide_ko.md)
