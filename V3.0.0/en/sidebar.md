@@ -6,8 +6,11 @@
     - [Key Management Information](/V3.0.0/docs/concepts/KeyManagement.md)
     - [Presentation of VP](/V3.0.0/docs/concepts/Presentation%20of%20VP.md)
     - [ZKP Proof Submission](/V3.0.0/docs/concepts/Presentation%20of%20ZKP%20Proof.md)
+    - [OID4VP Presentation](/V3.0.0/docs/concepts/OID4VP%20Presentation.md)
+    - [mdoc Proximity Presentation](/V3.0.0/docs/concepts/mdoc%20Proximity%20Presentation.md)
     - [User Registration](/V3.0.0/docs/concepts/User%20Registration.md)
     - [VC Issuance](/V3.0.0/docs/concepts/VC%20Issuance.md)
+    - [OID4VCI Issuance](/V3.0.0/docs/concepts/OID4VCI%20Issuance.md)
     - [Blockchain Integration](/V3.0.0/docs/concepts/blockchain_access.md)
     - [Open DID Architecture](/V3.0.0/docs/concepts/components.md)
     - [Wallet Life Cycle](/V3.0.0/docs/concepts/life_cycle.md)
@@ -39,6 +42,10 @@
     - ZKP Schema Definition Format
       - [Credential Definition Format](/V3.0.0/docs/data%20standard/zkp%20schema%20definition%20format/CredentialDefinition%20format.md)
       - [Credential Schema Format](/V3.0.0/docs/data%20standard/zkp%20schema%20definition%20format/CredentialSchema%20format.md)
+    - OID4VC Credential Format
+      - [SD-JWT VC Format](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md)
+      - [mdoc Format](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/mdoc%20format.md)
+      - [Credential Status Format](/V3.0.0/docs/data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md)
 - Guide
     - API
       - [API Documentation Writing Guide](/V3.0.0/docs/guide/api/API%20Documentation%20Writing%20Guide.md)
