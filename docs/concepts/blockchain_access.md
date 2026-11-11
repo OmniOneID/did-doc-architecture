@@ -34,6 +34,7 @@
 
 ## Storage Integration via LSS
 - In environments without blockchain infrastructure, the LSS (Ledger Service Server) can be used as the trust repository instead of the blockchain.
+    - In this configuration, the LSS replaces the storage shown as Blockchain in the diagrams above.
     - The LSS provides the same functions as the blockchain using a PostgreSQL database.
     - It registers and retrieves DID Documents, VC Meta, VC Schemas, and ZKP Credential Schemas/Definitions.
 - When the `lss` profile is active, a server accesses the repository through the LSS API (`{lss.url}/lss/api/v1`) instead of the blockchain.

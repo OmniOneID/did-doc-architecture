@@ -213,7 +213,10 @@ with OpenDID elements</y:NodeLabel>
 &lt;body&gt;
     &lt;p&gt;Use:&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: red;"&gt;Issue VC(opt ZKP)&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: red;"&gt;Issue Credential (OID4VCI)&lt;/span&gt;&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present VP or ZKP&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present VP (OID4VP)&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: green;"&gt;Present mdoc (proximity)&lt;/span&gt;&lt;/p&gt;
     &lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;span style="color: gray;"&gt;Register User&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;

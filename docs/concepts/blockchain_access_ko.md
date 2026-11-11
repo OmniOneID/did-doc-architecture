@@ -33,6 +33,7 @@
 
 ## LSS를 통한 저장소 연동
 - 블록체인 인프라를 구축하지 않는 환경에서는 LSS(Ledger Service Server)를 블록체인 대신 신뢰 저장소로 사용할 수 있다.
+    - 위 그림에서 저장소(Blockchain)로 표시한 부분을 LSS로 대체하는 구성이다.
     - LSS는 PostgreSQL 데이터베이스로 블록체인과 동일한 기능을 제공한다.
     - DID Document, VC Meta, VC Schema, ZKP Credential Schema/Definition을 등록하고 조회한다.
 - 서버는 `lss` 프로파일을 활성화하면 블록체인 대신 LSS API(`{lss.url}/lss/api/v1`)로 저장소에 접근한다.

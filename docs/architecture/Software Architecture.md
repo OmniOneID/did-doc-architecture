@@ -193,6 +193,7 @@ OpenDID serves as the target system, offering the following services to particip
 - to Holder:
     - User registration
     - Issuance and presentation of identity cards
+    - OID4VCI issuance, OID4VP presentation, and mdoc proximity presentation
     - Reporting lost or recovered mobile devices
     - Requesting the termination of DID Documents
     - Membership cancellation
@@ -204,6 +205,8 @@ OpenDID serves as the target system, offering the following services to particip
 - to Verifier:
     - Providing VerifyOffers to Service Devices
     - Receiving and verifying VPs from Holders
+    - Supporting OID4VP presentation
+    - Verifying mdoc proximity presentations with the mdoc reader app
 
 Further details about OpenDID components are provided in the Container Diagram.
 
@@ -267,8 +270,6 @@ The diagram categorizes containers as follows:
 | **Supplements**             | • User Service<br>                           |          |\
 |                             | • CLI Tool for Wallet<br>                    |          |\
 |                             | • LSS (Ledger Service Server)                |          |
-
-> The Container Diagram above does not show the Proxy, the LSS, the mdoc Reader App, or the OID4VCI components of the Issuer Service added in OpenDID 3.0. Each of them is described in its own section.
 
 ### 4.1. Core
 
@@ -625,11 +626,9 @@ This information is stored in the List Provider's database, not in the Trust Rep
 As a List Provider, the Trust Agent registers and manages OID4VCI Issuers and provides the Issuer list to wallets.
 The wallet selects an Issuer from this list to start user-initiated issuance.
 
-| API                                         | Caller | Function                                                  |
-| ------------------------------------------- | ------ | --------------------------------------------------------- |
-| `POST /list/api/v1/oid4vci/issuers`         | Issuer | Request OID4VCI Issuer registration (`REQUESTED`)         |
-| `GET /list/api/v1/oid4vci/issuers`          | Wallet | Retrieve the list of Issuers in `ACTIVE` status           |
-| `GET /list/api/v1/oid4vci/issuers/detail`   | Wallet | Retrieve an Issuer in `ACTIVE` status by `credentialIssuer` |
+1. OID4VCI Issuer Registration Request: The Issuer requests registration, and the request status is `REQUESTED`.
+1. OID4VCI Issuer List: The wallet retrieves the list of Issuers in `ACTIVE` status.
+1. OID4VCI Issuer Details: The wallet retrieves an Issuer in `ACTIVE` status by `credentialIssuer`.
 
 The TAS administrator approves (`ACTIVE`) or rejects (`REJECTED`) a registration request in the Admin Console,
 and can suspend (`SUSPENDED`) or revoke (`REVOKED`) an approved Issuer.
@@ -655,7 +654,7 @@ It also provides OID4VCI-based Credential issuance and status management using t
 |                     | • Status List Endpoint<br>    |                       |\
 |                     | • Webview issuance            |                       |
 
-The Component Diagram above shows only the components of the OpenDID issuance protocol. For the OID4VCI components, refer to the diagram in [5.2.3](#523-oid4vci).
+For details of the OID4VCI components, refer to the diagram in [5.2.3](#523-oid4vci).
 
 The [ISSUE-VC] document outlines the complete issuance process:
 
@@ -739,12 +738,12 @@ For details, refer to the [OID4VCI-ISSUANCE] document.
 
 | Component            | Function                                                                               | Notes                        |
 | -------------------- | -------------------------------------------------------------------------------------- | ---------------------------- |
-| Credential Issuer    | • Provides the Issuer Metadata (`/.well-known/openid-credential-issuer`)<br>           |                              |\
+| Credential Issuer    | • Provides the Issuer Metadata<br>                                                     |                              |\
 |                      | • Credential Offer, Nonce, and Credential Endpoints<br>                                |                              |\
 |                      | • Credential revocation Endpoint                                                       | Revocation is an OpenDID extension |
 | Authorization Server | • Issues Access Tokens with the Pre-Authorized Code and Authorization Code grants<br>  | Embedded in the Issuer Service |\
-|                      | • Provides the Authorization Server Metadata (`/.well-known/oauth-authorization-server`) |                            |
-| Status List Endpoint | • Provides signed Token Status Lists (`/status-lists/{listId}`)                        | `application/statuslist+jwt` |
+|                      | • Provides the Authorization Server Metadata                                           |                            |
+| Status List Endpoint | • Provides signed Token Status Lists                                                   | `application/statuslist+jwt` |
 | Webview issuance     | • Provides the Claim input screen and creates the Credential Offer in user-initiated issuance |                       |
 | Admin Console        | • Issuer Metadata, Credential Configuration, and Client settings<br>                   |                              |\
 |                      | • List Provider registration<br>                                                       |                              |\
@@ -907,6 +906,12 @@ The VP Module manages tasks related to VPs:
 - Submit VPs based on the transmission media, mode, and type of service device
 - OID4VP presentation (refer to [OID4VP-PRESENTATION])
 - mdoc proximity presentation (refer to [MDOC-PROXIMITY])
+
+The components of OID4VP presentation and mdoc proximity presentation are as follows.
+
+![OID4VP Components](../concepts/images/oid4vp_components.svg)
+
+![mdoc Proximity Presentation Components](../concepts/images/mdoc_proximity_components.svg)
 
 
 <div style="page-break-after: always;"></div>

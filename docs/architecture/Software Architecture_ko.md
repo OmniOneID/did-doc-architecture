@@ -201,6 +201,7 @@ OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 �
 - to Holder
     - 사용자 등록
     - 신분증 발급 및 제출
+    - OID4VCI 발급, OID4VP 제출, mdoc 근접 제출
     - 모바일 기기 분실 및 회수 신고
     - DID Document 말소 신고
     - 회원 탈퇴
@@ -212,6 +213,8 @@ OpenDID는 목표 시스템으로서, 각 참여자에 다음의 서비스를 �
 - to Verifier
     - 응대장치에 VerifyOffer 제공
     - Holder로부터 VP 수신하여 검증
+    - OID4VP 제출 지원
+    - mdoc 리더 앱으로 mdoc 근접 제출 검증
 
 OpenDID의 하위 구성요소는 Container diagram에서 설명한다.
 
@@ -289,8 +292,6 @@ Container를 분류하면 다음과 같다.
 | **Supplements**             | • User Service<br>                           |          |\
 |                             | • CLI Tool for Wallet<br>                    |          |\
 |                             | • LSS (Ledger Service Server)                |          |
-
-> 상기 Container diagram 그림에는 OpenDID 3.0에서 추가된 Proxy, LSS, mdoc 리더 앱과 Issuer Service의 OID4VCI 구성 요소가 표시되어 있지 않다. 각 요소는 해당 절에서 설명한다.
 
 ### 4.1. Core
 
@@ -675,11 +676,12 @@ VC 발급을 위해 반드시 필요하나 데모 구현체가 구현하지 않�
 Trust Agent는 목록 사업자로서 OID4VCI Issuer를 등록·관리하고 월렛에 Issuer 목록을 제공한다.
 월렛은 이 목록에서 Issuer를 선택하여 사용자에 의한 발급을 시작한다.
 
-| API                                         | 호출자 | 기능                                                  |
-| ------------------------------------------- | ------ | ----------------------------------------------------- |
-| `POST /list/api/v1/oid4vci/issuers`         | Issuer | OID4VCI Issuer 등록 요청 (`REQUESTED`)                |
-| `GET /list/api/v1/oid4vci/issuers`          | 월렛   | `ACTIVE` 상태의 Issuer 목록 조회                      |
-| `GET /list/api/v1/oid4vci/issuers/detail`   | 월렛   | `credentialIssuer`로 `ACTIVE` 상태의 Issuer 조회      |
+1. OID4VCI Issuer 등록 요청
+    - Issuer가 등록을 요청하며, 요청 상태는 `REQUESTED`
+1. OID4VCI Issuer 목록 조회
+    - 월렛이 `ACTIVE` 상태의 Issuer 목록을 조회
+1. OID4VCI Issuer 상세 조회
+    - 월렛이 `credentialIssuer`로 `ACTIVE` 상태의 Issuer를 조회
 
 TAS 관리자는 Admin Console에서 등록 요청을 승인(`ACTIVE`)하거나 반려(`REJECTED`)하며,
 승인된 Issuer를 정지(`SUSPENDED`)하거나 등록 취소(`REVOKED`)할 수 있다.
@@ -705,7 +707,7 @@ Issuer Service는 OpenDID가 제공하는 SDK를 이용하여 VC 발급, VC 상�
 |                     | • Status List Endpoint<br> |                        |\
 |                     | • Webview 발급             |                        |
 
-상기 Component diagram 그림은 OpenDID 발급 프로토콜의 구성만 표시하며, OID4VCI 구성은 [5.2.3](#523-oid4vci)의 그림을 참조한다.
+OID4VCI 구성 요소의 상세는 [5.2.3](#523-oid4vci)의 그림을 참조한다.
 
 [ISSUE-VC] 문서에 정의된 VC 발급의 전체 절차를 요약하면 다음과 같다.
 
@@ -801,12 +803,12 @@ OpenDID 발급 프로토콜과 달리 월렛이 Issuer Service를 직접 호출�
 
 | 구성 요소            | 기능                                                                              | 비고                         |
 | -------------------- | --------------------------------------------------------------------------------- | ---------------------------- |
-| Credential Issuer    | • Issuer Metadata 제공 (`/.well-known/openid-credential-issuer`)<br>              |                              |\
+| Credential Issuer    | • Issuer Metadata 제공<br>                                                         |                              |\
 |                      | • Credential Offer, Nonce, Credential Endpoint<br>                                |                              |\
 |                      | • Credential 폐기 Endpoint                                                        | 폐기는 OpenDID 확장          |
 | Authorization Server | • Pre-Authorized Code, Authorization Code grant로 Access Token 발급<br>           | Issuer Service에 내장        |\
-|                      | • Authorization Server Metadata 제공 (`/.well-known/oauth-authorization-server`)  |                              |
-| Status List Endpoint | • 서명된 Token Status List 제공 (`/status-lists/{listId}`)                        | `application/statuslist+jwt` |
+|                      | • Authorization Server Metadata 제공                                              |                              |
+| Status List Endpoint | • 서명된 Token Status List 제공                                                   | `application/statuslist+jwt` |
 | Webview 발급         | • 사용자에 의한 발급 개시 시 Claim 입력 화면 제공 및 Credential Offer 생성        |                              |
 | Admin Console        | • Issuer Metadata, Credential Configuration, Client 설정<br>                      |                              |\
 |                      | • List Provider 등록<br>                                                          |                              |\
@@ -981,6 +983,12 @@ VP Module은 VP와 관련된 다음의 기능을 담당한다.
 - VP 제출 (전달매체, 모드, 응대장치 종류별)
 - OID4VP 제출 ([OID4VP-PRESENTATION] 참조)
 - mdoc 근접 제출 ([MDOC-PROXIMITY] 참조)
+
+OID4VP 제출과 mdoc 근접 제출의 구성 요소는 다음과 같다.
+
+![OID4VP 구성 요소](../concepts/images/oid4vp_components_ko.svg)
+
+![mdoc 근접 제출 구성 요소](../concepts/images/mdoc_proximity_components_ko.svg)
 
 
 <div style="page-break-after: always;"></div>
