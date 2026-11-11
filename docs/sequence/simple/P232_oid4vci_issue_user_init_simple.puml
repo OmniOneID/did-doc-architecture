@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
