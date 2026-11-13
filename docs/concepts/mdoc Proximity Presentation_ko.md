@@ -20,12 +20,12 @@ mdoc 근접 제출
 
 - 주제: ISO/IEC 18013-5 기반 mdoc 근접 제출 개념 설명
 - 작성: 오픈소스개발팀
-- 일자: 2026-11-04
+- 일자: 2026-11-12
 - 버전: v1.0.0
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-11-04 | 초안      |
+| v1.0.0 | 2026-11-12 | 초안      |
 
 <br>
 
@@ -36,6 +36,7 @@ mdoc 근접 제출
 
 - [1. 개요](#1-개요)
     - [1.1. 참조문서](#11-참조문서)
+        - [1.1.1. mdoc 근접 제출 절차도 (P330)](#111-mdoc-근접-제출-절차도-p330)
     - [1.2. 용어](#12-용어)
     - [1.3. OID4VP 제출과의 비교](#13-oid4vp-제출과의-비교)
 - [2. 구성 요소](#2-구성-요소)
@@ -85,7 +86,13 @@ mdoc 근접 제출 순서는 다음과 같다.
 | [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format_ko.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
 | [OID4VCI-ISSUANCE]     | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](OID4VCI%20Issuance_ko.md) |
 | [OID4VP-PRESENTATION]  | (OpenDID) OID4VP 기반 VP 제출                            | [OID4VP Presentation_ko.md](OID4VP%20Presentation_ko.md) |
-| [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc 근접 제출 절차도 (P330)                   | [P330_mdoc_proximity_present_ko.puml](../sequence/detailed/P330_mdoc_proximity_present_ko.puml) |
+| [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc 근접 제출 절차도 (P330)                   | [P330 절차도](#111-mdoc-근접-제출-절차도-p330) |
+
+#### 1.1.1. mdoc 근접 제출 절차도 (P330)
+
+![mdoc 근접 제출 절차도 (P330)](../sequence/detailed/images/P330_mdoc_proximity_present_ko.svg)
+
+- 원본: `docs/sequence/detailed/P330_mdoc_proximity_present_ko.puml`
 
 ### 1.2. 용어
 

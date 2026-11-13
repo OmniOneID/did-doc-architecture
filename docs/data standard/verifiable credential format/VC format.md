@@ -21,7 +21,7 @@ Verifiable Credentials format
     - Definition of VC (Verifiable Credentials) data format
     - Definition of entity-specific certificate VC data
 - Author: Youngho Kang
-- Date: 2026-10-22
+- Date: 2026-11-12
 - Version: v1.1.0
 
 
@@ -30,7 +30,7 @@ Revision History
 
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
-| v1.1.0  | 2026-10-22 | Add reference to OID4VCI Credential status       |
+| v1.1.0  | 2026-11-12 | Add reference to OID4VCI Credential status, Fix typos and links |
 | v1.0.0  | 2024-09-03 | Initial version                                         |
 
 
@@ -86,8 +86,8 @@ The following are _out of the scope_ of this document and can be defined freely 
 | [VC-MODEL]  | Verifiable Credentials Data Model v2.0                | https://www.w3.org/TR/vc-data-model-2.0/  |
 | [VC-IMPL]   | Verifiable Credentials Implementation Guidelines 1.0  | https://www.w3.org/TR/vc-imp-guide/       |
 | [VC-DATA]   | Verifiable Credential Data Integrity 1.0              | https://w3c.github.io/vc-data-integrity   |
-| [OSD]       | OpenDID Schema Definition Language                    |                                           |
-| [DATA-SPEC] | (OpenDID) Data Specification                          |                                           |
+| [OSD]       | OpenDID Schema Definition Language                    | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC] | (OpenDID) Data Specification                          | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
 
 
 <div style="page-break-after: always;"></div>
@@ -108,7 +108,7 @@ Detailed retrieval methods are out of the scope of this document and are omitted
 ![VC Lifecycle](images/vc_lifecycle.svg)
 
 > **Note** SD-JWT VC and mdoc issued through OID4VCI use the Token Status List statuses (`VALID`, `SUSPENDED`, `INVALID`) instead of the states above.
-> For status values and status transitions, refer to [Credential Status format](../oid4vc%20credential%20format/Credential%20Status%20format.md).
+> For status values and status transitions, refer to [Credential Status format](./../oid4vc%20credential%20format/Credential%20Status%20format.md).
 
 ### 2.2. Location of Claim Origin
 

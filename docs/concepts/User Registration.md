@@ -76,9 +76,9 @@ The user registration procedure is as follows:
 
 | Reference Name   | Document Name                              | Location |
 | ---------------- | ------------------------------------------- | -------- |
-| [OSD]            | OpenDID Schema Definition Language          |          |
-| [DATA-SPEC]      | (OpenDID) Data Specification                |          |
-| [DIDDOC-FORMAT]  | (OpenDID) DID Document format               |          |
+| [OSD]            | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language.md](./../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]      | (OpenDID) Data Specification                | [Data Specification.md](./../data%20standard/data%20specification/Data%20Specification.md) |
+| [DIDDOC-FORMAT]  | (OpenDID) DID Document format               | [DID Document format.md](./../data%20standard/did%20document%20format/DID%20Document%20format.md) |
 
 
 <div style="page-break-after: always;"></div>

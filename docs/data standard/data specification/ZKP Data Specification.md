@@ -20,13 +20,13 @@ ZKP Data Specification
 
 - Subject: Structure and Requirements of Key Data
 - Author: Dongjun Park
-- Date: 2026-10-13
+- Date: 2026-11-12
 - Version: v1.0.1
 
 | Version | Date       | Change Description |
 | ------- | ---------- | ------------------ |
+| v1.0.1  | 2026-11-12 | Fix typos, Revise wording, Fix image references, Add data reference diagram |
 | v1.0.0  | 2025-04-30 | Initial Draft      |
-| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix image references |
 
 <div style="page-break-after: always;"></div>
 
@@ -106,6 +106,10 @@ This document defines the core data commonly used by various entities in OpenDID
 
 Key data formats such as schema, definition, credential, proof, offer, proofRequest are detailed in separate documents.
 If there are discrepancies between this document and individual ones, this document shall take precedence.
+
+The reference relationships among the key data are as follows.
+
+![Data Reference Relationships](images/zkp_data_relation.svg)
 
 ### 1.1. Notation
 

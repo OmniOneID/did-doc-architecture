@@ -20,12 +20,12 @@ OID4VP-based VP Presentation
 
 - Subject: Explanation of OID4VP-based VP Presentation Concept
 - Author: OpenSource Development Team
-- Date: 2026-11-04
+- Date: 2026-11-12
 - Version: v1.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-11-04 | Initial version |
+| v1.0.0  | 2026-11-12 | Initial version |
 
 <br>
 
@@ -36,6 +36,7 @@ Table of Contents
 
 - [1. Overview](#1-overview)
     - [1.1. Reference Documents](#11-reference-documents)
+        - [1.1.1. OID4VP-based VP Presentation Sequence (P320)](#111-oid4vp-based-vp-presentation-sequence-p320)
     - [1.2. Terminology](#12-terminology)
     - [1.3. Comparison with the OpenDID Presentation Protocol](#13-comparison-with-the-opendid-presentation-protocol)
 - [2. Components](#2-components)
@@ -91,7 +92,13 @@ The OID4VP-based VP presentation proceeds in the following order.
 | [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format.md](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format.md) |
 | [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
 | [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format.md](./../data%20standard/verifiable%20credential%20format/VP%20format.md) |
-| [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP-based VP Presentation Sequence (P320) | [P320_oid4vp_submit.puml](../sequence/detailed/P320_oid4vp_submit.puml) |
+| [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP-based VP Presentation Sequence (P320) | [P320 Sequence](#111-oid4vp-based-vp-presentation-sequence-p320) |
+
+#### 1.1.1. OID4VP-based VP Presentation Sequence (P320)
+
+![OID4VP-based VP Presentation Sequence (P320)](../sequence/detailed/images/P320_oid4vp_submit.svg)
+
+- Source: `docs/sequence/detailed/P320_oid4vp_submit.puml`
 
 ### 1.2. Terminology
 

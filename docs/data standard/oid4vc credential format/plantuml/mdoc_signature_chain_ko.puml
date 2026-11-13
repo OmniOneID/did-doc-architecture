@@ -1,0 +1,51 @@
+@startuml mdoc_signature_chain_ko
+
+'=== 설정 ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam nodesep 30
+skinparam ranksep 50
+
+'=== IssuerSigned.nameSpaces ===
+rectangle "**IssuerSigned.nameSpaces**\n<namespace>" as NS #AliceBlue {
+    rectangle "**IssuerSignedItemBytes** (digestID 0)\nIssuerSignedItem (CBOR, tag 24)\ndigestID, random, elementIdentifier,\nelementValue" as I0 #OldLace
+    rectangle "**IssuerSignedItemBytes** (digestID n)\nIssuerSignedItem (CBOR, tag 24)\ndigestID, random, elementIdentifier,\nelementValue" as IN #OldLace
+}
+
+'=== MSO ===
+rectangle "**MobileSecurityObject (MSO)**\nversion, digestAlgorithm: SHA-256\n**valueDigests**: {<namespace>: {digestID: digest}}\ndeviceKeyInfo.deviceKey (Holder 공개키)\ndocType, validityInfo, status" as MSO #Honeydew
+
+'=== IssuerSigned.issuerAuth ===
+rectangle "**IssuerSigned.issuerAuth** (COSE_Sign1)" as IA #AliceBlue {
+    rectangle "**protected**\n{1 (alg): -7 (ES256)}" as PH #WhiteSmoke
+    rectangle "**payload**\nMobileSecurityObjectBytes\nMSO (CBOR, tag 24)" as PL #WhiteSmoke
+    rectangle "**signature**\nES256 (R || S, 64 bytes)" as SG #WhiteSmoke
+    rectangle "**unprotected**\n{4 (kid): Issuer DID key URL}" as UH #WhiteSmoke
+}
+
+'=== Trust Repository ===
+rectangle "**Issuer DID Document**\n(신뢰저장소)\nassertionMethod의 assert 키" as DID #LightYellow
+
+I0 -right-> MSO : SHA-256\ndigest
+IN -right-> MSO : SHA-256\ndigest
+MSO -right-> PL : 인코딩
+PH -[hidden]down-> PL
+PL -[hidden]down-> SG
+SG -[hidden]down-> UH
+PL -right-> SG : Sig_structure에 대해\nIssuer assert 키로 서명
+UH -right-> DID : kid
+DID -up-> SG : 서명 검증
+
+note bottom of IA
+    Sig_structure = ["Signature1", protected, h&#39;&#39;, payload]
+    protected와 payload는 서명 범위에 포함되고, kid는 포함되지 않는다.
+    검증자는 kid의 DID가 신뢰하는 Issuer의 DID인지 별도로 확인한다.
+end note
+
+@enduml

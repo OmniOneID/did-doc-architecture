@@ -65,9 +65,9 @@ The basic regulations comply with W3C's `[VC-MODEL]` (Verifiable Credentials Dat
 | [VC-MODEL]  | Verifiable Credentials Data Model v2.0               | https://www.w3.org/TR/vc-data-model-2.0/ |
 | [VC-IMPL]   | Verifiable Credentials Implementation Guidelines 1.0 | https://www.w3.org/TR/vc-imp-guide/      |
 | [VC-DATA]   | Verifiable Credential Data Integrity 1.0             | https://w3c.github.io/vc-data-integrity  |
-| [OSD]       | OpenDID Schema Definition Language                   |                                          |
-| [DATA-SPEC] | (OpenDID) Data Specification                         |                                          |
-| [VC-FORMAT] | (OpenDID) VC Format                                  |                                          |
+| [OSD]       | OpenDID Schema Definition Language                   | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC] | (OpenDID) Data Specification                         | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
+| [VC-FORMAT] | (OpenDID) VC Format                                  | [VC format.md](VC%20format.md) |
 
 
 <div style="page-break-after: always;"></div>

@@ -22,7 +22,7 @@ SD-JWT VC format
     - OID4VCI로 발급하는 SD-JWT VC 데이터 형식 정의
     - Credential Configuration과 SD-JWT VC의 대응 관계 정의
 - 작성: 오픈소스개발팀
-- 일자: 2026-10-22
+- 일자: 2026-11-12
 - 버전: v1.0.0
 
 
@@ -31,7 +31,7 @@ SD-JWT VC format
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-10-22 | 초안      |
+| v1.0.0 | 2026-11-12 | 초안      |
 
 
 <div style="page-break-after: always;"></div>
@@ -109,10 +109,10 @@ Credential Configuration은 `[OID4VCI]`의 Credential Issuer Metadata를 따른�
 | [RFC7517]          | JSON Web Key (JWK)                                       | https://www.rfc-editor.org/rfc/rfc7517                                                                 |
 | [RFC7518]          | JSON Web Algorithms (JWA)                                | https://www.rfc-editor.org/rfc/rfc7518                                                                 |
 | [RFC7800]          | Proof-of-Possession Key Semantics for JSON Web Tokens    | https://www.rfc-editor.org/rfc/rfc7800                                                                 |
-| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language_ko.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
-| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification)              | [Data Specification_ko.md](../data%20specification/Data%20Specification_ko.md)                         |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format_ko.md](../did%20document%20format/DID%20Document%20format_ko.md)                  |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](../../concepts/OID4VCI%20Issuance_ko.md)                                      |
+| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification)              | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md)                         |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format_ko.md](./../did%20document%20format/DID%20Document%20format_ko.md)                  |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](./../../concepts/OID4VCI%20Issuance_ko.md)                                      |
 
 
 ### 1.2. 용어
@@ -165,6 +165,10 @@ SD-JWT VC는 Issuer-signed JWT와 Disclosure를 `~`로 연결한 Compact 직렬�
 | Issuer-signed JWT | `compactJws` | Issuer가 서명한 JWT. Issuer-signed Claim과 Disclosure의 digest 목록(`_sd`)을 포함한다. |
 | Disclosure        | `disclosure` | 선택적 공개 Claim 1개. 0개 이상 포함한다.                                             |
 | KB-JWT            | `compactJws` | (제출 시, 선택) Holder가 `cnf` 키로 서명한 JWT                                        |
+
+발급 시와 제출 시의 SD-JWT VC 구성은 다음과 같다.
+
+![SD-JWT VC 구조](images/sd_jwt_vc_structure_ko.svg)
 
 
 ### 2.3. 데이터 타입 및 상수

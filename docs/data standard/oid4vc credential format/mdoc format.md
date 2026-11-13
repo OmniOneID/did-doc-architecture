@@ -22,7 +22,7 @@ ISO mdoc format
     - Definition of the data format of the ISO mdoc Credential issued via OID4VCI
     - Definition of the mapping rules between the Credential Configuration and the mdoc structure
 - Author: OpenSource Development Team
-- Date: 2026-10-22
+- Date: 2026-11-12
 - Version: v1.0.0
 
 
@@ -31,7 +31,7 @@ Revision History
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-10-22 | Initial version |
+| v1.0.0  | 2026-11-12 | Initial version |
 
 
 <div style="page-break-after: always;"></div>
@@ -108,7 +108,7 @@ The following are _out of the scope_ of this document and follow the relevant st
 
 | Reference          | Document Name                                                                           | Location                                                             |
 | ------------------ | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [ISO-18013-5]      | ISO/IEC 18013-5 Personal identification — ISO-compliant driving licence — Part 5: Mobile driving licence (mDL) application |                                    |
+| [ISO-18013-5]      | ISO/IEC 18013-5 Personal identification — ISO-compliant driving licence — Part 5: Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [ISO-18013-7]      | ISO/IEC TS 18013-7 Personal identification — ISO-compliant driving licence — Part 7: Mobile driving licence (mDL) add-on functions |                            |
 | [OID4VCI]          | OpenID for Verifiable Credential Issuance 1.0 (Appendix A. Credential Format Profiles - ISO mdoc) | https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html |
 | [RFC8949]          | Concise Binary Object Representation (CBOR)                                             | https://www.rfc-editor.org/rfc/rfc8949                               |
@@ -116,9 +116,9 @@ The following are _out of the scope_ of this document and follow the relevant st
 | [RFC9052]          | CBOR Object Signing and Encryption (COSE): Structures and Process                       | https://www.rfc-editor.org/rfc/rfc9052                               |
 | [RFC9053]          | CBOR Object Signing and Encryption (COSE): Initial Algorithms                           | https://www.rfc-editor.org/rfc/rfc9053                               |
 | [TOKEN-STATUS]     | Token Status List                                                                       | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/       |
-| [OSD]              | OpenDID Schema Definition Language                                                      | [OpenDID Schema Definition Language.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                                                     | [OID4VCI Issuance.md](../../concepts/OID4VCI%20Issuance.md)          |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                                                           | [DID Document format.md](../did%20document%20format/DID%20Document%20format.md) |
+| [OSD]              | OpenDID Schema Definition Language                                                      | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                                                     | [OID4VCI Issuance.md](./../../concepts/OID4VCI%20Issuance.md)          |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                                                           | [DID Document format.md](./../did%20document%20format/DID%20Document%20format.md) |
 
 
 <div style="page-break-after: always;"></div>
@@ -133,8 +133,8 @@ The following are _out of the scope_ of this document and follow the relevant st
 
 - `mso_mdoc-did` is an OID4VCI format identifier defined by OpenDID, and is used in the `format` of the Credential Configuration and in `credential_configurations_supported` of the Issuer Metadata.
 - The Credential is the CBOR encoding of the `IssuerSigned` structure of `[ISO-18013-5]`.
-- Since IssuerAuth is signed with the signing key of the Issuer DID Document, the verifier verifies the signature with the Issuer DID Document registered in the Trust Repository (see `[OID4VCI-ISSUANCE]` [4.6](../../concepts/OID4VCI%20Issuance.md#46-credential-formats)).
-- Since mdoc is a format to which status management applies, the Proof of the Credential request must identify the key with a Holder DID URL `kid` (see `[OID4VCI-ISSUANCE]` [4.5](../../concepts/OID4VCI%20Issuance.md#45-credential-request-and-holder-binding)).
+- Since IssuerAuth is signed with the signing key of the Issuer DID Document, the verifier verifies the signature with the Issuer DID Document registered in the Trust Repository (see `[OID4VCI-ISSUANCE]` [4.6](./../../concepts/OID4VCI%20Issuance.md#46-credential-formats)).
+- Since mdoc is a format to which status management applies, the Proof of the Credential request must identify the key with a Holder DID URL `kid` (see `[OID4VCI-ISSUANCE]` [4.5](./../../concepts/OID4VCI%20Issuance.md#45-credential-request-and-holder-binding)).
 
 
 ### 2.2. Notation
@@ -224,6 +224,10 @@ IssuerSigned
 - Each data element is made into an `IssuerSignedItem`, and its digest is stored in `valueDigests` of the MSO.
 - Since IssuerAuth signs the MSO, data elements are indirectly protected by the Issuer signature through their digests.
 - A single Credential contains only one namespace (see [4.1](#41-doctype-and-namespace)).
+
+The digest and signature relationships of the mdoc Credential are as follows.
+
+![mdoc Signature Chain](images/mdoc_signature_chain.svg)
 
 
 ### 3.2. Data Types and Constants
@@ -441,7 +445,7 @@ valueDigests[nameSpace][digestID] = SHA-256( IssuerSignedItemBytes )
 
 - The Credential Issuer assigns a Status List index at Credential issuance and adds `status` to the MSO as an extension field. Therefore, `status` is covered by the IssuerAuth signature.
 - The OpenDID Issuer server always includes `status` in `mso_mdoc-did` Credentials.
-- For status values, status transitions, and Status List retrieval, refer to [Credential Status format](Credential%20Status%20format.md) and `[OID4VCI-ISSUANCE]` [Chapter 5](../../concepts/OID4VCI%20Issuance.md#5-credential-status-management).
+- For status values, status transitions, and Status List retrieval, refer to [Credential Status format](Credential%20Status%20format.md) and `[OID4VCI-ISSUANCE]` [Chapter 5](./../../concepts/OID4VCI%20Issuance.md#5-credential-status-management).
 
 #### 3.5.5. MSO Extension Fields
 
@@ -485,7 +489,7 @@ def object IssuerAuthUnprotectedHeader: "unprotected header"
 - `protected` contains only `alg` (1), whose value is `-7` (ES256).
 - `unprotected` contains only `kid` (4). `kid` is a bstr of the UTF-8 encoding of the Issuer DID key URL.
     - Format: `{Issuer DID}?versionId={DID Document version}#{key id}` (e.g., `did:omn:issuer?versionId=1#assert`)
-    - The key id is the signing key (`assert`) of the Issuer DID Document, registered in `assertionMethod` (see `[DID-DOC-FORMAT]` [3.4](../did%20document%20format/DID%20Document%20format.md#34-provider-did-document)).
+    - The key id is the signing key (`assert`) of the Issuer DID Document, registered in `assertionMethod` (see `[DID-DOC-FORMAT]` [3.4](./../did%20document%20format/DID%20Document%20format.md#34-provider-did-document)).
 - The MSO has no Issuer identifier, and the Issuer is identified only by the DID of `kid`.
 
 #### 3.6.2. Signature Generation
@@ -515,7 +519,7 @@ The verifier verifies `IssuerSigned` as follows.
 1. Since `kid` is not covered by the signature, separately check that the DID of `kid` is the DID of a trusted Issuer.
 1. Remove tag 24 from `payload` to obtain the MSO, and check `docType` and `validityInfo` (whether the current time is within `validFrom`–`validUntil`).
 1. For each `IssuerSignedItemBytes` in `nameSpaces`, calculate the SHA-256 digest and compare it with `valueDigests[nameSpace][digestID]`.
-1. Check the Credential status with `uri` and `idx` of `status.status_list` (see `[OID4VCI-ISSUANCE]` [5.5](../../concepts/OID4VCI%20Issuance.md#55-status-check-by-verifier)).
+1. Check the Credential status with `uri` and `idx` of `status.status_list` (see `[OID4VCI-ISSUANCE]` [5.5](./../../concepts/OID4VCI%20Issuance.md#55-status-check-by-verifier)).
 
 > **Note**: This section describes the verification items based on the data structure of this document. For DeviceAuth verification in the presentation phase and the implementation of the OpenDID verifier server, refer to separate documents.
 
@@ -535,7 +539,7 @@ def object CredentialResponse: "Credential response"
 ```
 
 - If a single request contains multiple Proofs, one Credential is issued per Proof key and included in the `credentials` array.
-- If `credential_response_encryption.encryption_required` of the Issuer Metadata is `true`, the entire response is encrypted as JWE (see `[OID4VCI-ISSUANCE]` [4.5](../../concepts/OID4VCI%20Issuance.md#45-credential-request-and-holder-binding)).
+- If `credential_response_encryption.encryption_required` of the Issuer Metadata is `true`, the entire response is encrypted as JWE (see `[OID4VCI-ISSUANCE]` [4.5](./../../concepts/OID4VCI%20Issuance.md#45-credential-request-and-holder-binding)).
 - `notification_id` is not included.
 
 
@@ -544,7 +548,7 @@ def object CredentialResponse: "Credential response"
 ## 4. Credential Configuration
 
 An mdoc Credential is issued according to the `doctype` and Claim definitions of the Credential Configuration.
-The Metadata of the Credential Configuration is published in `credential_configurations_supported` of the Issuer Metadata, keyed by the Configuration ID (see `[OID4VCI-ISSUANCE]` [3.1](../../concepts/OID4VCI%20Issuance.md#31-credential-configuration)).
+The Metadata of the Credential Configuration is published in `credential_configurations_supported` of the Issuer Metadata, keyed by the Configuration ID (see `[OID4VCI-ISSUANCE]` [3.1](./../../concepts/OID4VCI%20Issuance.md#31-credential-configuration)).
 
 ### 4.1. docType and Namespace
 
@@ -719,7 +723,7 @@ This is the `mDocPID` Credential Configuration of the Issuer server sample Metad
 ```
 
 - Since `doctype` is `org.omnione.pid.1`, both the MSO `docType` and the namespace are `org.omnione.pid.1`.
-- The sample Metadata also has a `policy` (`batch_size`, `one_time_use`) item, but it is not used in OpenDID issuance (see `[OID4VCI-ISSUANCE]` [Chapter 6](../../concepts/OID4VCI%20Issuance.md#6-implementation-scope-and-constraints)).
+- The sample Metadata also has a `policy` (`batch_size`, `one_time_use`) item, but it is not used in OpenDID issuance (see `[OID4VCI-ISSUANCE]` [Chapter 6](./../../concepts/OID4VCI%20Issuance.md#6-implementation-scope-and-constraints)).
 
 ### 5.2. `IssuerSigned`
 

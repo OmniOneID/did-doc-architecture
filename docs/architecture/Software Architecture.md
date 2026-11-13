@@ -20,7 +20,7 @@ Software Architecture
 
 - Subject: Explanation of Software Architecture using the C4 model  
 - Author: Kang Young-ho 
-- Date: 2026-11-10  
+- Date: 2026-11-12  
 - Version: v1.1.0  
 
 Revision History
@@ -28,7 +28,7 @@ Revision History
 
 | Version | Date       | Change Details  |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-11-10 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation, Fix typos and links |
+| v1.1.0  | 2026-11-12 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation, Proxy mode issuance, Fix typos and links |
 | v1.0.0  | 2024-09-03 | Initial version |
 
 
@@ -41,6 +41,7 @@ Table of Contents
   - [1. Overview](#1-overview)
     - [1.1. C4 Model](#11-c4-model)
     - [1.2. Reference Documents](#12-reference-documents)
+      - [1.2.1. Proxy Mode VC Issuance Sequence (P210)](#121-proxy-mode-vc-issuance-sequence-p210)
   - [2. Digital ID Platform](#2-digital-id-platform)
     - [2.1. Open DID](#21-open-did)
   - [3. System Context Diagram](#3-system-context-diagram)
@@ -104,10 +105,16 @@ This four-step approach enables a hierarchical understanding of the entire syste
 | [VC-FORMAT] | (OpenDID) VC Format | [VC Format](./../data%20standard/verifiable%20credential%20format/VC%20format.md) |
 | [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI Issuance | [OID4VCI Issuance](./../concepts/OID4VCI%20Issuance.md) |
 | [CRED-STATUS] | (OpenDID) Credential Status format | [Credential Status format](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format.md) |
-| [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [Proxy Mode VC Issuance Sequence](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P210_issue_vc_proxy.puml) |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy Mode VC Issuance Sequence (P210) | [Proxy Mode VC Issuance Sequence](#121-proxy-mode-vc-issuance-sequence-p210) |
 | [LSS] | (OpenDID) Ledger Service Server | [LSS](https://github.com/OmniOneID/did-ledger-service-server) |
 | [OID4VP-PRESENTATION] | (OpenDID) OID4VP-based VP Presentation | [OID4VP Presentation](./../concepts/OID4VP%20Presentation.md) |
 | [MDOC-PROXIMITY] | (OpenDID) mdoc Proximity Presentation | [mdoc Proximity Presentation](./../concepts/mdoc%20Proximity%20Presentation.md) |
+
+#### 1.2.1. Proxy Mode VC Issuance Sequence (P210)
+
+![Proxy Mode VC Issuance Sequence (P210)](../sequence/detailed/images/P210_issue_vc_proxy.svg)
+
+- Source: `docs/sequence/detailed/P210_issue_vc_proxy.puml`
 
 <div style="page-break-after: always;"></div>
 
@@ -720,6 +727,8 @@ The differences from the standard procedure are as follows.
 
 Access authentication to the Proxy (session, Access Token, etc.) depends on the Proxy implementation. For the detailed procedure, refer to [ISSUE-VC-PROXY].
 
+![](../sequence/simple/images/P210_issue_vc_proxy_simple.svg)
+
 #### 5.2.2. VC Controller
 
 The VC Controller manages the VC lifecycle. Additional details are provided in the [VC-FORMAT] document. API definitions for VC lifecycle management are not currently available.
@@ -760,14 +769,38 @@ The issuance and revocation procedures are as follows.
 
 | Procedure                       | Description                                                                         | Sequence |
 | ------------------------------- | ----------------------------------------------------------------------------------- | -------- |
-| Pre-Authorized Code issuance    | The issuance service creates a Credential Offer and delivers it to the user by QR code, etc. | [P230](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P230_oid4vci_issue_pre_authorized.puml) |
-| Authorization Code issuance     | The wallet receives an Access Token after user authentication at the Authorization Server | [P231](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P231_oid4vci_issue_authorization_code.puml) |
-| User-initiated issuance         | The wallet selects an Issuer from the TAS Issuer list and enters Claims in the Webview | [P232](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P232_oid4vci_issue_user_init.puml) |
-| Credential revocation           | The wallet requests revocation with a revocation token signed with the Holder DID key | [P240](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P240_oid4vci_revoke_credential.puml) |
+| Pre-Authorized Code issuance    | The issuance service creates a Credential Offer and delivers it to the user by QR code, etc. | [P230](#5231-pre-authorized-code-issuance-sequence-p230) |
+| Authorization Code issuance     | The wallet receives an Access Token after user authentication at the Authorization Server | [P231](#5232-authorization-code-issuance-sequence-p231) |
+| User-initiated issuance         | The wallet selects an Issuer from the TAS Issuer list and enters Claims in the Webview | [P232](#5233-user-initiated-issuance-sequence-p232) |
+| Credential revocation           | The wallet requests revocation with a revocation token signed with the Holder DID key | [P240](#5234-credential-revocation-sequence-p240) |
 
 The Credential status is managed with the Token Status List, and the status values are `VALID`, `SUSPENDED`, and `INVALID`.
 The Issuer administrator changes the status in the Admin Console, and the wallet requests revocation (`INVALID`) through the Credential revocation Endpoint.
 For the status values and the Status List Token format, refer to the [CRED-STATUS] document.
+
+##### 5.2.3.1. Pre-Authorized Code Issuance Sequence (P230)
+
+![Pre-Authorized Code Issuance Sequence (P230)](../sequence/detailed/images/P230_oid4vci_issue_pre_authorized.svg)
+
+- Source: `docs/sequence/detailed/P230_oid4vci_issue_pre_authorized.puml`
+
+##### 5.2.3.2. Authorization Code Issuance Sequence (P231)
+
+![Authorization Code Issuance Sequence (P231)](../sequence/detailed/images/P231_oid4vci_issue_authorization_code.svg)
+
+- Source: `docs/sequence/detailed/P231_oid4vci_issue_authorization_code.puml`
+
+##### 5.2.3.3. User-initiated Issuance Sequence (P232)
+
+![User-initiated Issuance Sequence (P232)](../sequence/detailed/images/P232_oid4vci_issue_user_init.svg)
+
+- Source: `docs/sequence/detailed/P232_oid4vci_issue_user_init.puml`
+
+##### 5.2.3.4. Credential Revocation Sequence (P240)
+
+![Credential Revocation Sequence (P240)](../sequence/detailed/images/P240_oid4vci_revoke_credential.svg)
+
+- Source: `docs/sequence/detailed/P240_oid4vci_revoke_credential.puml`
 
 
 <div style="page-break-after: always;"></div>

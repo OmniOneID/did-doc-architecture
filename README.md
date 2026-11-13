@@ -148,7 +148,8 @@ did-doc-architecture
         ├── data standard
         ├── guide
         ├── rules
-        └── security
+        ├── security
+        └── sequence
 ```
 
 | Name               | Description                                   |
@@ -166,6 +167,7 @@ did-doc-architecture
 | ┖ guide            | Document Creation Method and OSD Syntax       |
 | ┖ rules            | Code Style and Commit Guidelines              |
 | ┖ security         | Security policies and vulnerability reporting |
+| ┖ sequence         | Detailed and simple sequence diagrams         |
 
 
 ## 7. Contributing

@@ -28,8 +28,8 @@ Revision History
 
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
-| v1.0.0  | 2025-04-30 | Draft    |
 | v1.0.1  | 2026-10-13 | Revise wording |
+| v1.0.0  | 2025-04-30 | Draft    |
 
 <div style="page-break-after: always;"></div>
 
@@ -67,9 +67,9 @@ The format is defined entirely using OSD (OpenDID Schema Definition Language).
 
 | Reference Name              | Document Title                               | Location |
 | --------------------------- | -------------------------------------------- | -------- |
-| [OSD]                       | OpenDID Schema Definition Language           |          |
-| [ZKP-DATA-SPEC]             | (OpenDID) ZKP Data Specification             |          |
-| [CREDENTIAL-REQUEST-FORMAT] | (OpenDID) Credential Request Format          |          |
+| [OSD]                       | OpenDID Schema Definition Language           | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [ZKP-DATA-SPEC]             | (OpenDID) ZKP Data Specification             | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
+| [CREDENTIAL-REQUEST-FORMAT] | (OpenDID) Credential Request Format          | [CredentialRequest format.md](CredentialRequest%20format.md) |
 
 <div style="page-break-after: always;"></div>
 

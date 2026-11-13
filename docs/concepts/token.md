@@ -19,8 +19,8 @@ This document details the functions and data specifications of the tokens used i
 
 | Reference Name | Document Name                                         | Location                               |
 | ---------------| ------------------------------------------------------| -------------------------------------- |
-| [OSD]          | OpenDID Schema Definition Language                    |                                        |
-| [DATA-SPEC]    | (OpenDID) Data Specification                          |                                        |
+| [OSD]          | OpenDID Schema Definition Language                    | [OpenDID Schema Definition Language.md](./../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]    | (OpenDID) Data Specification                          | [Data Specification.md](./../data%20standard/data%20specification/Data%20Specification.md) |
 
 ## Necessity of Tokens
 Tokens are necessary to maintain security and authentication within the Open DID system. The following are the primary reasons for needing tokens:

@@ -61,9 +61,9 @@ The format is entirely defined using OSD (OpenDID Schema Definition Language).
 
 | Reference Name | Document Title                        | Location |
 | -------------- | ------------------------------------- | -------- |
-| [OSD]          | OpenDID Schema Definition Language    |          |
-| [ZKP-DATA-SPEC] | (OpenDID) ZKP Data Specification      |          |
-| [PROOF-FORMAT] | (OpenDID) Proof Format                 |          |
+| [OSD]          | OpenDID Schema Definition Language    | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [ZKP-DATA-SPEC] | (OpenDID) ZKP Data Specification      | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
+| [PROOF-FORMAT] | (OpenDID) Proof Format                 | [Proof format.md](Proof%20format.md) |
 
 <div style="page-break-after: always;"></div>
 

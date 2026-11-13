@@ -28,8 +28,8 @@ Revision History
 
 | Version | Date       | Description                         |
 | ------- | ---------- | ----------------------------------- |
-| v0.0.1  | 2025-04-30 | Initial draft                       |
 | v1.0.1  | 2026-10-13 | Revise wording                      |
+| v0.0.1  | 2025-04-30 | Initial draft                       |
 
 <div style="page-break-after: always;"></div>
 
@@ -63,8 +63,8 @@ The `signatureCorrectnessProof` proves the correctness of the signature.
 
 | Reference Name     | Document Name                                 | Location |
 | ------------------ | --------------------------------------------- | -------- |
-| [OSD]              | OpenDID Schema Definition Language            |          |
-| [ZKP-DATA-SPEC]    | OpenDID ZKP Data Specification                |          |
+| [OSD]              | OpenDID Schema Definition Language            | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [ZKP-DATA-SPEC]    | OpenDID ZKP Data Specification                | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
 
 <div style="page-break-after: always;"></div>
 

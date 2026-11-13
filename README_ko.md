@@ -40,7 +40,7 @@ OPEN DID 시스템은 아래와 같은 원칙으로 오픈소스를 제공하고
 ## 2. 용어집
 OpenDID 플랫폼에서 사용되는 주요 용어를 이해하는 것은 프로젝트의 개념을 파악하는 데 매우 중요합니다.
 
-각 용어에 대한 자세한 설명은 [glossary.md](docs/guide/glossary.md)에서 확인할 수 있습니다.
+각 용어에 대한 자세한 설명은 [glossary_ko.md](docs/guide/glossary_ko.md)에서 확인할 수 있습니다.
 
 ## 3. 시스템 구조
 OpenDID의 전체적인 시스템 구성을 이해하기 위해, OpenDID의 컴포넌트와 소프트웨어 아키텍처를 참조하세요.
@@ -148,7 +148,8 @@ did-doc-architecture
         ├── data standard
         ├── guide
         ├── rules
-        └── security
+        ├── security
+        └── sequence
 ```
 
 |  이름 |         역할                    |
@@ -166,6 +167,7 @@ did-doc-architecture
 | ┖ guide |  문서 작성 방법 및 OSD 문법            |
 | ┖ rules |  코딩 스타일 및 커밋 규칙            |
 | ┖ security |  보안취약점 보고 및 보안정책           |
+| ┖ sequence |  상세·간략 시퀀스 다이어그램           |
 
 ## 7. Contributing
 Contributing 및 pull request 제출 절차에 대한 자세한 내용은 [CONTRIBUTING.md](CONTRIBUTING.md)와 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) 를 참조하세요.

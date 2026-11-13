@@ -7,7 +7,7 @@
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v2.0.0  | 2024-10-18 | Initial version |
+| v2.0.0  | 2025-05-12 | Initial version |
 
 <br>
 

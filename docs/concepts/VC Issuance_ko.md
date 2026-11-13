@@ -20,11 +20,12 @@ VC 발급
 
 - 주제 : VC 발급의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-13
-- 버전 : v2.0.1
+- 일자 : 2026-11-12
+- 버전 : v2.1.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
+| v2.1.0  | 2026-11-12 | Proxy 모드 발급 추가 |
 | v2.0.1  | 2026-10-13 | 오타 수정               |
 | v2.0.0  | 2025-05-27 | VcPlan 관련 데이터 포맷 변경 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
@@ -49,6 +50,7 @@ VC 발급
         - [4.1.1. IssueOfferPayload](#411-issueofferpayload)
     - [4.2. 사용자에 의한 발급 개시](#42-사용자에-의한-발급-개시)
     - [4.3. 발급 단계](#43-발급-단계)
+    - [4.4. Proxy 모드 발급](#44-proxy-모드-발급)
 
 <!-- /TOC -->
 
@@ -94,10 +96,10 @@ VC 발급 순서는 다음과 같다.
 
 | 참조명             | 문서명                                      | 위치 |
 | ------------------ | ------------------------------------------- | ---- |
-| [OSD]              | OpenDID Schema Definition Language          |      |
-| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification) |      |
-| [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  |      |
-| [PROFILE-FORMAT]   | (OpenDID) Profile format                    |      |
+| [OSD]              | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language_ko.md](./../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification) | [Data Specification_ko.md](./../data%20standard/data%20specification/Data%20Specification_ko.md) |
+| [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  | [VC Schema format_ko.md](./../data%20standard/verifiable%20credential%20format/VC%20Schema%20format_ko.md) |
+| [PROFILE-FORMAT]   | (OpenDID) Profile format                    | [Profile format_ko.md](./../data%20standard/verifiable%20credential%20format/Profile%20format_ko.md) |
 
 
 <div style="page-break-after: always;"></div>
@@ -324,3 +326,22 @@ def object IssueOfferPayload: "issue offer payload"
 ECDH, E2E 요청 및 수락 정보에 대한 서명은 선택사항이므로 아래 절차도에서 `signKeyAgree(...)` 부분은 생략이 가능하다.
 
 ![발급 단계](images/seq_issue_vc_ko.svg)
+
+### 4.4. Proxy 모드 발급
+
+TAS 대신 인가앱 사업자의 Proxy 서버가 인가앱과 이슈어 사이의 발급 요청을 중계하는 방식이다.
+인가앱은 TAS에서 VC Plan 목록을 조회하여 `issuanceMode`가 `PROXY`인 VC Plan을 선택한다.
+`issuanceMode`가 `DIRECT`인 VC Plan은 [4.3](#43-발급-단계)의 발급 단계를 따른다.
+
+사전 조건으로 인가앱은 KYC 등으로 확인한 사용자 정보를 CAS에 미리 등록한다.
+
+[4.3](#43-발급-단계)의 발급 단계와 다른 점은 다음과 같다.
+
+- 인가앱은 사용자 정보 대신 사용자 식별자(`userId`)를 전달하며, 이슈어는 CAS에서 `userId`로 사용자 PII를 조회하여 발급 대상 사용자를 식별한다.
+- TAS와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
+- TAS가 생성하던 `authNonce` 대신 이슈어가 생성한 `issuerNonce`를 `authNonce`로 사용한다.
+- 이슈어는 VC 발급 요청의 `didAuth` 서명과 `authNonce`를 검증하여 Holder DID를 확정한다.
+
+Proxy가 인가앱을 인증하는 방식(세션, Access Token 등)은 Proxy 구현에 따르며 본 문서의 범위 밖이다.
+
+![Proxy 모드 발급](../sequence/simple/images/P210_issue_vc_proxy_simple_ko.svg)

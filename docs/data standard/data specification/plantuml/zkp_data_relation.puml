@@ -1,0 +1,88 @@
+@startuml zkp_data_relation
+
+'=== Settings ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam class {
+    BorderColor #555555
+    FontSize 13
+    AttributeFontSize 12
+}
+skinparam package {
+    BorderColor #888888
+    FontSize 13
+}
+skinparam nodesep 40
+skinparam ranksep 60
+hide circle
+hide methods
+hide empty members
+
+package "Trust Repository" #F7F7F7 {
+    class CredentialSchema #AliceBlue {
+        {field} id
+        {field} name, version
+        {field} attrNames, attrTypes
+    }
+    class CredentialDefinition #AliceBlue {
+        {field} id
+        {field} schemaId
+        {field} ver, type, value
+    }
+}
+
+package "Issuance" #FFFFFF {
+    class CredentialOffer #OldLace {
+        {field} nonce
+        {field} schemaId, credDefId
+        {field} keyCorrectnessProof
+    }
+    class CredentialRequest #OldLace {
+        {field} credDefId
+        {field} nonce
+        {field} blindedMs
+        {field} blindedMsCorrectnessProof
+    }
+    class Credential #OldLace {
+        {field} credentialId
+        {field} schemaId, credDefId
+        {field} values
+        {field} signature
+        {field} signatureCorrectnessProof
+    }
+}
+
+package "Presentation" #FFFFFF {
+    class ProofRequest #Honeydew {
+        {field} name
+        {field} nonce
+        {field} requestedAttributes[].restrictions
+        {field} requestedPredicates[].restrictions
+    }
+    class Proof #Honeydew {
+        {field} proofs
+        {field} aggregatedProof
+        {field} requestedProof
+        {field} identifiers[].schemaId, credDefId
+    }
+}
+
+CredentialSchema <-down- CredentialDefinition : schemaId
+CredentialDefinition <-down- CredentialOffer : credDefId
+CredentialDefinition <-down- CredentialRequest : credDefId
+CredentialDefinition <-down- Credential : credDefId
+CredentialDefinition <-down- ProofRequest : restrictions\n(credDefId)
+CredentialDefinition <-down- Proof : identifiers\n(credDefId)
+CredentialOffer .right.> CredentialRequest : nonce
+CredentialRequest .right.> Credential : issued
+ProofRequest .right.> Proof : requested attributes\n/ predicates
+Credential .down.> Proof : generated from
+
+note bottom of Presentation
+    CredentialOffer, Credential and Proof (identifiers) also
+    carry the schemaId of the CredentialSchema.
+end note
+
+@enduml

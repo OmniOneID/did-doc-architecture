@@ -1,0 +1,55 @@
+@startuml profile_structure_ko
+
+'=== 설정 ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam class {
+    BorderColor #555555
+    FontSize 13
+    AttributeFontSize 12
+}
+skinparam nodesep 30
+skinparam ranksep 50
+hide circle
+hide methods
+hide empty members
+
+class "Profile (공통 구조)" as COMMON #WhiteSmoke {
+    .. Profile Metadata ..
+    {field} id, type, title, description, logo
+    {field} encoding, language
+    .. Profile Contents ..
+    {field} profile
+    .. Proof ..
+    {field} proof (AssertProof)
+}
+
+class "IssueProfile.profile" as IP #OldLace {
+    {field} issuer (ProviderDetail)
+    {field} credentialSchema {id, type, value}
+    {field} credentialOffer (ZKP)
+    {field} process {endpoints, reqE2e, issuerNonce}
+}
+
+class "VerifyProfile.profile" as VP #AliceBlue {
+    {field} verifier (ProviderDetail)
+    {field} filter.credentialSchemas[]
+    {field}     {id, type, value, presentAll, displayClaims,
+    {field}      requiredClaims, allowedIssuers}
+    {field} process {endpoints, reqE2e, verifierNonce, authType}
+}
+
+class "ProofRequestProfile.profile" as PP #Honeydew {
+    {field} verifier (ProviderDetail)
+    {field} proofRequest {name, version, nonce,
+    {field}     requestedAttributes, requestedPredicates}
+    {field} reqE2e
+}
+
+COMMON *-- IP : profile\n(type = IssueProfile,\nIssuer가 proof 서명)
+COMMON *-- VP : profile\n(type = VerifyProfile,\nVerifier가 proof 서명)
+COMMON *-- PP : profile\n(type = ProofRequestProfile,\nVerifier가 proof 서명)
+
+@enduml

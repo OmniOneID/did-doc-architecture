@@ -22,7 +22,7 @@ ISO mdoc format
     - OID4VCI로 발급하는 ISO mdoc Credential 데이터 형식 정의
     - Credential Configuration과 mdoc 구조의 대응 규칙 정의
 - 작성: 오픈소스개발팀
-- 일자: 2026-10-22
+- 일자: 2026-11-12
 - 버전: v1.0.0
 
 
@@ -31,7 +31,7 @@ ISO mdoc format
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-10-22 | 초안      |
+| v1.0.0 | 2026-11-12 | 초안      |
 
 
 <div style="page-break-after: always;"></div>
@@ -108,7 +108,7 @@ OpenDID는 mdoc을 `mso_mdoc-did` 형식으로 발급한다.
 
 | 참조명             | 문서명                                                                                  | 위치                                                                 |
 | ------------------ | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [ISO-18013-5]      | ISO/IEC 18013-5 Personal identification — ISO-compliant driving licence — Part 5: Mobile driving licence (mDL) application |                                    |
+| [ISO-18013-5]      | ISO/IEC 18013-5 Personal identification — ISO-compliant driving licence — Part 5: Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [ISO-18013-7]      | ISO/IEC TS 18013-7 Personal identification — ISO-compliant driving licence — Part 7: Mobile driving licence (mDL) add-on functions |                            |
 | [OID4VCI]          | OpenID for Verifiable Credential Issuance 1.0 (Appendix A. Credential Format Profiles - ISO mdoc) | https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html |
 | [RFC8949]          | Concise Binary Object Representation (CBOR)                                             | https://www.rfc-editor.org/rfc/rfc8949                               |
@@ -116,9 +116,9 @@ OpenDID는 mdoc을 `mso_mdoc-did` 형식으로 발급한다.
 | [RFC9052]          | CBOR Object Signing and Encryption (COSE): Structures and Process                       | https://www.rfc-editor.org/rfc/rfc9052                               |
 | [RFC9053]          | CBOR Object Signing and Encryption (COSE): Initial Algorithms                           | https://www.rfc-editor.org/rfc/rfc9053                               |
 | [TOKEN-STATUS]     | Token Status List                                                                       | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/       |
-| [OSD]              | OpenDID Schema Definition Language                                                      | [OpenDID Schema Definition Language_ko.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                                                          | [OID4VCI Issuance_ko.md](../../concepts/OID4VCI%20Issuance_ko.md)    |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                                                           | [DID Document format_ko.md](../did%20document%20format/DID%20Document%20format_ko.md) |
+| [OSD]              | OpenDID Schema Definition Language                                                      | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                                                          | [OID4VCI Issuance_ko.md](./../../concepts/OID4VCI%20Issuance_ko.md)    |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                                                           | [DID Document format_ko.md](./../did%20document%20format/DID%20Document%20format_ko.md) |
 
 
 <div style="page-break-after: always;"></div>
@@ -133,8 +133,8 @@ OpenDID는 mdoc을 `mso_mdoc-did` 형식으로 발급한다.
 
 - `mso_mdoc-did`는 OpenDID가 정의한 OID4VCI format 식별자이며, Credential Configuration의 `format`과 Issuer Metadata의 `credential_configurations_supported`에 사용한다.
 - Credential은 `[ISO-18013-5]`의 `IssuerSigned` 구조를 CBOR로 인코딩한 것이다.
-- IssuerAuth는 Issuer DID Document의 서명키로 서명하므로, 검증자는 신뢰저장소에 등록된 Issuer DID Document로 서명을 검증한다 (`[OID4VCI-ISSUANCE]` [4.6](../../concepts/OID4VCI%20Issuance_ko.md#46-credential-형식) 참조).
-- mdoc은 상태 관리가 적용되는 형식이므로 Credential 요청의 Proof는 Holder DID URL `kid`로 키를 식별해야 한다 (`[OID4VCI-ISSUANCE]` [4.5](../../concepts/OID4VCI%20Issuance_ko.md#45-credential-요청과-holder-바인딩) 참조).
+- IssuerAuth는 Issuer DID Document의 서명키로 서명하므로, 검증자는 신뢰저장소에 등록된 Issuer DID Document로 서명을 검증한다 (`[OID4VCI-ISSUANCE]` [4.6](./../../concepts/OID4VCI%20Issuance_ko.md#46-credential-형식) 참조).
+- mdoc은 상태 관리가 적용되는 형식이므로 Credential 요청의 Proof는 Holder DID URL `kid`로 키를 식별해야 한다 (`[OID4VCI-ISSUANCE]` [4.5](./../../concepts/OID4VCI%20Issuance_ko.md#45-credential-요청과-holder-바인딩) 참조).
 
 
 ### 2.2. 표기 규칙
@@ -224,6 +224,10 @@ IssuerSigned
 - 각 data element는 `IssuerSignedItem`으로 만들어지고, 그 digest가 MSO의 `valueDigests`에 저장된다.
 - IssuerAuth는 MSO에 서명하므로, data element는 digest를 통해 간접적으로 Issuer 서명의 보호를 받는다.
 - 하나의 Credential은 하나의 네임스페이스만 포함한다 ([4.1](#41-doctype과-네임스페이스) 참조).
+
+mdoc Credential의 digest와 서명 관계는 다음과 같다.
+
+![mdoc 서명 체인](images/mdoc_signature_chain_ko.svg)
 
 
 ### 3.2. 데이터 타입 및 상수
@@ -441,7 +445,7 @@ valueDigests[nameSpace][digestID] = SHA-256( IssuerSignedItemBytes )
 
 - Credential Issuer는 Credential 발급 시 Status List의 index를 할당하고 `status`를 MSO 확장 필드로 추가한다. 따라서 `status`는 IssuerAuth 서명 범위에 포함된다.
 - OpenDID Issuer 서버는 `mso_mdoc-did` Credential에 항상 `status`를 포함한다.
-- 상태 값과 상태 전이, Status List 조회 방법은 [Credential Status format](Credential%20Status%20format_ko.md)과 `[OID4VCI-ISSUANCE]` [5장](../../concepts/OID4VCI%20Issuance_ko.md#5-credential-상태-관리)을 참조한다.
+- 상태 값과 상태 전이, Status List 조회 방법은 [Credential Status format](Credential%20Status%20format_ko.md)과 `[OID4VCI-ISSUANCE]` [5장](./../../concepts/OID4VCI%20Issuance_ko.md#5-credential-상태-관리)을 참조한다.
 
 #### 3.5.5. MSO 확장 필드
 
@@ -485,7 +489,7 @@ def object IssuerAuthUnprotectedHeader: "unprotected header"
 - `protected`에는 `alg`(1)만 포함하며 값은 `-7`(ES256)이다.
 - `unprotected`에는 `kid`(4)만 포함한다. `kid`는 Issuer DID key URL을 UTF-8로 인코딩한 bstr이다.
     - 형식: `{Issuer DID}?versionId={DID Document 버전}#{키 id}` (예: `did:omn:issuer?versionId=1#assert`)
-    - 키 id는 Issuer DID Document의 서명키(`assert`)이며, `assertionMethod`에 등록된 키이다 (`[DID-DOC-FORMAT]` [3.4](../did%20document%20format/DID%20Document%20format_ko.md#34-provider-did-document) 참조).
+    - 키 id는 Issuer DID Document의 서명키(`assert`)이며, `assertionMethod`에 등록된 키이다 (`[DID-DOC-FORMAT]` [3.4](./../did%20document%20format/DID%20Document%20format_ko.md#34-provider-did-document) 참조).
 - MSO에는 Issuer 식별자가 없으며, Issuer는 `kid`의 DID로만 식별된다.
 
 #### 3.6.2. 서명 생성
@@ -515,7 +519,7 @@ Credential Issuer는 다음 순서로 IssuerAuth를 생성한다.
 1. `kid`는 서명 범위에 포함되지 않으므로, `kid`의 DID가 신뢰하는 Issuer의 DID인지 별도로 확인한다.
 1. `payload`에서 tag 24를 해제하여 MSO를 얻고, `docType`과 `validityInfo`(현재 시각이 `validFrom`~`validUntil` 범위인지)를 확인한다.
 1. `nameSpaces`의 각 `IssuerSignedItemBytes`에 대해 SHA-256 digest를 계산하여 `valueDigests[nameSpace][digestID]`와 비교한다.
-1. `status.status_list`의 `uri`와 `idx`로 Credential 상태를 확인한다 (`[OID4VCI-ISSUANCE]` [5.5](../../concepts/OID4VCI%20Issuance_ko.md#55-검증자의-상태-확인) 참조).
+1. `status.status_list`의 `uri`와 `idx`로 Credential 상태를 확인한다 (`[OID4VCI-ISSUANCE]` [5.5](./../../concepts/OID4VCI%20Issuance_ko.md#55-검증자의-상태-확인) 참조).
 
 > **참고**: 본 절은 본 문서의 데이터 구조에 따른 검증 항목을 설명한다. 제출 단계의 DeviceAuth 검증과 OpenDID 검증 사업자 서버의 구현은 별도 문서를 참조한다.
 
@@ -535,7 +539,7 @@ def object CredentialResponse: "Credential 응답"
 ```
 
 - 하나의 요청에 여러 Proof를 포함하면 Proof 키마다 Credential을 하나씩 발급하여 `credentials` 배열에 담는다.
-- Issuer Metadata의 `credential_response_encryption.encryption_required`가 `true`이면 응답 전체를 JWE로 암호화한다 (`[OID4VCI-ISSUANCE]` [4.5](../../concepts/OID4VCI%20Issuance_ko.md#45-credential-요청과-holder-바인딩) 참조).
+- Issuer Metadata의 `credential_response_encryption.encryption_required`가 `true`이면 응답 전체를 JWE로 암호화한다 (`[OID4VCI-ISSUANCE]` [4.5](./../../concepts/OID4VCI%20Issuance_ko.md#45-credential-요청과-holder-바인딩) 참조).
 - `notification_id`는 포함하지 않는다.
 
 
@@ -544,7 +548,7 @@ def object CredentialResponse: "Credential 응답"
 ## 4. Credential Configuration
 
 mdoc Credential은 Credential Configuration에 정의된 `doctype`과 Claim 정의에 따라 발급된다.
-Credential Configuration의 Metadata는 Issuer Metadata의 `credential_configurations_supported`에 Configuration ID를 키로 공개된다 (`[OID4VCI-ISSUANCE]` [3.1](../../concepts/OID4VCI%20Issuance_ko.md#31-credential-configuration) 참조).
+Credential Configuration의 Metadata는 Issuer Metadata의 `credential_configurations_supported`에 Configuration ID를 키로 공개된다 (`[OID4VCI-ISSUANCE]` [3.1](./../../concepts/OID4VCI%20Issuance_ko.md#31-credential-configuration) 참조).
 
 ### 4.1. docType과 네임스페이스
 
@@ -719,7 +723,7 @@ Issuer 서버 샘플 Metadata의 `mDocPID` Credential Configuration이다. `clai
 ```
 
 - `doctype`이 `org.omnione.pid.1`이므로 MSO `docType`과 네임스페이스는 모두 `org.omnione.pid.1`이다.
-- 샘플 Metadata에는 `policy`(`batch_size`, `one_time_use`) 항목도 있으나 OpenDID 발급에는 사용하지 않는다 (`[OID4VCI-ISSUANCE]` [6장](../../concepts/OID4VCI%20Issuance_ko.md#6-구현-범위-및-제약) 참조).
+- 샘플 Metadata에는 `policy`(`batch_size`, `one_time_use`) 항목도 있으나 OpenDID 발급에는 사용하지 않는다 (`[OID4VCI-ISSUANCE]` [6장](./../../concepts/OID4VCI%20Issuance_ko.md#6-구현-범위-및-제약) 참조).
 
 ### 5.2. `IssuerSigned`
 

@@ -114,8 +114,8 @@ The rules for referencing specific members or values within a JSON formatted doc
 | ------------------ | ---------------------------------------------- | ------------------------------------ |
 | [DID-v1.0]         | Decentralized Identifiers (DIDs) v1.0          | https://www.w3.org/TR/did-core/      |
 | [DID-IMPL-v1.0]    | DID Implementation Guide v1.0                  | https://www.w3.org/TR/did-imp-guide/ |
-| [OSD]              | OpenDID Schema Definition Language             |                                      |
-| [DATA-SPEC]        | (OpenDID) Data Specification                   |                                      |
+| [OSD]              | OpenDID Schema Definition Language             | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]        | (OpenDID) Data Specification                   | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
 
 
 <div style="page-break-after: always;"></div>

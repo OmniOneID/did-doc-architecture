@@ -28,8 +28,8 @@ Verifiable Presentation format
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2024-09-03 | 초안      |
 | v1.0.1 | 2026-10-13 | 오타 수정   |
+| v1.0.0 | 2024-09-03 | 초안      |
 
 
 <div style="page-break-after: always;"></div>
@@ -66,9 +66,9 @@ Verifiable Presentation format
 | [VC-MODEL]  | Verifiable Credentials Data Model v2.0               | https://www.w3.org/TR/vc-data-model-2.0/ |
 | [VC-IMPL]   | Verifiable Credentials Implementation Guidelines 1.0 | https://www.w3.org/TR/vc-imp-guide/      |
 | [VC-DATA]   | Verifiable Credential Data Integrity 1.0             | https://w3c.github.io/vc-data-integrity  |
-| [OSD]       | OpenDID Schema Definition Language                   |                                          |
-| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          |                                          |
-| [VC-FORMAT] | (OpenDID) VC format                                  |                                          |
+| [OSD]       | OpenDID Schema Definition Language                   | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
+| [VC-FORMAT] | (OpenDID) VC format                                  | [VC format_ko.md](VC%20format_ko.md) |
 
 
 <div style="page-break-after: always;"></div>

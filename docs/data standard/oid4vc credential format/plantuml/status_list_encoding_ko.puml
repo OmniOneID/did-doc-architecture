@@ -1,0 +1,56 @@
+@startuml status_list_encoding_ko
+
+'=== 설정 ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam ranksep 40
+
+rectangle STV #AliceBlue [
+    **상태 값** (예시: capacity 8, bits 2)
+    |= idx |= 0 |= 1 |= 2 |= 3 |= 4 |= 5 |= 6 |= 7 |
+    | 상태 | VALID | INVALID | SUSPENDED | VALID | INVALID | INVALID | VALID | SUSPENDED |
+    | 값 | 0 | 1 | 2 | 0 | 1 | 1 | 0 | 2 |
+]
+
+rectangle SBA #OldLace [
+    **상태 Byte 배열** (ceil(capacity × bits / 8) = 2 Byte)
+    |= Byte |= Bit 7-6 |= Bit 5-4 |= Bit 3-2 |= Bit 1-0 |= 값 |
+    | 0 | idx 3: 00 | idx 2: 10 | idx 1: 01 | idx 0: 00 | 0x24 |
+    | 1 | idx 7: 10 | idx 6: 00 | idx 5: 01 | idx 4: 01 | 0x85 |
+]
+
+rectangle ZL #WhiteSmoke [
+    **ZLIB 압축** (DEFLATE, 레벨 9)
+    78 DA 53 69 05 00 00 CF 00 AA
+]
+
+rectangle LST #Honeydew [
+    **status_list.lst** (padding 없는 base64url)
+    eNpTaQUAAM8Aqg
+]
+
+STV -down-> SBA : idx i의 값을\nBit 위치 i × bits에 기록
+SBA -down-> ZL : 압축
+ZL -down-> LST : 인코딩
+
+note right of SBA
+    Byte 위치: floor(i × bits / 8)
+    Byte 내 Bit 위치(shift): (i × bits) mod 8
+    낮은 index가 Byte의 하위 Bit에 위치한다 (LSB부터).
+    상태 값이 기록되지 않은 index는 0이다.
+end note
+
+note right of LST
+    상태 값 확인 (검증자):
+    raw = zlib.decompress(base64url_decode(lst))
+    value = (raw[bit // 8] >> (bit % 8)) & ((1 << bits) - 1), bit = idx × bits
+    예: idx 7: bit 14 → Byte 1, shift 6 → (0x85 >> 6) & 0x3 = 2 (SUSPENDED)
+end note
+
+@enduml

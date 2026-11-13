@@ -29,8 +29,8 @@ VC Schema format
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2024-09-03 | 초안      |
 | v1.0.1 | 2026-10-13 | 오타 수정   |
+| v1.0.0 | 2024-09-03 | 초안      |
 
 
 <div style="page-break-after: always;"></div>
@@ -91,9 +91,9 @@ format은 모두 OSD (OpenDID Schema Definition Language)로 정의한다.
 
 | 참조명      | 문서명                                      | 위치 |
 | ----------- | ------------------------------------------- | ---- |
-| [OSD]       | OpenDID Schema Definition Language          |      |
-| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification) |      |
-| [VC-FORMAT] | (OpenDID) VC format                         |      |
+| [OSD]       | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification) | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
+| [VC-FORMAT] | (OpenDID) VC format                         | [VC format_ko.md](VC%20format_ko.md) |
 
 
 <div style="page-break-after: always;"></div>

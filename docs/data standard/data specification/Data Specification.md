@@ -25,9 +25,9 @@ Data Specification
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2024-09-03 | Initial version |
-| v2.0.0 | 2025-05-09 | Add ZKP data |
 | v2.0.1 | 2026-10-13 | Fix typos, Revise wording |
+| v2.0.0 | 2025-05-09 | Add ZKP data |
+| v1.0.0  | 2024-09-03 | Initial version |
 
 <div style="page-break-after: always;"></div>
 

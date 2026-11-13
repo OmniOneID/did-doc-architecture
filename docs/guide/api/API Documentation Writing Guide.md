@@ -11,8 +11,8 @@ Revision History
 
 | Version | Date       | Change Details  |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2024-09-03 | Initial version |
 | v1.0.1  | 2026-10-13 | Fix links |
+| v1.0.0  | 2024-09-03 | Initial version |
 
 Table of Contents
 ---

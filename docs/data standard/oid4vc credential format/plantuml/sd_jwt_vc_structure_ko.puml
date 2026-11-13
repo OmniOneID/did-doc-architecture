@@ -1,0 +1,67 @@
+@startuml sd_jwt_vc_structure_ko
+
+'=== 설정 ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam label {
+    FontSize 22
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam nodesep 12
+skinparam ranksep 70
+
+'=== 발급 시 ===
+rectangle "**발급 시** (Credential 응답)" as ISS #FFFFFF {
+    rectangle "**Issuer-signed JWT**\n(typ: dc+sd-jwt-did)" as IJWT #AliceBlue {
+        rectangle "**Header**\nalg, kid, typ" as IH #WhiteSmoke
+        rectangle "**Payload**\niss, iat, exp, vct, cnf, status\n_sd: [digest 1, ..., digest N]" as IP #WhiteSmoke
+        rectangle "**Signature**\nIssuer assert 키로 서명" as IS #WhiteSmoke
+    }
+    label "<b>&#126;</b>" as T1
+    rectangle "**Disclosure 1**\n[salt, Claim 이름,\n Claim 값]" as D1 #OldLace
+    label "<b>&#126; ... &#126;</b>" as T2
+    rectangle "**Disclosure N**\n[salt, Claim 이름,\n Claim 값]" as DN #OldLace
+    label "<b>&#126;</b>" as T3
+}
+
+IH -[hidden]right-> IP
+IP -[hidden]right-> IS
+IJWT -[hidden]right-> T1
+T1 -[hidden]right-> D1
+D1 -[hidden]right-> T2
+T2 -[hidden]right-> DN
+DN -[hidden]right-> T3
+
+D1 -left-> IP : digest
+DN -left-> IP : digest
+
+'=== 제출 시 ===
+rectangle "**제출 시**" as PRE #FFFFFF {
+    rectangle "**Issuer-signed JWT**\n(발급 시와 동일)" as PJWT #AliceBlue
+    label "<b>&#126;</b>" as U1
+    rectangle "**Disclosure i ... k**\nHolder가 선택" as PD #OldLace
+    label "<b>&#126;</b>" as U2
+    rectangle "**KB-JWT** (선택)\n(typ: kb+jwt)\naud, nonce, iat, sd_hash\nHolder 키로 서명" as KB #Honeydew
+}
+
+PJWT -[hidden]right-> U1
+U1 -[hidden]right-> PD
+PD -[hidden]right-> U2
+U2 -[hidden]right-> KB
+
+ISS -[hidden]down-> PRE
+IP .down.> KB : cnf.jwk로\nKB-JWT 서명 검증
+
+note as N1
+    digest = base64url(SHA-256(Disclosure)), Payload의 _sd에 포함
+    sd_hash = base64url(SHA-256(<Issuer-signed JWT>&#126;<Disclosure i>&#126;...&#126;<Disclosure k>&#126;))
+    KB-JWT가 없으면 제출 문자열은 마지막 &#126;로 끝난다
+end note
+PRE -[hidden]down-> N1
+
+@enduml

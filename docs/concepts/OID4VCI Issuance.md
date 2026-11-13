@@ -100,7 +100,7 @@ The OID4VCI-based VC issuance sequence is as follows:
 | [RFC6749]         | The OAuth 2.0 Authorization Framework                         | https://www.rfc-editor.org/rfc/rfc6749 |
 | [SD-JWT-VC]       | SD-JWT-based Verifiable Credentials (SD-JWT VC)               | https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/ |
 | [TOKEN-STATUS]    | Token Status List                                             | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/ |
-| [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      |          |
+| [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      | https://www.iso.org/standard/69084.html |
 | [VC-ISSUANCE]     | (OpenDID) VC Issuance                                         | [VC Issuance.md](VC%20Issuance.md) |
 | [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format.md](./../data%20standard/did%20document%20format/DID%20Document%20format.md) |
 | [ISSUER-API]      | (OpenDID) Issuer API                                          | did-issuer-server `docs/api/Issuer_API.md` |

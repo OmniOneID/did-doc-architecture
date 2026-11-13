@@ -116,8 +116,8 @@ JSON 형식으로 정의된 문서 내 특정 멤버나 값을 참조하는 규�
 | --------------- | ------------------------------------------- | ------------------------------------ |
 | [DID-v1.0]      | Decentralized Identifiers (DIDs) v1.0       | https://www.w3.org/TR/did-core/      |
 | [DID-IMPL-v1.0] | DID Implementation Guide v1.0               | https://www.w3.org/TR/did-imp-guide/ |
-| [OSD]           | OpenDID Schema Definition Language          |                                      |
-| [DATA-SPEC]     | (OpenDID) 데이터 명세서(Data Specification) |                                      |
+| [OSD]           | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]     | (OpenDID) 데이터 명세서(Data Specification) | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
 
 
 <div style="page-break-after: always;"></div>

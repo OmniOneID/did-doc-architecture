@@ -1,0 +1,67 @@
+@startuml sd_jwt_vc_structure
+
+'=== Settings ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam label {
+    FontSize 22
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam nodesep 12
+skinparam ranksep 70
+
+'=== At Issuance ===
+rectangle "**At Issuance** (Credential Response)" as ISS #FFFFFF {
+    rectangle "**Issuer-signed JWT**\n(typ: dc+sd-jwt-did)" as IJWT #AliceBlue {
+        rectangle "**Header**\nalg, kid, typ" as IH #WhiteSmoke
+        rectangle "**Payload**\niss, iat, exp, vct, cnf, status\n_sd: [digest 1, ..., digest N]" as IP #WhiteSmoke
+        rectangle "**Signature**\nsigned with the Issuer assert key" as IS #WhiteSmoke
+    }
+    label "<b>&#126;</b>" as T1
+    rectangle "**Disclosure 1**\n[salt, claim name,\n claim value]" as D1 #OldLace
+    label "<b>&#126; ... &#126;</b>" as T2
+    rectangle "**Disclosure N**\n[salt, claim name,\n claim value]" as DN #OldLace
+    label "<b>&#126;</b>" as T3
+}
+
+IH -[hidden]right-> IP
+IP -[hidden]right-> IS
+IJWT -[hidden]right-> T1
+T1 -[hidden]right-> D1
+D1 -[hidden]right-> T2
+T2 -[hidden]right-> DN
+DN -[hidden]right-> T3
+
+D1 -left-> IP : digest
+DN -left-> IP : digest
+
+'=== At Presentation ===
+rectangle "**At Presentation**" as PRE #FFFFFF {
+    rectangle "**Issuer-signed JWT**\n(same as issued)" as PJWT #AliceBlue
+    label "<b>&#126;</b>" as U1
+    rectangle "**Disclosure i ... k**\nselected by the Holder" as PD #OldLace
+    label "<b>&#126;</b>" as U2
+    rectangle "**KB-JWT** (optional)\n(typ: kb+jwt)\naud, nonce, iat, sd_hash\nsigned with the Holder key" as KB #Honeydew
+}
+
+PJWT -[hidden]right-> U1
+U1 -[hidden]right-> PD
+PD -[hidden]right-> U2
+U2 -[hidden]right-> KB
+
+ISS -[hidden]down-> PRE
+IP .down.> KB : cnf.jwk verifies\nthe KB-JWT signature
+
+note as N1
+    digest = base64url(SHA-256(Disclosure)), listed in _sd of the Payload
+    sd_hash = base64url(SHA-256(<Issuer-signed JWT>&#126;<Disclosure i>&#126;...&#126;<Disclosure k>&#126;))
+    Without a KB-JWT, the presentation string ends with a trailing &#126;
+end note
+PRE -[hidden]down-> N1
+
+@enduml

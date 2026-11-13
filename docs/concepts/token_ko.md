@@ -19,8 +19,8 @@ Open DID는 클라이언트의 권한을 확인하기 위해 다양한 토큰들
 
 | 참조명      | 문서명                                               | 위치                                     |
 | ----------- | ---------------------------------------------------- | ---------------------------------------- |
-| [OSD]       | OpenDID Schema Definition Language                   |                                          |
-| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          |                                          |
+| [OSD]       | OpenDID Schema Definition Language                   | [OpenDID Schema Definition Language_ko.md](./../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          | [Data Specification_ko.md](./../data%20standard/data%20specification/Data%20Specification_ko.md) |
 
 ## 토큰의 필요성
 토큰은 Open DID 시스템에서 보안과 인증을 유지하는데 필요합니다. 다음은 토큰이 필요한 주요 이유입니다.

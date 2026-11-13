@@ -30,8 +30,8 @@ Credential format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
-| v1.0.0 | 2025-04-30 | 초안                                         |
 | v1.0.1 | 2026-10-13 | 문구 수정                                      |
+| v1.0.0 | 2025-04-30 | 초안                                         |
 
 
 <div style="page-break-after: always;"></div>
@@ -67,8 +67,8 @@ signatureCorrectnessProof는 Credential이 올바르게 서명되었음을 증�
 
 | 참조명          | 문서명                                              | 위치 |
 | --------------- | --------------------------------------------------- | ---- |
-| [OSD]           | OpenDID Schema Definition Language                  |      |
-| [ZKP-DATA-SPEC] | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
+| [OSD]           | OpenDID Schema Definition Language                  | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [ZKP-DATA-SPEC] | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) | [ZKP Data Specification_ko.md](./../data%20specification/ZKP%20Data%20Specification_ko.md) |
 
 
 <div style="page-break-after: always;"></div>

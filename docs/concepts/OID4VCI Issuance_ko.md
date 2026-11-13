@@ -100,7 +100,7 @@ OID4VCI 기반 VC 발급 순서는 다음과 같다.
 | [RFC6749]         | The OAuth 2.0 Authorization Framework                         | https://www.rfc-editor.org/rfc/rfc6749 |
 | [SD-JWT-VC]       | SD-JWT-based Verifiable Credentials (SD-JWT VC)               | https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/ |
 | [TOKEN-STATUS]    | Token Status List                                             | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/ |
-| [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      |      |
+| [ISO-18013-5]     | ISO/IEC 18013-5 Mobile driving licence (mDL) application      | https://www.iso.org/standard/69084.html |
 | [VC-ISSUANCE]     | (OpenDID) VC 발급                                             | [VC Issuance_ko.md](VC%20Issuance_ko.md) |
 | [DID-DOC-FORMAT]  | (OpenDID) DID Document format                                 | [DID Document format_ko.md](./../data%20standard/did%20document%20format/DID%20Document%20format_ko.md) |
 | [ISSUER-API]      | (OpenDID) Issuer API                                          | did-issuer-server `docs/api/Issuer_API_ko.md` |

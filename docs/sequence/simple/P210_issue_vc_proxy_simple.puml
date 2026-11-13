@@ -1,0 +1,133 @@
+@startuml P210_issue_vc_proxy_simple
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Settings
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+'=== Header and Footer ===
+header OPEN-DID Technical Specification
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== Title ===
+title
+	<size:25>P210 : Issue VC (Proxy Mode)</size>
+end title
+
+'=== Options ===
+autonumber "<b>(#)</b>"
+
+'=== Participants ===
+<style>
+participant {
+  Padding 20
+}
+</style>
+skinparam BoxPadding 20
+skinparam MaxMessageSize 500
+skinparam MinClassWidth 80
+
+
+actor USER
+
+box Mobile #OldLace
+    participant "**Wallet**" as WALLET <<Wallet>> #WhiteSmoke
+    participant "**CA**" as CA <<App>> #WhiteSmoke
+end box
+
+box Certified App Provider #AliceBlue
+    participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
+    participant "**Proxy**" as PROXY <<Server>> #WhiteSmoke
+end box
+
+box TAS Server #AliceBlue
+    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+end box
+
+box Issuer Server #AliceBlue
+    participant "**Issuer**" as ISSUER <<WAS>> #WhiteSmoke
+end box
+
+box Trusted Storage
+    participant "**blockchain**" as BC <<Storage>> #WhiteSmoke
+end box
+
+
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Content
+'- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+|||
+
+== Retrieve VC Plan List ==
+CA -> TAS++: Request VC Plan List
+activate CA
+return VC Plan List
+CA -> CA: Select a VC Plan whose issuanceMode is PROXY
+
+rnote over CA, CAS
+    (Precondition) The CA registers the user information
+    verified through KYC or a similar process with the CAS in advance (userId ↔ pii).
+end rnote
+
+== P210-1 : Propose Issue VC ==
+CA -> PROXY++: Propose Issue VC
+    PROXY -> ISSUER++: Inspect Proposal
+    return {txId, refId}
+return {txId, refId}
+
+== P210-2 : Request Issue Profile ==
+CA -> PROXY++: Request Issue Profile {txId, userId}
+    PROXY -> ISSUER++: Generate Profile (Proxy) {txId, userId}
+        ISSUER -> CAS++: Retrieve PII {userId}
+        return {pii}
+        ISSUER -> ISSUER: Identify the user to issue to
+        ISSUER -> ISSUER: Generate Issue Profile
+        opt Include ZKP Credential
+            ISSUER -> ISSUER: Generate ZKP Credential Offer
+        end
+        ISSUER -> ISSUER: authNonce = issuerNonce
+    return {txId, profile, authNonce}
+return {txId, profile, authNonce}
+
+== P210-3 : Wallet Token Generation ==
+rnote across #white
+    The process of wallet token generation is not covered in this specification.
+    Refer to `issue_wallet_token_simple`
+    In proxy mode the ECDH with the TAS and the server token issuance are not performed.
+end note
+
+== P210-4 : Request Issue VC ==
+CA -> WALLET++: Issue VC request
+    WALLET -> WALLET: Generate and sign didAuth {Holder DID, authNonce}
+    WALLET -> WALLET: Generate reqVc and encrypt it with E2E
+    opt Include ZKP
+        WALLET -> WALLET: Generate credentialRequest and include it in reqVc
+    end
+    WALLET -> PROXY++: Request Issue VC {txId, didAuth, accE2e, encReqVc}
+        PROXY -> ISSUER++: Issue VC (Proxy)
+            ISSUER <-> BC: Retrieve Holder DID Document
+            ISSUER -> ISSUER: Verify didAuth signature and authNonce
+            ISSUER -> ISSUER: Decrypt encReqVc and validate it against IssueProfile
+            ISSUER -> ISSUER: vc: Issue or Reissue VC
+            opt In Case of VC reissuance
+                ISSUER -> BC: Revoke existing VC
+            end
+            opt Include ZKP
+                ISSUER -> ISSUER: credential: Issue ZKP Credential
+            end
+            ISSUER -> BC: Register VC Meta
+            ISSUER -> ISSUER: VC<sub>enc</sub> = credInfo E2E encryption
+        return VC<sub>enc</sub> response
+    return VC<sub>enc</sub> response
+    WALLET -> WALLET: credInfo = VC<sub>enc</sub> E2E decryption
+    WALLET -> WALLET: Store VC
+return {vcId}
+
+== P210-5 : Confirm Issue VC ==
+CA -> PROXY++: Confirm Issue VC {txId, vcId}
+    PROXY -> ISSUER++: Complete VC {txId, vcId}
+    return {txId}
+return {txId}
+deactivate CA
+
+@enduml

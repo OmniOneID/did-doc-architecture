@@ -22,7 +22,7 @@ Credential Status format
     - Definition of the status management data formats for Credentials issued via OID4VCI
     - Definition of the status reference in Credentials, the Status List Token, and the Credential revocation request/response data
 - Author: OpenSource Development Team
-- Date: 2026-10-22
+- Date: 2026-11-12
 - Version: v1.0.0
 
 
@@ -31,7 +31,7 @@ Revision History
 
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
-| v1.0.0  | 2026-10-22 | Initial version                                  |
+| v1.0.0  | 2026-11-12 | Initial version                                  |
 
 
 <div style="page-break-after: always;"></div>
@@ -43,6 +43,7 @@ Table of Contents
 
 - [1. Overview](#1-overview)
     - [1.1. Reference Documents](#11-reference-documents)
+        - [1.1.1. OID4VCI Credential Revocation Sequence (P240)](#111-oid4vci-credential-revocation-sequence-p240)
 - [2. General Regulations](#2-general-regulations)
     - [2.1. Applicable Credentials](#21-applicable-credentials)
     - [2.2. Status Values](#22-status-values)
@@ -118,19 +119,25 @@ The following are _out of the scope_ of this document and can be defined freely 
 | [TOKEN-STATUS]     | Token Status List (draft-ietf-oauth-status-list)         | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/                                          |
 | [OID4VCI]          | OpenID for Verifiable Credential Issuance 1.0            | https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html                               |
 | [SD-JWT-VC]        | SD-JWT-based Verifiable Credentials (SD-JWT VC)          | https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/                                            |
-| [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application |                                                                                                         |
+| [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [RFC7515]          | JSON Web Signature (JWS)                                 | https://www.rfc-editor.org/rfc/rfc7515                                                                  |
 | [RFC7518]          | JSON Web Algorithms (JWA)                                | https://www.rfc-editor.org/rfc/rfc7518                                                                  |
 | [RFC7519]          | JSON Web Token (JWT)                                     | https://www.rfc-editor.org/rfc/rfc7519                                                                  |
 | [RFC1950]          | ZLIB Compressed Data Format Specification version 3.3    | https://www.rfc-editor.org/rfc/rfc1950                                                                  |
 | [RFC1951]          | DEFLATE Compressed Data Format Specification version 1.3 | https://www.rfc-editor.org/rfc/rfc1951                                                                  |
 | [RFC4648]          | The Base16, Base32, and Base64 Data Encodings            | https://www.rfc-editor.org/rfc/rfc4648                                                                  |
-| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language.md)    |
-| [DATA-SPEC]        | (OpenDID) Data Specification                             | [Data Specification.md](../data%20specification/Data%20Specification.md)                                |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format.md](../did%20document%20format/DID%20Document%20format.md)                         |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](../../concepts/OID4VCI%20Issuance.md)                                             |
-| [P240]             | (OpenDID) P240 : OID4VCI Credential Revocation Sequence  | [P240_oid4vci_revoke_credential.puml](../../sequence/detailed/P240_oid4vci_revoke_credential.puml)      |
+| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md)    |
+| [DATA-SPEC]        | (OpenDID) Data Specification                             | [Data Specification.md](./../data%20specification/Data%20Specification.md)                                |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format.md](./../did%20document%20format/DID%20Document%20format.md)                         |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](./../../concepts/OID4VCI%20Issuance.md)                                             |
+| [P240]             | (OpenDID) P240 : OID4VCI Credential Revocation Sequence  | [P240 Sequence](#111-oid4vci-credential-revocation-sequence-p240)                                       |
 | [ISSUER-API]       | (OpenDID) Issuer API                                     | did-issuer-server `docs/api/Issuer_API.md`                                                              |
+
+#### 1.1.1. OID4VCI Credential Revocation Sequence (P240)
+
+![OID4VCI Credential Revocation Sequence (P240)](../../sequence/detailed/images/P240_oid4vci_revoke_credential.svg)
+
+- Source: `docs/sequence/detailed/P240_oid4vci_revoke_credential.puml`
 
 
 <div style="page-break-after: always;"></div>
@@ -496,6 +503,10 @@ When `bits` is 1, bit 0 of byte 0 is idx 0, bit 7 is idx 7, and bit 0 of byte 1 
 1. Set the encoding result to `status_list.lst`.
 
 > **Note**: The compression level affects only the `lst` string, not the decompressed byte array. Verifiers perform ZLIB decompression regardless of the compression level.
+
+The encoding process using the example in [4.6](#46-example) is as follows.
+
+![Status List Encoding](images/status_list_encoding.svg)
 
 
 ### 4.5. Status Value Check

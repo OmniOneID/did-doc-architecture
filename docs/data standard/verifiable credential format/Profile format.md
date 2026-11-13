@@ -20,7 +20,7 @@ Profile format
 - Subject
     - Profile Structure Definition
 - Author: OpenSource Development Team
-- Date: 2026-10-13
+- Date: 2026-11-12
 - Version: v2.0.1
 
 Revision History
@@ -28,9 +28,9 @@ Revision History
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2024-09-03 | Initial version |
+| v2.0.1 | 2026-11-12 | Fix typos, Revise wording, Add Profile structure diagram, Add reference documents |
 | v2.0.0 | 2025-05-09 | Add ZKP data     |
-| v2.0.1 | 2026-10-13 | Fix typos, Revise wording |
+| v1.0.0  | 2024-09-03 | Initial version |
 
 
 <div style="page-break-after: always;"></div>
@@ -42,6 +42,7 @@ Table of Contents
 
 - [1. Overview](#1-overview)
   - [1.1. Purpose](#11-purpose)
+  - [1.2. Reference Documents](#12-reference-documents)
 - [2. General Matters](#2-general-matters)
   - [2.1. Data Types and Constants](#21-data-types-and-constants)
 - [3. Issue Profile](#3-issue-profile)
@@ -69,6 +70,10 @@ The Profile is the request information provided to the Holder when the Issuer is
 - Verify Profile: Verification Request Information
 - ProofRequest Profile: ZKP Verification Request Information
 
+The three Profiles share the same metadata and proof structure, and differ only in the contents of `profile`.
+
+![Profile Structure](images/profile_structure.svg)
+
 How the Profile is transmitted to the Holder's device is beyond the scope of this document, but examples include:
 
 - **Example 1**: Encoding the Profile into a QR code and displaying it on a screen
@@ -78,6 +83,15 @@ How the Profile is transmitted to the Holder's device is beyond the scope of thi
 ### 1.1. Purpose
 
 The purpose of this document is to define the structure of various Profiles and explain how to use them. As mentioned earlier, the methods of transmitting Profiles between entities are not covered in this document and should be implemented separately according to the requirements of each implementation.
+
+### 1.2. Reference Documents
+
+| Reference Name     | Document Name                               | Location |
+| ------------------ | ------------------------------------------- | -------- |
+| [OSD]              | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]        | (OpenDID) Data Specification                | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
+| [ZKP-DATA-SPEC]    | (OpenDID) ZKP Data Specification            | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
+| [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  | [VC Schema format.md](VC%20Schema%20format.md) |
 
 ## 2. General Matters
 
@@ -380,7 +394,7 @@ def object VerifyProfile: "Verify Profile"
     - `displayClaims`
         - The list of claims to be displayed to the user, regardless of whether they are optional or required
         - Items included in `requiredClaims` should not be allowed to be deselected
-        - `displayClaims`에 없으나 `requiredClaims`에는 있는 항목의 제출 여부는 TAS의 정책으로 결정
+        - Whether to submit items that are in `requiredClaims` but not in `displayClaims` is determined by the TAS policy
         - If unspecified, all claims should be displayed on the screen
     - `requiredClaims`
         - The list of claims that must be submitted

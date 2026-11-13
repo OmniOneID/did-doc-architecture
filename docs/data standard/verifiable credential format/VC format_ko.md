@@ -22,7 +22,7 @@ Verifiable Credentials format
     - VC(Verifiable Credentials) 데이터 형식 정의
     - 엔티티별 가입증명서 VC 데이터 정의
 - 작성: 강영호
-- 일자: 2026-10-22
+- 일자: 2026-11-12
 - 버전: v1.1.0
 
 
@@ -31,7 +31,7 @@ Verifiable Credentials format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
-| v1.1.0 | 2026-10-22 | OID4VCI Credential 상태 참조 추가, 오타·링크 수정 |
+| v1.1.0 | 2026-11-12 | OID4VCI Credential 상태 참조 추가, 오타·링크 수정 |
 | v1.0.0 | 2024-09-03 | 초안                                         |
 
 
@@ -91,8 +91,8 @@ Verifiable Credentials format
 | [VC-MODEL]  | Verifiable Credentials Data Model v2.0               | https://www.w3.org/TR/vc-data-model-2.0/ |
 | [VC-IMPL]   | Verifiable Credentials Implementation Guidelines 1.0 | https://www.w3.org/TR/vc-imp-guide/      |
 | [VC-DATA]   | Verifiable Credential Data Integrity 1.0             | https://w3c.github.io/vc-data-integrity  |
-| [OSD]       | OpenDID Schema Definition Language                   |                                          |
-| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          |                                          |
+| [OSD]       | OpenDID Schema Definition Language                   | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC] | (OpenDID) 데이터 명세서(Data Specification)          | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
 
 
 <div style="page-break-after: always;"></div>
@@ -113,7 +113,7 @@ VC의 생애주기는 VC 저장매체에서 관리된다.
 ![VC 생애주기](images/vc_lifecycle_ko.svg)
 
 > **참고** OID4VCI로 발급하는 SD-JWT VC와 mdoc은 위 상태 대신 Token Status List의 상태(`VALID`, `SUSPENDED`, `INVALID`)를 사용한다.
-> 상태 값과 상태 전이는 [Credential Status format](../oid4vc%20credential%20format/Credential%20Status%20format_ko.md)을 참조한다.
+> 상태 값과 상태 전이는 [Credential Status format](./../oid4vc%20credential%20format/Credential%20Status%20format_ko.md)을 참조한다.
 
 
 ### 2.2. 클레임 원본의 위치 (location)

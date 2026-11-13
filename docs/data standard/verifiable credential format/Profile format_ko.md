@@ -21,7 +21,7 @@ Profile format
 - 주제
     - Profile 구조 정의
 - 작성: 오픈소스개발팀
-- 일자: 2026-10-13
+- 일자: 2026-11-12
 - 버전: v2.0.1
 
 개정이력
@@ -29,9 +29,9 @@ Profile format
 
 | 버전   | 일자       | 변경 내용                                           |
 | ------ | ---------- | --------------------------------------------------- |
-| v1.0.0 | 2024-09-03 | 초안                                                |
+| v2.0.1 | 2026-11-12 | 오타 수정, 문구 수정, 링크 수정, Profile 구조도 추가          |
 | v2.0.0 | 2025-05-09 | ZKP 데이터 추가                                        |
-| v2.0.1 | 2026-10-13 | 오타 수정, 문구 수정, 링크 수정                               |
+| v1.0.0 | 2024-09-03 | 초안                                                |
 
 
 <div style="page-break-after: always;"></div>
@@ -73,6 +73,10 @@ Profile은 Issuer가 VC를 발급하거나 Verifier가 VP를 제출받으려고 
 - Verify Profile: 검증 요청정보
 - ProofRequest Profile : ZKP 검증 요청정보
 
+세 Profile은 메타데이터와 proof 구조가 같고, `profile`의 내용만 다르다.
+
+![Profile 구조](images/profile_structure_ko.svg)
+
 Profile을 Holder의 단말에 어떻게 전달하는지는 본 문서의 범위 밖이나, 아래와 같은 사례가 있음을 밝힌다.
 
 - **사례 1**: Profile을 QR 코드로 인코딩하여 화면에 출력
@@ -90,10 +94,10 @@ Profile을 Holder의 단말에 어떻게 전달하는지는 본 문서의 범위
 
 | 참조명             | 문서명                                      | 위치 |
 | ------------------ | ------------------------------------------- | ---- |
-| [OSD]              | OpenDID Schema Definition Language          |      |
-| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification) |      |
-| [ZKP-DATA-SPEC]    | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
-| [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  |      |
+| [OSD]              | OpenDID Schema Definition Language          | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification) | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
+| [ZKP-DATA-SPEC]    | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) | [ZKP Data Specification_ko.md](./../data%20specification/ZKP%20Data%20Specification_ko.md) |
+| [VC-SCHEMA-FORMAT] | (OpenDID) VC Schema format                  | [VC Schema format_ko.md](VC%20Schema%20format_ko.md) |
 
 ## 2. 공통사항
 

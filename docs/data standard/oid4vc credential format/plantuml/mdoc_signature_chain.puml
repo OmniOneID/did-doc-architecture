@@ -1,0 +1,51 @@
+@startuml mdoc_signature_chain
+
+'=== Settings ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam nodesep 30
+skinparam ranksep 50
+
+'=== IssuerSigned.nameSpaces ===
+rectangle "**IssuerSigned.nameSpaces**\n<namespace>" as NS #AliceBlue {
+    rectangle "**IssuerSignedItemBytes** (digestID 0)\nIssuerSignedItem (CBOR, tag 24)\ndigestID, random, elementIdentifier,\nelementValue" as I0 #OldLace
+    rectangle "**IssuerSignedItemBytes** (digestID n)\nIssuerSignedItem (CBOR, tag 24)\ndigestID, random, elementIdentifier,\nelementValue" as IN #OldLace
+}
+
+'=== MSO ===
+rectangle "**MobileSecurityObject (MSO)**\nversion, digestAlgorithm: SHA-256\n**valueDigests**: {<namespace>: {digestID: digest}}\ndeviceKeyInfo.deviceKey (Holder public key)\ndocType, validityInfo, status" as MSO #Honeydew
+
+'=== IssuerSigned.issuerAuth ===
+rectangle "**IssuerSigned.issuerAuth** (COSE_Sign1)" as IA #AliceBlue {
+    rectangle "**protected**\n{1 (alg): -7 (ES256)}" as PH #WhiteSmoke
+    rectangle "**payload**\nMobileSecurityObjectBytes\nMSO (CBOR, tag 24)" as PL #WhiteSmoke
+    rectangle "**signature**\nES256 (R || S, 64 bytes)" as SG #WhiteSmoke
+    rectangle "**unprotected**\n{4 (kid): Issuer DID key URL}" as UH #WhiteSmoke
+}
+
+'=== Trust Repository ===
+rectangle "**Issuer DID Document**\n(Trust Repository)\nassert key in assertionMethod" as DID #LightYellow
+
+I0 -right-> MSO : SHA-256\ndigest
+IN -right-> MSO : SHA-256\ndigest
+MSO -right-> PL : encode
+PH -[hidden]down-> PL
+PL -[hidden]down-> SG
+SG -[hidden]down-> UH
+PL -right-> SG : signed over Sig_structure\nwith the Issuer assert key
+UH -right-> DID : kid
+DID -up-> SG : verifies\nthe signature
+
+note bottom of IA
+    Sig_structure = ["Signature1", protected, h&#39;&#39;, payload]
+    protected and payload are covered by the signature; kid is not.
+    The verifier separately checks that the DID of kid is a trusted Issuer.
+end note
+
+@enduml

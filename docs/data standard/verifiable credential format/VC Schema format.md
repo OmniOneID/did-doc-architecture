@@ -90,9 +90,9 @@ All formats are defined in OSD (OpenDID Schema Definition Language).
 
 | Reference Name | Document Name                             | Location |
 | -------------- | ----------------------------------------- | -------- |
-| [OSD]          | OpenDID Schema Definition Language        |          |
-| [DATA-SPEC]    | (OpenDID) Data Specification              |          |
-| [VC-FORMAT]    | (OpenDID) VC format                       |          |
+| [OSD]          | OpenDID Schema Definition Language        | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]    | (OpenDID) Data Specification              | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
+| [VC-FORMAT]    | (OpenDID) VC format                       | [VC format.md](VC%20format.md) |
 
 
 <div style="page-break-after: always;"></div>

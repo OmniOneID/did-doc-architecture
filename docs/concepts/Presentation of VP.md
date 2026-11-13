@@ -78,11 +78,11 @@ The VP presentation sequence is as follows:
 
 | Reference Name | Document Name                                | Location |
 | ---------------| --------------------------------------------- | -------- |
-| [OSD]          | OpenDID Schema Definition Language           |          |
-| [DATA-SPEC]    | (OpenDID) Data Specification                 |          |
-| [VC-FORMAT]    | (OpenDID) VC Format                          |          |
-| [VP-FORMAT]    | (OpenDID) VP Format                          |          |
-| [PROFILE-FORMAT]| (OpenDID) Profile Format                    |          |
+| [OSD]          | OpenDID Schema Definition Language           | [OpenDID Schema Definition Language.md](./../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]    | (OpenDID) Data Specification                 | [Data Specification.md](./../data%20standard/data%20specification/Data%20Specification.md) |
+| [VC-FORMAT]    | (OpenDID) VC Format                          | [VC format.md](./../data%20standard/verifiable%20credential%20format/VC%20format.md) |
+| [VP-FORMAT]    | (OpenDID) VP Format                          | [VP format.md](./../data%20standard/verifiable%20credential%20format/VP%20format.md) |
+| [PROFILE-FORMAT]| (OpenDID) Profile Format                    | [Profile format.md](./../data%20standard/verifiable%20credential%20format/Profile%20format.md) |
 
 <div style="page-break-after: always;"></div>
 

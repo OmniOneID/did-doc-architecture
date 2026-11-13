@@ -20,12 +20,12 @@ OID4VP 기반 VP 제출
 
 - 주제: OID4VP 기반 VP 제출 개념 설명
 - 작성: 오픈소스개발팀
-- 일자: 2026-11-04
+- 일자: 2026-11-12
 - 버전: v1.0.0
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-11-04 | 초안      |
+| v1.0.0 | 2026-11-12 | 초안      |
 
 <br>
 
@@ -36,6 +36,7 @@ OID4VP 기반 VP 제출
 
 - [1. 개요](#1-개요)
     - [1.1. 참조문서](#11-참조문서)
+        - [1.1.1. OID4VP 기반 VP 제출 절차도 (P320)](#111-oid4vp-기반-vp-제출-절차도-p320)
     - [1.2. 용어](#12-용어)
     - [1.3. OpenDID 제출 프로토콜과의 비교](#13-opendid-제출-프로토콜과의-비교)
 - [2. 구성 요소](#2-구성-요소)
@@ -91,7 +92,13 @@ OID4VP 기반 VP 제출 순서는 다음과 같다.
 | [SD-JWT-VC-FORMAT] | (OpenDID) SD-JWT VC format                               | [SD-JWT VC format_ko.md](./../data%20standard/oid4vc%20credential%20format/SD-JWT%20VC%20format_ko.md) |
 | [MDOC-FORMAT]      | (OpenDID) mdoc format                                    | [mdoc format_ko.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format_ko.md) |
 | [VP-FORMAT]        | (OpenDID) VP format                                      | [VP format_ko.md](./../data%20standard/verifiable%20credential%20format/VP%20format_ko.md) |
-| [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP 기반 VP 제출 절차도 (P320)            | [P320_oid4vp_submit_ko.puml](../sequence/detailed/P320_oid4vp_submit_ko.puml) |
+| [PRESENT-OID4VP-SEQ] | (OpenDID) OID4VP 기반 VP 제출 절차도 (P320)            | [P320 절차도](#111-oid4vp-기반-vp-제출-절차도-p320) |
+
+#### 1.1.1. OID4VP 기반 VP 제출 절차도 (P320)
+
+![OID4VP 기반 VP 제출 절차도 (P320)](../sequence/detailed/images/P320_oid4vp_submit_ko.svg)
+
+- 원본: `docs/sequence/detailed/P320_oid4vp_submit_ko.puml`
 
 ### 1.2. 용어
 

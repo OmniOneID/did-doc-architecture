@@ -1,0 +1,56 @@
+@startuml status_list_encoding
+
+'=== Settings ===
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam rectangle {
+    BorderColor #555555
+    FontSize 13
+}
+skinparam ArrowColor #333333
+skinparam ArrowFontSize 12
+skinparam ranksep 40
+
+rectangle STV #AliceBlue [
+    **Status values** (example: capacity 8, bits 2)
+    |= idx |= 0 |= 1 |= 2 |= 3 |= 4 |= 5 |= 6 |= 7 |
+    | Status | VALID | INVALID | SUSPENDED | VALID | INVALID | INVALID | VALID | SUSPENDED |
+    | Value | 0 | 1 | 2 | 0 | 1 | 1 | 0 | 2 |
+]
+
+rectangle SBA #OldLace [
+    **Status byte array** (ceil(capacity × bits / 8) = 2 bytes)
+    |= Byte |= Bit 7-6 |= Bit 5-4 |= Bit 3-2 |= Bit 1-0 |= Value |
+    | 0 | idx 3: 00 | idx 2: 10 | idx 1: 01 | idx 0: 00 | 0x24 |
+    | 1 | idx 7: 10 | idx 6: 00 | idx 5: 01 | idx 4: 01 | 0x85 |
+]
+
+rectangle ZL #WhiteSmoke [
+    **ZLIB compression** (DEFLATE, level 9)
+    78 DA 53 69 05 00 00 CF 00 AA
+]
+
+rectangle LST #Honeydew [
+    **status_list.lst** (base64url without padding)
+    eNpTaQUAAM8Aqg
+]
+
+STV -down-> SBA : write the value of idx i\nat bit position i × bits
+SBA -down-> ZL : compress
+ZL -down-> LST : encode
+
+note right of SBA
+    Byte position: floor(i × bits / 8)
+    Bit position within the byte (shift): (i × bits) mod 8
+    Lower indexes are in the lower bits (LSB first).
+    Unwritten indexes have the value 0.
+end note
+
+note right of LST
+    Status value check (verifier):
+    raw = zlib.decompress(base64url_decode(lst))
+    value = (raw[bit // 8] >> (bit % 8)) & ((1 << bits) - 1), bit = idx × bits
+    e.g. idx 7: bit 14 → byte 1, shift 6 → (0x85 >> 6) & 0x3 = 2 (SUSPENDED)
+end note
+
+@enduml

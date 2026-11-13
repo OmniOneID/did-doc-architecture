@@ -20,12 +20,12 @@ mdoc Proximity Presentation
 
 - Subject: Explanation of ISO/IEC 18013-5-based mdoc Proximity Presentation Concept
 - Author: OpenSource Development Team
-- Date: 2026-11-04
+- Date: 2026-11-12
 - Version: v1.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-11-04 | Initial version |
+| v1.0.0  | 2026-11-12 | Initial version |
 
 <br>
 
@@ -36,6 +36,7 @@ Table of Contents
 
 - [1. Overview](#1-overview)
     - [1.1. Reference Documents](#11-reference-documents)
+        - [1.1.1. mdoc Proximity Presentation Sequence (P330)](#111-mdoc-proximity-presentation-sequence-p330)
     - [1.2. Terminology](#12-terminology)
     - [1.3. Comparison with OID4VP Presentation](#13-comparison-with-oid4vp-presentation)
 - [2. Components](#2-components)
@@ -85,7 +86,13 @@ The mdoc proximity presentation proceeds in the following order.
 | [MDOC-FORMAT]          | (OpenDID) mdoc format                                    | [mdoc format.md](./../data%20standard/oid4vc%20credential%20format/mdoc%20format.md) |
 | [OID4VCI-ISSUANCE]     | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](OID4VCI%20Issuance.md) |
 | [OID4VP-PRESENTATION]  | (OpenDID) OID4VP-based VP Presentation                   | [OID4VP Presentation.md](OID4VP%20Presentation.md) |
-| [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc Proximity Presentation Sequence (P330)    | [P330_mdoc_proximity_present.puml](../sequence/detailed/P330_mdoc_proximity_present.puml) |
+| [PRESENT-MDOC-SEQ]     | (OpenDID) mdoc Proximity Presentation Sequence (P330)    | [P330 Sequence](#111-mdoc-proximity-presentation-sequence-p330) |
+
+#### 1.1.1. mdoc Proximity Presentation Sequence (P330)
+
+![mdoc Proximity Presentation Sequence (P330)](../sequence/detailed/images/P330_mdoc_proximity_present.svg)
+
+- Source: `docs/sequence/detailed/P330_mdoc_proximity_present.puml`
 
 ### 1.2. Terminology
 

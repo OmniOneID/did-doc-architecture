@@ -68,10 +68,10 @@ The format is entirely defined in OSD (OpenDID Schema Definition Language).
 
 | Reference Name       | Document Title                                    | Location |
 |----------------------|---------------------------------------------------|----------|
-| [OSD]                | OpenDID Schema Definition Language                |          |
-| [DATA-SPEC]          | (OpenDID) Data Specification                      |          |
-| [ZKP-DATA-SPEC]      | (OpenDID) ZKP Data Specification                  |          |
-| [CREDENTIAL-FORMAT]  | (OpenDID) Credential format                       |          |
+| [OSD]                | OpenDID Schema Definition Language                | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [DATA-SPEC]          | (OpenDID) Data Specification                      | [Data Specification.md](./../data%20specification/Data%20Specification.md) |
+| [ZKP-DATA-SPEC]      | (OpenDID) ZKP Data Specification                  | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
+| [CREDENTIAL-FORMAT]  | (OpenDID) Credential format                       | [Credential format.md](./../zkp%20credential%20format/Credential%20format.md) |
 
 <div style="page-break-after: always;"></div>
 

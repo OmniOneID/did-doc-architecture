@@ -22,7 +22,7 @@ Credential Status format
     - OID4VCI로 발급한 Credential의 상태 관리 데이터 형식 정의
     - Credential 내 상태 참조, Status List Token, Credential 폐기 요청·응답 데이터 정의
 - 작성: 오픈소스개발팀
-- 일자: 2026-10-22
+- 일자: 2026-11-12
 - 버전: v1.0.0
 
 
@@ -31,7 +31,7 @@ Credential Status format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
-| v1.0.0 | 2026-10-22 | 초안                                         |
+| v1.0.0 | 2026-11-12 | 초안                                         |
 
 
 <div style="page-break-after: always;"></div>
@@ -43,6 +43,7 @@ Credential Status format
 
 - [1. 개요](#1-개요)
     - [1.1. 참조문서](#11-참조문서)
+        - [1.1.1. OID4VCI Credential 폐기 Sequence (P240)](#111-oid4vci-credential-폐기-sequence-p240)
 - [2. 공통 규정](#2-공통-규정)
     - [2.1. 적용 대상 Credential](#21-적용-대상-credential)
     - [2.2. 상태 값](#22-상태-값)
@@ -118,19 +119,25 @@ Credential Status format
 | [TOKEN-STATUS]     | Token Status List (draft-ietf-oauth-status-list)         | https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/                                          |
 | [OID4VCI]          | OpenID for Verifiable Credential Issuance 1.0            | https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html                               |
 | [SD-JWT-VC]        | SD-JWT-based Verifiable Credentials (SD-JWT VC)          | https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/                                            |
-| [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application |                                                                                                         |
+| [ISO-18013-5]      | ISO/IEC 18013-5 Mobile driving licence (mDL) application | https://www.iso.org/standard/69084.html |
 | [RFC7515]          | JSON Web Signature (JWS)                                 | https://www.rfc-editor.org/rfc/rfc7515                                                                  |
 | [RFC7518]          | JSON Web Algorithms (JWA)                                | https://www.rfc-editor.org/rfc/rfc7518                                                                  |
 | [RFC7519]          | JSON Web Token (JWT)                                     | https://www.rfc-editor.org/rfc/rfc7519                                                                  |
 | [RFC1950]          | ZLIB Compressed Data Format Specification version 3.3    | https://www.rfc-editor.org/rfc/rfc1950                                                                  |
 | [RFC1951]          | DEFLATE Compressed Data Format Specification version 1.3 | https://www.rfc-editor.org/rfc/rfc1951                                                                  |
 | [RFC4648]          | The Base16, Base32, and Base64 Data Encodings            | https://www.rfc-editor.org/rfc/rfc4648                                                                  |
-| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language_ko.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
-| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification)              | [Data Specification_ko.md](../data%20specification/Data%20Specification_ko.md)                          |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format_ko.md](../did%20document%20format/DID%20Document%20format_ko.md)                   |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](../../concepts/OID4VCI%20Issuance_ko.md)                                       |
-| [P240]             | (OpenDID) P240 : OID4VCI Credential 폐기 Sequence        | [P240_oid4vci_revoke_credential_ko.puml](../../sequence/detailed/P240_oid4vci_revoke_credential_ko.puml) |
+| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]        | (OpenDID) 데이터 명세서(Data Specification)              | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md)                          |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format_ko.md](./../did%20document%20format/DID%20Document%20format_ko.md)                   |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 기반 VC 발급                           | [OID4VCI Issuance_ko.md](./../../concepts/OID4VCI%20Issuance_ko.md)                                       |
+| [P240]             | (OpenDID) P240 : OID4VCI Credential 폐기 Sequence        | [P240 절차도](#111-oid4vci-credential-폐기-sequence-p240)                                                     |
 | [ISSUER-API]       | (OpenDID) Issuer API                                     | did-issuer-server `docs/api/Issuer_API_ko.md`                                                           |
+
+#### 1.1.1. OID4VCI Credential 폐기 Sequence (P240)
+
+![OID4VCI Credential 폐기 Sequence (P240)](../../sequence/detailed/images/P240_oid4vci_revoke_credential_ko.svg)
+
+- 원본: `docs/sequence/detailed/P240_oid4vci_revoke_credential_ko.puml`
 
 
 <div style="page-break-after: always;"></div>
@@ -496,6 +503,10 @@ Status List의 상태 값은 다음 규칙으로 Byte 배열에 기록한다.
 1. 인코딩 결과를 `status_list.lst`에 설정한다.
 
 > **참고**: 압축 레벨은 `lst` 문자열에만 영향을 주며 해제한 Byte 배열에는 영향을 주지 않는다. 검증자는 압축 레벨과 무관하게 ZLIB 해제를 수행한다.
+
+[4.6](#46-예시)의 예시로 본 인코딩 과정은 다음과 같다.
+
+![Status List 인코딩](images/status_list_encoding_ko.svg)
 
 
 ### 4.5. 상태 값 확인

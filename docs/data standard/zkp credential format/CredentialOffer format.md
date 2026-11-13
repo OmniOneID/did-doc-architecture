@@ -28,7 +28,7 @@ Revision History
 
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
-| v0.0.1  | 2025-04-30 | Draft    |
+| v1.0.0  | 2025-04-30 | Draft    |
 
 <div style="page-break-after: always;"></div>
 
@@ -66,9 +66,9 @@ The format is defined entirely using OSD (OpenDID Schema Definition Language).
 
 | Reference Name            | Document Title                           | Location |
 | -------------------------- | ---------------------------------------- | -------- |
-| [OSD]                      | OpenDID Schema Definition Language      |          |
-| [ZKP-DATA-SPEC]            | (OpenDID) ZKP Data Specification        |          |
-| [CREDENTIAL-OFFER-FORMAT]  | (OpenDID) Credential Offer Format       |          |
+| [OSD]                      | OpenDID Schema Definition Language      | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md) |
+| [ZKP-DATA-SPEC]            | (OpenDID) ZKP Data Specification        | [ZKP Data Specification.md](./../data%20specification/ZKP%20Data%20Specification.md) |
+| [CREDENTIAL-OFFER-FORMAT]  | (OpenDID) Credential Offer Format       | [CredentialOffer format.md](CredentialOffer%20format.md) |
 
 <div style="page-break-after: always;"></div>
 

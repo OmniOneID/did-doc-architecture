@@ -22,7 +22,7 @@ SD-JWT VC format
     - Definition of the SD-JWT VC data format issued over OID4VCI
     - Definition of the relationship between Credential Configuration and SD-JWT VC
 - Author: OpenSource Development Team
-- Date: 2026-10-22
+- Date: 2026-11-12
 - Version: v1.0.0
 
 
@@ -31,7 +31,7 @@ Revision History
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-10-22 | Initial version |
+| v1.0.0  | 2026-11-12 | Initial version |
 
 
 <div style="page-break-after: always;"></div>
@@ -109,10 +109,10 @@ The following are _out of the scope_ of this document and can be defined freely 
 | [RFC7517]          | JSON Web Key (JWK)                                       | https://www.rfc-editor.org/rfc/rfc7517                                                                 |
 | [RFC7518]          | JSON Web Algorithms (JWA)                                | https://www.rfc-editor.org/rfc/rfc7518                                                                 |
 | [RFC7800]          | Proof-of-Possession Key Semantics for JSON Web Tokens    | https://www.rfc-editor.org/rfc/rfc7800                                                                 |
-| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language.md](../../guide/osd/OpenDID%20Schema%20Definition%20Language.md)   |
-| [DATA-SPEC]        | (OpenDID) Data Specification                             | [Data Specification.md](../data%20specification/Data%20Specification.md)                               |
-| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format.md](../did%20document%20format/DID%20Document%20format.md)                        |
-| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](../../concepts/OID4VCI%20Issuance.md)                                            |
+| [OSD]              | OpenDID Schema Definition Language                       | [OpenDID Schema Definition Language.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language.md)   |
+| [DATA-SPEC]        | (OpenDID) Data Specification                             | [Data Specification.md](./../data%20specification/Data%20Specification.md)                               |
+| [DID-DOC-FORMAT]   | (OpenDID) DID Document format                            | [DID Document format.md](./../did%20document%20format/DID%20Document%20format.md)                        |
+| [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI-based VC Issuance                      | [OID4VCI Issuance.md](./../../concepts/OID4VCI%20Issuance.md)                                            |
 
 
 ### 1.2. Terminology
@@ -165,6 +165,10 @@ At presentation, the Holder selects only the Disclosures to disclose and, if nee
 | Issuer-signed JWT | `compactJws` | The JWT signed by the Issuer. It contains the Issuer-signed claims and the Disclosure digest list (`_sd`). |
 | Disclosure        | `disclosure` | One selectively disclosable claim. Zero or more are included.                                   |
 | KB-JWT            | `compactJws` | (At presentation, optional) A JWT signed by the Holder with the `cnf` key                       |
+
+The structure of the SD-JWT VC at issuance and presentation is as follows.
+
+![SD-JWT VC Structure](images/sd_jwt_vc_structure.svg)
 
 
 ### 2.3. Data Types and Constants

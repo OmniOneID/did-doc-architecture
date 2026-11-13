@@ -71,10 +71,10 @@ format은 모두 OSD (OpenDID Schema Definition Language)로 정의한다.
 
 | 참조명              | 문서명                                          | 위치 |
 | ------------------- | ----------------------------------------------- | ---- |
-| [OSD]               | OpenDID Schema Definition Language              |      |
-| [DATA-SPEC]         | (OpenDID) 데이터 명세서(Data Specification) |      |
-| [ZKP-DATA-SPEC]     | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) |      |
-| [CREDENTIAL-FORMAT] | (OpenDID) Credential format                     |      |
+| [OSD]               | OpenDID Schema Definition Language              | [OpenDID Schema Definition Language_ko.md](./../../guide/osd/OpenDID%20Schema%20Definition%20Language_ko.md) |
+| [DATA-SPEC]         | (OpenDID) 데이터 명세서(Data Specification) | [Data Specification_ko.md](./../data%20specification/Data%20Specification_ko.md) |
+| [ZKP-DATA-SPEC]     | (OpenDID) ZKP 데이터 명세서(ZKP Data Specification) | [ZKP Data Specification_ko.md](./../data%20specification/ZKP%20Data%20Specification_ko.md) |
+| [CREDENTIAL-FORMAT] | (OpenDID) Credential format                     | [Credential format_ko.md](./../zkp%20credential%20format/Credential%20format_ko.md) |
 
 
 <div style="page-break-after: always;"></div>
