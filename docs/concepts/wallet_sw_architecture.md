@@ -5,11 +5,11 @@
 - Subject: Wallet SW Architecture
 - Author: OpenSource Development Team
 - Date: 2026-11-04
-- Version: v2.1.0
+- Version: v3.0.0
 
 | Version | Date       | Changes                                     |
 |--------|------------|---------------------------------------------|
-| v2.1.0 | 2026-11-04 | Add OID4VC functions and Proximity SDK, Fix typos |
+| v3.0.0 | 2026-11-04 | Add OID4VC functions and Proximity SDK, Fix typos |
 | v2.0.0 | 2025-06-23 | Added ZKP and Reflected the SDK integration |
 | v1.0.0 | 2024-10-18 | Initial version                             |
 

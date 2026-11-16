@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -32,8 +36,8 @@ box 인가앱 사업자 #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,7 +52,7 @@ end box
 |||
 
 rnote across #white
-    암복호화를 위해 CA와 TAS가 키를 교환 하는 과정은 생략함
+    암복호화를 위해 CA와 TA가 키를 교환 하는 과정은 생략함
 end note
 
 == 서명된 월렛 정보 요청  ==
@@ -99,7 +103,7 @@ CA -> CA: 서버토큰시드 생성\
         \n     caAppInfo\
         \n  }
 
-    CA -> TAS++ : 서버토큰 요청
+    CA -> TA++ : 서버토큰 요청
     rnote right of CA #LightGray        
         **[API_REQ : 서버토큰 요청]**
         body:
@@ -108,23 +112,23 @@ CA -> CA: 서버토큰시드 생성\
             seed
     end note
 
-    TAS -> TAS: 서명 검증\
+    TA -> TA: 서명 검증\
             \n* 월렛서명 검증\
             \n* 인증앱 사업자 서명 검증
 
-    TAS -> TAS: seed에서 정보 추출\
+    TA -> TA: seed에서 정보 추출\
             \n* appId = 인가앱 식별자\
             \n* walletId = 월렛 식별자\
             \n* walletDid = 월렛 DID\
             \n* walletProviderDid = 월렛 사업자 DID
 
-    TAS -> TAS: 등록된 월렛정보와 일치여부 확인
+    TA -> TA: 등록된 월렛정보와 일치여부 확인
 
-    TAS -> TAS: 서버토큰 생성 및 저장\
+    TA -> TA: 서버토큰 생성 및 저장\
             \n* (ServerTokenData)std 생성\
             \n* serverToken = sha256(std)
 
-    TAS -> TAS: 응답정보 암호화\
+    TA -> TA: 응답정보 암호화\
             \n* iv = IV 생성\
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
@@ -143,7 +147,7 @@ end note
 CA -> CA: encStd 복호화\
     \n encStd = decodeMultibase(encStd)\
     \n mergedNonce = clientNonce|serverNonce\
-    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TA</sub>}\
     \n sharedSecret = dec(secretKey, mergedNonce)\
     \n* std = dec(encStd, sharedSecret, iv) 
 

@@ -21,14 +21,14 @@ OpenDID Schema Definition Language
 - Subject: Syntax definition for expressing JSON data format
 - Author: Open Source Development Team, Kang Young-ho
 - Date: 2026-10-13
-- Version: v1.0.1
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Change Details         |
 | ------- | ---------- | ---------------------- |
-| v1.0.1  | 2026-10-13 | Fix typos, Revise wording, Fix links |
+| v3.0.0  | 2026-10-13 | Fix typos, Revise wording, Fix links |
 | v1.0.0  | 2024-09-03 | Initial version        |
 
 

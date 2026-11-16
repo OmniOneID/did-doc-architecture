@@ -6,7 +6,7 @@ skinparam padding 4
 
 actor "사용자" as user
 component "월렛\n(Wallet)" as wallet
-component "TAS\n(List Provider)" as tas
+component "TA\n(List Provider)" as tas
 
 rectangle "발급 사업자 (Issuer 서버)" {
     component "Webview 발급\n(사용자 주도)" as web
@@ -35,7 +35,11 @@ verifier -up-> sl : 상태 확인
 
 @startuml oid4vci_seq_pre_authorized_ko
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
@@ -89,7 +93,11 @@ wal -> wal: Credential 검증 및 저장
 
 @startuml oid4vci_seq_authorization_code_ko
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
@@ -137,13 +145,17 @@ return {credentials[{credential}]}
 
 @startuml oid4vci_seq_user_init_ko
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
 actor "**사용자**" as user
 participant "**월렛**" as wal <<Wallet>>
-participant "**TAS**\n(List Provider)" as tas <<Server>>
+participant "**TA**\n(List Provider)" as tas <<Server>>
 box 발급 사업자 #AliceBlue
     participant "**Webview 발급**" as web <<Server>>
     participant "**Credential Issuer**" as ci <<Server>>
@@ -195,7 +207,11 @@ INVALID --> [*]
 
 @startuml oid4vci_seq_revocation_ko
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 

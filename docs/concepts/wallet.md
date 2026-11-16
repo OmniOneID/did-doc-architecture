@@ -3,11 +3,11 @@
 - Subject: Explanation of Wallet
 - Author: OpenSource Development Team
 - Date: 2026-11-04
-- Version: v1.1.0
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-11-04 | Add local Wallet Token |
+| v3.0.0  | 2026-11-04 | Add local Wallet Token |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>

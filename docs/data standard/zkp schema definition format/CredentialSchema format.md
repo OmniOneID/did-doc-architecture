@@ -21,14 +21,15 @@ Credential Schema format
 - Subject
     - Definition of ZKP Credential Schema structure
 - Author: Park Dongjun
-- Date: 2025-05-13
-- Version: v1.0.1
+- Date: 2026-11-12
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes |
 |--------|------------|---------|
+| v3.0.0  | 2026-11-12 | Fix links |
 | v1.0.1 | 2025-05-13 | Added namespace (Suhyun Forten Lee) |
 | v1.0.0 | 2025-04-30 | Initial draft |
 

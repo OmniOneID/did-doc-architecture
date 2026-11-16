@@ -20,12 +20,12 @@ OID4VCI 기반 VC 발급
 
 - 주제 : OID4VCI 기반 VC 발급의 개념 설명
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-21
-- 버전 : v1.0.0
+- 일자 : 2026-11-16
+- 버전 : v3.0.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-10-21 | 최초 작성 |
+| v3.0.0  | 2026-11-16 | 최초 작성 |
 
 <br>
 
@@ -119,14 +119,14 @@ OID4VCI 기반 VC 발급 순서는 다음과 같다.
 | c_nonce | Credential 요청 Proof의 재사용을 막기 위해 Credential Issuer가 발급하는 일회용 nonce |
 | Proof | 월렛이 Holder 키로 서명하여 키 소유를 증명하는 JWT |
 | Token Status List | Credential 상태를 비트 배열로 공개하는 목록 ([TOKEN-STATUS]) |
-| List Provider | OID4VCI Issuer 목록을 관리하고 월렛에 제공하는 사업자. OpenDID에서는 TAS가 수행한다. |
+| List Provider | OID4VCI Issuer 목록을 관리하고 월렛에 제공하는 사업자. OpenDID에서는 TA가 수행한다. |
 
 ### 1.3. OpenDID 발급 프로토콜과의 비교
 
 | 구분 | OpenDID 발급 프로토콜 (P210) | OID4VCI 기반 발급 |
 | ---- | --------------------------- | ----------------- |
 | 발급 개시 | Issue Offer, VC Plan 조회 | Credential Offer, List Provider의 Issuer 목록 |
-| 중계 | TAS(또는 Proxy)를 경유 | 월렛이 Issuer에 직접 요청 |
+| 중계 | TA(또는 Proxy)를 경유 | 월렛이 Issuer에 직접 요청 |
 | 인가 | 서버토큰, DID Auth | OAuth 2.0 Access Token (Pre-Authorized Code / Authorization Code) |
 | 보안 채널 | ECDH 및 E2E 암호화 | TLS, (선택) Credential 응답 JWE 암호화 |
 | Holder 바인딩 | DID Auth 서명 | Proof JWT (`kid` = Holder DID URL) |
@@ -150,7 +150,7 @@ OID4VCI 기반 발급의 구성 요소는 아래 그림과 같다.
 | Status List Endpoint | 서명된 Token Status List(`application/statuslist+jwt`)를 공개한다. |
 | Webview 발급 | 사용자 주도 발급에서 Claim 입력 화면을 제공하고 Credential Offer를 생성한다. |
 | Admin Console | Issuer Metadata, Credential Configuration, Client 설정, List Provider 등록, 발급 이력 및 상태를 관리한다. |
-| TAS (List Provider) | 등록된 OID4VCI Issuer를 승인·관리하고, 월렛에 Issuer 목록을 제공한다. |
+| TA (List Provider) | 등록된 OID4VCI Issuer를 승인·관리하고, 월렛에 Issuer 목록을 제공한다. |
 | 신뢰저장소 | Holder DID Document를 제공한다. Credential Issuer는 Proof와 폐기 토큰의 서명 키를 Holder DID Document의 `authentication`에서 확인한다. |
 | 검증 사업자 | Credential에 포함된 Status List URI로 Credential 상태를 확인한다. |
 
@@ -202,8 +202,8 @@ Pre-Authorized Code로 Access Token을 요청할 때는 Client 인증 없이(pub
 
 ### 3.4. List Provider 등록
 
-사용자 주도 발급을 지원하려면 Issuer를 List Provider(TAS)에 등록해야 한다.
-Issuer는 다음 정보로 등록을 요청하며, TAS 관리자가 승인하면 월렛의 Issuer 목록에 노출된다.
+사용자 주도 발급을 지원하려면 Issuer를 List Provider(TA)에 등록해야 한다.
+Issuer는 다음 정보로 등록을 요청하며, TA 관리자가 승인하면 월렛의 Issuer 목록에 노출된다.
 
 | 항목 | 설명 |
 | ---- | ---- |
@@ -271,7 +271,7 @@ Credential Offer는 다음 정보를 포함한다.
 
 ![사용자에 의한 발급 개시](images/oid4vci_seq_user_init_ko.svg)
 
-1. 월렛은 List Provider(TAS)에서 승인된(`ACTIVE`) Issuer 목록을 조회한다.
+1. 월렛은 List Provider(TA)에서 승인된(`ACTIVE`) Issuer 목록을 조회한다.
 1. 사용자가 Issuer와 Credential을 선택하면 월렛은 Issuer의 `userInitiationUri`를 Webview로 연다. 이때 Holder DID와 Credential Configuration ID를 전달한다.
 1. Issuer는 발급 세션(유효시간 10분)을 생성하고 Credential Configuration의 Claim 정의에 따라 입력 화면을 제공한다.
 1. 사용자가 Claim을 입력하고 확인하면 Issuer는 입력값을 검증하여 저장하고, tx_code가 없는 Pre-Authorized Code Credential Offer를 생성한다.
@@ -383,7 +383,7 @@ Issuer 관리자는 Admin Console의 발급 이력(OID4VCI Credentials)에서 �
 
 ### 5.4. 월렛에 의한 Credential 폐기
 
-월렛은 보유한 Credential의 폐기를 Issuer에 직접 요청할 수 있다. 이 기능은 OpenDID의 OID4VCI 확장이며, Access Token과 TAS를 사용하지 않고 Holder DID 서명으로 요청자를 확인한다.
+월렛은 보유한 Credential의 폐기를 Issuer에 직접 요청할 수 있다. 이 기능은 OpenDID의 OID4VCI 확장이며, Access Token과 TA를 사용하지 않고 Holder DID 서명으로 요청자를 확인한다.
 
 ![월렛에 의한 Credential 폐기](images/oid4vci_seq_revocation_ko.svg)
 
@@ -441,7 +441,7 @@ OpenDID 3.0 월렛의 OID4VCI 지원 범위는 다음과 같다.
 | ---- | --------- |
 | 인가 방식 | Pre-Authorized Code 흐름만 지원한다. Authorization Code 흐름은 지원하지 않는다. |
 | tx_code | 숫자 입력만 지원한다. |
-| 사용자 주도 발급 | TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 정보를 입력하면 Credential Offer를 받는다. |
+| 사용자 주도 발급 | TA의 Issuer 목록에서 Issuer를 선택하고 Webview에서 정보를 입력하면 Credential Offer를 받는다. |
 | Proof | Holder 키를 `jwk` 대신 `kid`(Holder DID URL, `did:<method>:<id>?versionId=<version>#<key id>`)로 지정한다. PIN 키 또는 생체 키를 사용하며, 해당 키는 Holder DID Document의 `authentication`에 등록되어 있어야 한다. |
 | Credential 응답 암호화 | Issuer Metadata에서 응답 암호화를 필수로 요구하는 경우에만 요청한다. `enc`는 `A256GCM`을 사용한다. |
 | Credential 요청 암호화 | 지원하지 않는다. |

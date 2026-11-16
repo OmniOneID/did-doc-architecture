@@ -15,7 +15,7 @@ rnote over ca
     **[Pre-defined]**
     * PKG_NAME = 인가앱의 패키지명
 end rnote
-/ rnote over cas
+& rnote over cas
     **[Pre-defined]**
     * PII = 인가앱 소유자의 개인식별자
 end rnote
@@ -81,7 +81,7 @@ autonumber "<b>(#)</b>"
 participant "**월렛**" as wal <<Wallet>>
 participant "**인가앱**" as ca <<App>>
 participant "**인가앱 사업자**" as cas <<Server>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 
 activate ca
 
@@ -90,12 +90,12 @@ rnote over wal
     * WALLET_ID = 월렛 id
     * WALLET_DID = 월렛 did
 end rnote
-/ rnote over ca
+& rnote over ca
     **[Pre-defined]**
     * APP_ID = 인가앱 id
-    * sesKey, padding = TAS와 ECDH로 생성
+    * sesKey, padding = TA와 ECDH로 생성
 end rnote
-/ rnote over tas
+& rnote over tas
     **[Pre-defined]**
     * sesKey, padding = 인가앱과 ECDH로 생성
 end rnote
@@ -175,7 +175,7 @@ ca -> ca: 응답정보 복호화\
 ca -> ca: 서버토큰 생성\n* serverToken = sha256(std)
 
 hnote over ca, tas #LimeGreen
-    TAS에 접근 시 serverToken 제출
+    TA에 접근 시 serverToken 제출
 end hnote
 @enduml
 

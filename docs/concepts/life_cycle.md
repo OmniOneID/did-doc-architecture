@@ -2,12 +2,12 @@
 
 - Subject: Wallet Life Cycle
 - Author: OpenSource Development Team
-- Date: 2026-10-22
-- Version: v1.1.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-10-22 | Add OID4VCI Credential lifecycle, Revise wording |
+| v3.0.0  | 2026-11-16 | Add OID4VCI Credential lifecycle, Revise wording, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -78,17 +78,17 @@ This function is requested by CA, Entity.
 #### - DID Document State Change
 Activation/Deactivation of DID Document.
 <br>
-This function is requested by TAS.
+This function is requested by TA.
 
 #### - DID Document Revocation
 Revocation of DID Document (used for purposes like denial prevention).
 <br>
-This function is requested by TAS.
+This function is requested by TA.
 
 #### - DID Document Termination
 Termination of DID Document (rendering it unusable for any purpose).
 <br>
-This function is requested by TAS.
+This function is requested by TA.
 
 ---
 ### 3. VC Lifecycle

@@ -2,38 +2,38 @@
 
 - Subject: Manage of PII
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v1.0.1
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.1  | 2026-10-13 | Fix image references |
+| v3.0.0  | 2026-11-16 | Fix image references, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
 
 ## Overview
-`TAS` must store the User's PII (Personally Identifiable Information). When PII is received, it can be used as follows:
+`TA` must store the User's PII (Personally Identifiable Information). When PII is received, it can be used as follows:
 
 1. During the user registration protocol to verify if the user is already registered.
 2. During the VC issuance protocol to provide the PII to the `Issuer`.
 
-However, the process of receiving PII is outside the scope of OpenDID, and thus PII-related content is not included in the TAS API.
+However, the process of receiving PII is outside the scope of OpenDID, and thus PII-related content is not included in the TA API.
 
-Therefore, a clear design is needed on how `TAS` will receive and utilize PII.
+Therefore, a clear design is needed on how `TA` will receive and utilize PII.
 
 ## PII Usage Scenarios
 ### Purpose of PII
 #### User Identification
-- `[TAS]` can verify if the user is already a registered user.
+- `[TA]` can verify if the user is already a registered user.
 
 #### Used in VC Issuance
-- `[TAS → Issuer]` PII can be provided during VC issuance.
+- `[TA → Issuer]` PII can be provided during VC issuance.
   - **Accurate Authentication:** PII can be used to accurately verify and authenticate the user's identity.
   - **Enhanced Trustworthiness:** PII manages issued VC identifiers and prevents fraudulent issuance.
 
 ### When Should PII be Received?
-- `[Wallet → TAS]` PII should be received before sending the DID Document.
+- `[Wallet → TA]` PII should be received before sending the DID Document.
 
 ## Design Considerations
 ### Data Collection and Storage

@@ -40,7 +40,7 @@ box Mobile #OldLace
     participant "**Wallet**" as wal <<Wallet>>
 end box
 
-participant "**TAS**\n(List Provider)" as tas <<Server>>
+participant "**TA**\n(List Provider)" as tas <<Server>>
 
 box Issuing Provider #AliceBlue
     participant "**Webview Issuance**" as web <<Server>> #WhiteSmoke
@@ -52,8 +52,8 @@ end box
 == Precondition : List Provider Registration ==
 
 rnote over tas, ci
-    The Issuing Provider requests Issuer registration from the TAS (REQUESTED),
-    and once the TAS administrator approves it (ACTIVE), the Issuer is exposed in the wallet's Issuer list.
+    The Issuing Provider requests Issuer registration from the TA (REQUESTED),
+    and once the TA administrator approves it (ACTIVE), the Issuer is exposed in the wallet's Issuer list.
     * credentialIssuer = Issuer DID
     * credentialIssuerMetadataUri = {base}/.well-known/openid-credential-issuer
     * userInitiationUri = {base}/oid4vci/issuance/start

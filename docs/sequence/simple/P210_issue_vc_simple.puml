@@ -19,7 +19,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -32,8 +36,8 @@ box Mobile #OldLace
     participant "**CA**" as CA <<App>> #WhiteSmoke    
 end box
 
-box TAS Server #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Server #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Issuer Server #AliceBlue
@@ -64,19 +68,19 @@ end box
 
 == P210-1 : VC Issuance Preparation ==
 alt Issuer Initiate [Request Offer]
-    USER -> TAS++: Request VC offer
+    USER -> TA++: Request VC offer
     rnote right of CA #LightGray   
         **[API_REQ : Request VC offer]**
     end note
-    TAS -> ISSUER++: Request VC offer
+    TA -> ISSUER++: Request VC offer
         return VC offer response
-    TAS --> USER--: VC offer response
+    TA --> USER--: VC offer response
     rnote right of CA #LightGray   
         **[API_RES : VC offer response]**
     end note
     CA -> USER: Confirm Offer
 else User Initiate [Request VC Plan ID]
-    CA -> TAS++: Request VC Plan ID List
+    CA -> TA++: Request VC Plan ID List
     rnote right of CA #LightGray   
         **[API_REQ : Request VC Plan ID List]**
     end note
@@ -87,11 +91,11 @@ else User Initiate [Request VC Plan ID]
     end note
 end
 == P210-2 : VC Issuance Start Request ==
-CA -> TAS++: Issue VC start request
+CA -> TA++: Issue VC start request
     rnote right of CA #Lavender
         **[M210_REQ : Issue VC start request]**
     end note
-    TAS -> ISSUER++: Issue VC start request
+    TA -> ISSUER++: Issue VC start request
     
     return Issue VC start response
 return Issue VC start response
@@ -100,12 +104,12 @@ rnote right of CA #Lavender
 end note
 
 == P210-3 ECDH Request ==
-CA -> TAS++ : ECDH Request
+CA -> TA++ : ECDH Request
 rnote right of CA #Lavender
     **[M210_REQ : ECDH Request]**
 end note
 
-TAS --> CA--: ECDH Response
+TA --> CA--: ECDH Response
 rnote right of CA #Lavender
     **[M210_RES : ECDH Response]**
 end note
@@ -117,11 +121,11 @@ rnote across #white
 end note
 
 == P210-5 : Issue Profile Request ==
-CA -> TAS++: Issue Profile Request
+CA -> TA++: Issue Profile Request
     rnote right of CA #Lavender
         **[M210_REQ : Issue Profile Request]**
     end note
-    TAS -> ISSUER++: Issue Profile Request
+    TA -> ISSUER++: Issue Profile Request
     ISSUER -> ISSUER: Generate Issue Profile
     opt Include ZKP Credential
         ISSUER -> ISSUER: Generate ZKP Credential Offer
@@ -139,11 +143,11 @@ opt include ZKP
             WALLET -> WALLET : Fetch credDef from the blockchain and generate/manage the master secret
             WALLET -> WALLET : Generate credentialRequest and include it in reqVcㄴ
         end
-    WALLET -> TAS++: Issue VC request
+    WALLET -> TA++: Issue VC request
         rnote right of CA #Lavender
             **[M210_REQ : Issue VC request]**
         end note
-        TAS -> ISSUER++: Issue VC request
+        TA -> ISSUER++: Issue VC request
             ISSUER -> ISSUER: vc: Issue or Reissue VC
             opt In Case of VC reissuance
                 ISSUER -> BC: Revoke existing VC 
@@ -173,11 +177,11 @@ opt include ZKP
 return Result
 
 == P210-7 : Issue VC Completion ==
-CA -> TAS++: Request Issue VC completion
+CA -> TA++: Request Issue VC completion
     rnote right of CA #Lavender
         **[M210_REQ : Request Issue VC completion]**
     end note
-    TAS -> ISSUER++: Request Issue VC completion
+    TA -> ISSUER++: Request Issue VC completion
     return VC issuance completion response
 return VC issuance completion response
 rnote right of CA #Lavender

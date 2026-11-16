@@ -2,12 +2,12 @@
 
 - Subject: Blockchain Integration
 - Author: OpenSource Development Team
-- Date: 2026-10-23
-- Version: v1.1.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-10-23 | Add storage integration via LSS |
+| v3.0.0  | 2026-11-16 | Add storage integration via LSS, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -58,6 +58,6 @@
 | `READ`   | Retrieval APIs |
 
 - Whether keys are validated is set on the Server Configuration screen of the LSS Admin Console (`API Key Validation`, configuration key `API_KEY_VALIDATION_ENABLED`), and the default is not validated (`false`).
-- The TAS and Issuer servers put the `API_KEY_LSS` value of the `server_config` table in the `X-API-Key` header of every LSS request.
-    - This value is changed in the Server Configuration menu of the TAS and Issuer Admin Consoles.
+- The TA and Issuer servers put the `API_KEY_LSS` value of the `server_config` table in the `X-API-Key` header of every LSS request.
+    - This value is changed in the Server Configuration menu of the TA and Issuer Admin Consoles.
     - If the value is missing or empty, the LSS request fails.

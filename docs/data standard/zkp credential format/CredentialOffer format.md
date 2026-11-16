@@ -20,14 +20,15 @@ Credential Offer Format
 
 - Subject: Definition of ZKP Credential Offer Structure
 - Author: Dongjun Park
-- Date: 2025-04-30
-- Version: v1.0.0
+- Date: 2026-11-12
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
+| v3.0.0  | 2026-11-12 | Fix links |
 | v1.0.0  | 2025-04-30 | Draft    |
 
 <div style="page-break-after: always;"></div>

@@ -38,7 +38,7 @@
 - Open DID 개요 및 특징
 - Open DID 구성요소 개념
 - Open DID 기본 구성요소(Ledger, Server, Client)
-- Open DID 전체 구성요소(TAS, Issuer, Verifier 등)
+- Open DID 전체 구성요소(TA, Issuer, Verifier 등)
 - Open DID 전체 흐름(5단계)
 
 ---

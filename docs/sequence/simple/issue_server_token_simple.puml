@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -32,8 +36,8 @@ box Certified App Provider #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,13 +73,13 @@ CAS --> CA--: Return Signed App Information
 == Request Server Token Data Generation ==
 CA -> CA: Generate Server Token Seed (Signed Wallet Information, Signed App Information)
 
-CA -> TAS++ : Request Server Token Data (Server Token Seed)
-TAS -> TAS: Generate Server Token Data (Server Token Seed)
-TAS -> TAS: Issue Server Token (Server Token Data)
-TAS --> CA--: Return Encrypted Server Token Data
+CA -> TA++ : Request Server Token Data (Server Token Seed)
+TA -> TA: Generate Server Token Data (Server Token Seed)
+TA -> TA: Issue Server Token (Server Token Data)
+TA --> CA--: Return Encrypted Server Token Data
 
 rnote across #white
-    The process of key exchange between CA and TAS for encryption and decryption is omitted.
+    The process of key exchange between CA and TA for encryption and decryption is omitted.
 end note
 
 ||| 

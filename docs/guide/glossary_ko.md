@@ -3,15 +3,15 @@ Glossary
 
 - 주제: OpenDID 문서 용어 모음
 - 작성: 오픈소스개발팀
-- 일자: 2026-11-12
-- 버전: v1.0.0
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 개정이력
 ---
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-11-12 | 최초 작성 |
+| v3.0.0 | 2026-11-16 | 최초 작성 |
 
 목차
 ---
@@ -72,7 +72,7 @@ Glossary
 | c_nonce | Credential 요청 Proof의 재사용을 막기 위해 Credential Issuer가 발급하는 일회용 nonce |
 | Proof | 월렛이 Holder 키로 서명하여 키 소유를 증명하는 JWT |
 | Token Status List | Credential 상태를 비트 배열로 공개하는 목록 ([TOKEN-STATUS]) |
-| List Provider | OID4VCI Issuer 목록을 관리하고 월렛에 제공하는 사업자. OpenDID에서는 TAS가 수행한다. |
+| List Provider | OID4VCI Issuer 목록을 관리하고 월렛에 제공하는 사업자. OpenDID에서는 TA가 수행한다. |
 
 ## 5. OID4VP 제출
 

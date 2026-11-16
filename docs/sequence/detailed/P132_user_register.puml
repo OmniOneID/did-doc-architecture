@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -34,8 +38,8 @@ box Server #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Trusted Storage
@@ -54,7 +58,7 @@ end box
 |||
 
 == P132-1: User Registration Start Request ==
-CA -> TAS++: User Registration Start Request
+CA -> TA++: User Registration Start Request
 rnote right of CA #Lavender        
     **[M132_REQ: User Registration Start Request]**
     body : 
@@ -101,7 +105,7 @@ end
 
 
 
-CA -> TAS++ : ECDH Request
+CA -> TA++ : ECDH Request
 rnote right of CA #Lavender
     **[M132_REQ : ECDH Request]**
     body : 
@@ -111,33 +115,33 @@ rnote right of CA #Lavender
 end note
 
     opt KeyAgreement Signature ON
-        TAS -> TAS: Verify reqEcdh.proof signature
+        TA -> TA: Verify reqEcdh.proof signature
     end
 
-    TAS -> TAS : Validate reqEcdh format
-    TAS -> TAS : Generate Server Nonce
-    TAS -> TAS : Generate mergedNonce
-    rnote right of TAS #MintCream
+    TA -> TA : Validate reqEcdh format
+    TA -> TA : Generate Server Nonce
+    TA -> TA : Generate mergedNonce
+    rnote right of TA #MintCream
         **mergedNonce**
         sha256(serverNonce, clientNonce)
     end note
-    TAS -> TAS: Generate DH Key Pair
+    TA -> TA: Generate DH Key Pair
 
-    TAS -> TAS: Perform ECDH\
+    TA -> TA: Perform ECDH\
                 \n* sesKey = Session Key\
 
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **sesKey**
         ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
     end note
-    TAS -> TAS: Generate ECDH Accept Data\
+    TA -> TA: Generate ECDH Accept Data\
                 \n* (AccEcdh)accEcdh
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **accEcdh** : $doc
         server|serverNonce|cipher|publicKey|padding
     end note
     opt KeyAgreement Signature ON
-        TAS -> TAS: signKeyAgree(accEcdh)
+        TA -> TA: signKeyAgree(accEcdh)
     end
 
 return ECDH Response
@@ -280,7 +284,7 @@ CA -> CA: Generate ServerTokenSeed\
         \n     caAppInfo\
         \n  }
 
-CA -> TAS++ : Server token creation request
+CA -> TA++ : Server token creation request
 rnote right of CA #Lavender
     **[M132_REQ: Server Token Creation Request]**
     body : 
@@ -290,23 +294,23 @@ rnote right of CA #Lavender
 end note
 
 
-    TAS -> TAS: Verify signature\
+    TA -> TA: Verify signature\
             \n* Verify wallet signature\
             \n* Verify certified app provider signature
 
-    TAS -> TAS: Extract information from seed\
+    TA -> TA: Extract information from seed\
             \n* appId = Certified app identifier\
             \n* walletId = Wallet identifier\
             \n* walletDid = Wallet DID\
             \n* walletProviderDid = Wallet provider DID
 
-    TAS -> TAS: Verify if it matches the registered wallet information
+    TA -> TA: Verify if it matches the registered wallet information
 
-    TAS -> TAS: Generate and store server token\
+    TA -> TA: Generate and store server token\
             \n* Create (ServerTokenData)std\
             \n* serverToken = sha256(std)
 
-    TAS -> TAS: Encrypt response information\
+    TA -> TA: Encrypt response information\
             \n* iv = Generate IV\
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
@@ -326,7 +330,7 @@ end note
 CA -> CA: Decrypt encStd\
 \n encStd = decodeMultibase(encStd)\
 \n mergedNonce = clientNonce | serverNonce\
-\n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub> }\
+\n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TA</sub> }\
 \n sharedSecret = dec(secretKey, mergedNonce)\
 \n* std = dec(encStd, sharedSecret, iv)
 
@@ -372,7 +376,7 @@ CA -> WALLET ++: User Registration Request\n{walletToken, serverToken}
     WALLET -> WALLET: Wallet signature\
             \n* signAssert(sgdDidDoc)
 
-    WALLET -> TAS ++: User Registration Request
+    WALLET -> TA ++: User Registration Request
     rnote right of WALLET #Lavender
         **[M132_REQ : User Registration Request]**
         body:
@@ -381,27 +385,27 @@ CA -> WALLET ++: User Registration Request\n{walletToken, serverToken}
             serverToken
             signedDidDoc
     end note
-        TAS -> TAS: Validate serverToken
+        TA -> TA: Validate serverToken
 
-        TAS -> TAS: Verify signatures\
+        TA -> TA: Verify signatures\
             \n* Verify wallet signature\
             \n* Verify individual key signature
         
-        TAS -> TAS: (InvokedDidDoc)invDidDoc = {\
+        TA -> TA: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS information,\
+            \n   controller = TA information,\
             \n   nonce = Generate nonce\
             \n }
 
-        TAS -> TAS: Controller signature\
+        TA -> TA: Controller signature\
             \n* signInvoke(invDidDoc)
 
-        TAS -> BC ++: DID Registration Request\n{invDidDoc}
+        TA -> BC ++: DID Registration Request\n{invDidDoc}
             BC -> BC: Verify Controller\nsignature
             BC -> BC: Register
         return OK
 
-        TAS -> TAS: Store user mapping information in DB\
+        TA -> TA: Store user mapping information in DB\
                 \n* pii (Personal Identification Number)\
                 \n* holderDid (User DID)\
                 \n* walletId (Wallet identifier)\
@@ -416,7 +420,7 @@ return OK
 
 |||
 == P132-5: User Registration Completion ==
-CA -> TAS++: User Registration Completion Request
+CA -> TA++: User Registration Completion Request
 rnote right of CA #Lavender        
     **[M132_REQ: User Registration Completion Request]**
     body:
@@ -425,8 +429,8 @@ rnote right of CA #Lavender
         serverToken
 end note
 
-    TAS -> TAS: Validate serverToken
-    TAS -> TAS: Delete session information and close transaction
+    TA -> TA: Validate serverToken
+    TA -> TA: Delete session information and close transaction
 
 return User Registration Completion Response
 rnote right of CA #Lavender        

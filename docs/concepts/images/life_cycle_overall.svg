@@ -23,7 +23,7 @@
     </g>
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-333,453)" stroke-linecap="butt">
       <path fill="none" d="M668 -383.0486 L773 -383.0486 L773 -316.0486 L668 -316.0486 Z" clip-path="url(#clipPath2)"/>
-      <text x="683.7236" xml:space="preserve" y="-359.1462" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">Register TAS</text>
+      <text x="683.7236" xml:space="preserve" y="-359.1462" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">Register TA</text>
       <text x="704.3779" xml:space="preserve" y="-345.0134" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none"> with </text>
       <text x="689.6299" xml:space="preserve" y="-330.8806" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">committee</text>
     </g>
@@ -34,7 +34,7 @@
       <path fill="none" d="M837 -383.0486 L942 -383.0486 L942 -316.0486 L837 -316.0486 Z" clip-path="url(#clipPath2)"/>
       <text x="842.5547" xml:space="preserve" y="-359.1462" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">Register Entities</text>
       <text x="875.5518" xml:space="preserve" y="-345.0134" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">from</text>
-      <text x="878.335" xml:space="preserve" y="-330.8806" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">TAS</text>
+      <text x="878.335" xml:space="preserve" y="-330.8806" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">TA</text>
     </g>
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-333,453)" stroke-linecap="butt">
       <path fill="none" d="M590.025 -349.5486 L659.9724 -349.5486" clip-path="url(#clipPath2)"/>

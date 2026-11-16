@@ -17,12 +17,12 @@ rnote over wal
     * WALLET_ID = 월렛 id
     * WALLET_DID = 월렛 did
 end rnote
-/ rnote over ca
+& rnote over ca
     **[Pre-defined]**
     * APP_ID = 인가앱 id
-    * sesKey, padding = TAS와 ECDH로 생성
+    * sesKey, padding = TA와 ECDH로 생성
 end rnote
-/ rnote over tas
+& rnote over tas
     **[Pre-defined]**
     * sesKey, padding = 인가앱과 ECDH로 생성
 end rnote
@@ -102,7 +102,7 @@ ca -> ca: 응답정보 복호화\
 ca -> ca: 서버토큰 생성\n* serverToken = sha256(std)
 
 hnote over ca, tas #LimeGreen
-    TAS에 접근 시 serverToken 제출
+    TA에 접근 시 serverToken 제출
 end hnote
 @enduml
 

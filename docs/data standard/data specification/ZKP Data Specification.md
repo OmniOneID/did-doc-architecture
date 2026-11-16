@@ -21,11 +21,11 @@ ZKP Data Specification
 - Subject: Structure and Requirements of Key Data
 - Author: Dongjun Park
 - Date: 2026-11-12
-- Version: v1.0.1
+- Version: v3.0.0
 
 | Version | Date       | Change Description |
 | ------- | ---------- | ------------------ |
-| v1.0.1  | 2026-11-12 | Fix typos, Revise wording, Fix image references, Add data reference diagram |
+| v3.0.0  | 2026-11-12 | Fix typos, Revise wording, Fix image references, Add data reference diagram |
 | v1.0.0  | 2025-04-30 | Initial Draft      |
 
 <div style="page-break-after: always;"></div>

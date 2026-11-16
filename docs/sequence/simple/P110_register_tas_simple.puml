@@ -11,24 +11,28 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P110: TAS Registration</size>
+	<size:25>P110: TA Registration</size>
 end title
 
 '=== Options ===
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box TAS Admin
-    actor "**TAS Admin**" as ADMIN #WhiteSmoke
+box TA Admin
+    actor "**TA Admin**" as ADMIN #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -47,25 +51,25 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ||| 
 
-== TAS DID Document Registration  ==
+== TA DID Document Registration  ==
 rnote across #white
-    TAS DID Document registration is not covered in this specification.
+    TA DID Document registration is not covered in this specification.
 end note
 
 ||| 
 
-== P110: TAS Registration ==
-ADMIN -> TAS++: TAS Registration Request
+== P110: TA Registration ==
+ADMIN -> TA++: TA Registration Request
 rnote right of ADMIN #Lavender        
-    **[M110_REQ: TAS Registration Request]**
+    **[M110_REQ: TA Registration Request]**
 end note
 
-TAS -> TAS: Create TAS Membership Certificate VC
-TAS -> BC: Register Membership Certificate VC Metadata
+TA -> TA: Create TA Membership Certificate VC
+TA -> BC: Register Membership Certificate VC Metadata
 
-TAS --> ADMIN--: TAS Registration Response
+TA --> ADMIN--: TA Registration Response
 rnote right of ADMIN #Lavender        
-    **[M110_RES: TAS Registration Response]**
+    **[M110_RES: TA Registration Response]**
 end note
 
 |||

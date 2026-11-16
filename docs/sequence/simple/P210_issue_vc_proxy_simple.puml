@@ -40,8 +40,8 @@ box Certified App Provider #AliceBlue
     participant "**Proxy**" as PROXY <<Server>> #WhiteSmoke
 end box
 
-box TAS Server #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Server #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Issuer Server #AliceBlue
@@ -59,7 +59,7 @@ end box
 |||
 
 == Retrieve VC Plan List ==
-CA -> TAS++: Request VC Plan List
+CA -> TA++: Request VC Plan List
 activate CA
 return VC Plan List
 CA -> CA: Select a VC Plan whose issuanceMode is PROXY
@@ -93,7 +93,7 @@ return {txId, profile, authNonce}
 rnote across #white
     The process of wallet token generation is not covered in this specification.
     Refer to `issue_wallet_token_simple`
-    In proxy mode the ECDH with the TAS and the server token issuance are not performed.
+    In proxy mode the ECDH with the TA and the server token issuance are not performed.
 end note
 
 == P210-4 : Request Issue VC ==

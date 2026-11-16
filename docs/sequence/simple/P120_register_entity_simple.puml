@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 2
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -28,8 +32,8 @@ box Entity Provider #AliceBlue
     participant "**Entity**" as ENT <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Trusted Storage
@@ -56,42 +60,42 @@ end note
 ||| 
 
 == P120-1: Entity Registration Start Request ==
-ENT -> TAS++ : Entity Registration Start Request
+ENT -> TA++ : Entity Registration Start Request
 rnote right of ENT #Lavender
     **[M120_REQ: Entity Registration Start Request]**
 end note
 
-TAS --> ENT--: Entity Registration Start Response
+TA --> ENT--: Entity Registration Start Response
 rnote right of ENT #Lavender
     **[M120_RES: Entity Registration Start Response]**
 end note
 
 ||| 
 == P120-2: ECDH Request ==
-ENT -> TAS++ : ECDH Request
+ENT -> TA++ : ECDH Request
 rnote right of ENT #Lavender
     **[M120_REQ: ECDH Request]**
 end note
 
-TAS --> ENT--: ECDH Response
+TA --> ENT--: ECDH Response
 rnote right of ENT #Lavender
     **[M120_RES: ECDH Response]**
 end note
 
 ||| 
-ENT <--> TAS : Mutual Authentication and Key Exchange
+ENT <--> TA : Mutual Authentication and Key Exchange
 
 ||| 
 == P120-3: Entity Registration Request ==
-ENT -> TAS++ : Entity Registration Request
+ENT -> TA++ : Entity Registration Request
 rnote right of ENT #Lavender
     **[M120_REQ: Entity Registration Request]**
 end note
 
-TAS -> TAS: Create Entity Membership Certificate VC
-TAS -> BC : Register Membership Certificate VC Metadata
+TA -> TA: Create Entity Membership Certificate VC
+TA -> BC : Register Membership Certificate VC Metadata
 
-TAS --> ENT--: Entity Registration Response
+TA --> ENT--: Entity Registration Response
 rnote right of ENT #Lavender
     **[M120_RES: Entity Registration Response]**
     body:
@@ -100,12 +104,12 @@ end note
 
 ||| 
 == P120-4: Entity Registration Completion ==
-ENT -> TAS++ : Entity Registration Completion Request
+ENT -> TA++ : Entity Registration Completion Request
 rnote right of ENT #Lavender
     **[M120_REQ: Entity Registration Completion Request]**
 end note
 
-TAS --> ENT--: Entity Registration Completion Response
+TA --> ENT--: Entity Registration Completion Response
 rnote right of ENT #Lavender
     **[M120_RES: Entity Registration Completion Response]**
 end note

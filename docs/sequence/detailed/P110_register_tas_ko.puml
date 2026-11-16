@@ -12,24 +12,28 @@ end footer
 
 '=== 제목 ===
 title
-	<size:25>P110 : TAS 등록</size>
+	<size:25>P110 : TA 등록</size>
 end title
 
 '=== 옵션 ===
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box TAS 관리자
-    actor "**TAS Admin**" as ADMIN #WhiteSmoke
+box TA 관리자
+    actor "**TA Admin**" as ADMIN #WhiteSmoke
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -48,44 +52,44 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-== TAS DID Document 등록  ==
+== TA DID Document 등록  ==
 rnote across #white
-    TAS DID Document 등록은 본 규격에서 다루지 않음.
+    TA DID Document 등록은 본 규격에서 다루지 않음.
 end note
 
 |||
 
-== P110 : TAS 등록 ==
+== P110 : TA 등록 ==
 rnote across #white
-    TAS Admin은 사전에 password를 전달 받아야 한다.
+    TA Admin은 사전에 password를 전달 받아야 한다.
 end note
-ADMIN -> TAS++: TAS 등록 요청
+ADMIN -> TA++: TA 등록 요청
 rnote right of ADMIN #LightGray        
-    **[M110_REQ : TAS 등록 요청]**
+    **[M110_REQ : TA 등록 요청]**
     body : 
         messageId
         password
 end note
 
-    TAS -> TAS: vc: 가입증명서VC 발급
-    rnote right of TAS #MintCream
+    TA -> TA: vc: 가입증명서VC 발급
+    rnote right of TA #MintCream
         **가입증명서VC**: $refdoc
     end note
 
-    TAS -> TAS: vcMeta: 가입증명서VC 메타데이터 생성
-    rnote right of TAS #MintCream
+    TA -> TA: vcMeta: 가입증명서VC 메타데이터 생성
+    rnote right of TA #MintCream
         **vcMeta** : $doc
     end note
 
-    TAS -> TAS: 가입증명서 VC 게시\
+    TA -> TA: 가입증명서 VC 게시\
             \n* certVcRef = 가입증명서 VC URL
 
-    TAS -> BC++ : vcMeta 등록 {vcMeta}
+    TA -> BC++ : vcMeta 등록 {vcMeta}
     return OK
 
-return TAS 등록 응답
+return TA 등록 응답
 rnote right of ADMIN #LightGray        
-    **[M110_RES : TAS 등록 응답]**
+    **[M110_RES : TA 등록 응답]**
     body : 
         certVcRef
 end note

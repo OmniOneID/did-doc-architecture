@@ -22,8 +22,8 @@ Credential Status format
     - Definition of the status management data formats for Credentials issued via OID4VCI
     - Definition of the status reference in Credentials, the Status List Token, and the Credential revocation request/response data
 - Author: OpenSource Development Team
-- Date: 2026-11-12
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 
 Revision History
@@ -31,7 +31,7 @@ Revision History
 
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
-| v1.0.0  | 2026-11-12 | Initial version                                  |
+| v3.0.0  | 2026-11-16 | Initial version |
 
 
 <div style="page-break-after: always;"></div>
@@ -591,7 +591,7 @@ The decoded Header and Payload are the same as the examples in [4.2](#42-jose-he
 ## 5. Credential Revocation (OpenDID Extension)
 
 The wallet can directly request the Credential Issuer to revoke one Credential (`dc+sd-jwt-did`, `mso_mdoc-did`) it holds.
-This feature is an OpenDID extension to OID4VCI, and it identifies the requester by a Holder DID signature without using an Access Token or TAS.
+This feature is an OpenDID extension to OID4VCI, and it identifies the requester by a Holder DID signature without using an Access Token or TA.
 
 | Item                                                                         | Category           |
 | ---------------------------------------------------------------------------- | ------------------ |

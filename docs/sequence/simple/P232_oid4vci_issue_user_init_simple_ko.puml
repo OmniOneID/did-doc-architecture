@@ -37,8 +37,8 @@ box 모바일 #OldLace
     participant "**월렛**" as WALLET <<Wallet>> #WhiteSmoke
 end box
 
-box TAS서버 #AliceBlue
-    participant "**TAS**\n(List Provider)" as TAS <<WAS>> #WhiteSmoke
+box TA서버 #AliceBlue
+    participant "**TA**\n(List Provider)" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 발급 사업자 #AliceBlue
@@ -60,14 +60,14 @@ end box
 |||
 
 == 사전 조건 : List Provider 등록 ==
-rnote over TAS, CI
-    발급 사업자는 TAS에 Issuer를 등록하고,
-    TAS 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
+rnote over TA, CI
+    발급 사업자는 TA에 Issuer를 등록하고,
+    TA 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
 end rnote
 
 == P232-1 : Issuer 및 Credential 선택 ==
 activate WALLET
-WALLET -> TAS++: Issuer 목록 조회 요청
+WALLET -> TA++: Issuer 목록 조회 요청
     rnote right of WALLET #Lavender
         **[M232_REQ : Issuer 목록 조회 요청]**
     end note

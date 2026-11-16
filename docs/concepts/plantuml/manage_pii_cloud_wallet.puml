@@ -1,6 +1,6 @@
 @startuml
 participant app as "Client App"
-participant tas as "TAS Server"
+participant tas as "TA Server"
 
 app ->> tas : PII 등록 요청 (PII)
 tas -->> app : 결과 전달 (기등록 여부)

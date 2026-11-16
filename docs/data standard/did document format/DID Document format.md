@@ -22,8 +22,8 @@ DID Document format
     - Definition of DID Document types by entity
     - Definition of keys and management data used in each DID Document
 - Author: Youngho Kang
-- Date: 2024-09-03
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 
 Revision History
@@ -31,6 +31,7 @@ Revision History
 
 | Version | Date       | Changes                                      |
 | ------- | ---------- | -------------------------------------------- |
+| v3.0.0  | 2026-11-16 | Fix links, Unify TA naming |
 | v1.0.0  | 2024-09-03 | Initial version                                        |
 
 
@@ -53,7 +54,7 @@ Table of Contents
 - [3. DID Document Specifications by Entity](#3-did-document-specifications-by-entity)
     - [3.1. Holder DID Document](#31-holder-did-document)
     - [3.2. Wallet DID Document](#32-wallet-did-document)
-    - [3.3. TAS DID Document](#33-tas-did-document)
+    - [3.3. TA DID Document](#33-ta-did-document)
     - [3.4. Provider DID Document](#34-provider-did-document)
 
 <!-- /TOC -->
@@ -334,11 +335,11 @@ Proofs must be included when the DID owner requests registration or modification
 
 ### 3.1. Holder DID Document
 
-The Holder refers to the entity that receives VCs from Issuers and TAS, typically referred to as "users."
+The Holder refers to the entity that receives VCs from Issuers and TA, typically referred to as "users."
 
 #### 3.1.1. Main Attributes
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.1.2. Public Keys
 
@@ -363,7 +364,7 @@ Defines the DID Document rules for the Holder's wallet.
 
 #### 3.2.1. Main Attributes
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.2.2. Public Keys
 
@@ -374,11 +375,11 @@ Defines the DID Document rules for the Holder's wallet.
 | `keyagree` | Key Agreement | Y | 1 | • Key Agreement  | ECC public key for key exchange                               |
 
 
-### 3.3. TAS DID Document
+### 3.3. TA DID Document
 
 #### 3.3.1. Main Attributes
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.3.2. Public Keys
 
@@ -400,11 +401,11 @@ The Holder can register their homepage URL if desired.
 
 ### 3.4. Provider DID Document
 
-Defines the DID Document rules for all providers except Holder, Wallet, and TAS.
+Defines the DID Document rules for all providers except Holder, Wallet, and TA.
 
 #### 3.4.1. Main Attributes
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.4.2. Public Keys
 

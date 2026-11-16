@@ -21,11 +21,11 @@ OID4VP-based VP Presentation
 - Subject: Explanation of OID4VP-based VP Presentation Concept
 - Author: OpenSource Development Team
 - Date: 2026-11-12
-- Version: v1.0.0
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-11-12 | Initial version |
+| v3.0.0  | 2026-11-12 | Initial version |
 
 <br>
 

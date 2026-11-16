@@ -22,8 +22,8 @@ DID Document format
     - 엔티티 별 DID Document 종류 정의
     - DID Document 별 사용되는 키 및 관리 데이터 정의
 - 작성: 강영호
-- 일자: 2024-09-03
-- 버전: v1.0.0
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 
 개정이력
@@ -31,6 +31,7 @@ DID Document format
 
 | 버전   | 일자       | 변경 내용                                |
 | ------ | ---------- | ---------------------------------------- |
+| v3.0.0  | 2026-11-16 | 링크 수정, TA 명칭 통일 |
 | v1.0.0 | 2024-09-03 | 초안                                     |
 
 
@@ -53,7 +54,7 @@ DID Document format
 - [3. 엔티티 별 DID Document 명세](#3-엔티티-별-did-document-명세)
     - [3.1. Holder DID Document](#31-holder-did-document)
     - [3.2. Wallet DID Document](#32-wallet-did-document)
-    - [3.3. TAS DID Document](#33-tas-did-document)
+    - [3.3. TA DID Document](#33-ta-did-document)
     - [3.4. Provider DID Document](#34-provider-did-document)
 
 <!-- /TOC -->
@@ -345,11 +346,11 @@ controller에 의해 신뢰저장소에 저장할 때에는 검증 후 이를 �
 
 ### 3.1. Holder DID Document
 
-Holder는 발급 사업자 및 TAS로부터 VC를 발급받는 주체를 말하여, 보통 "사용자"라는 용어로 칭한다.
+Holder는 발급 사업자 및 TA로부터 VC를 발급받는 주체를 말하여, 보통 "사용자"라는 용어로 칭한다.
 
 #### 3.1.1. 주요 속성
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.1.2. 공개키
 
@@ -376,7 +377,7 @@ Holder wallet에 대한 DID Document 규칙을 정의한다.
 
 #### 3.2.1. 주요 속성
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.2.2. 공개키
 
@@ -387,11 +388,11 @@ Holder wallet에 대한 DID Document 규칙을 정의한다.
 | `keyagree` | 키교환 |  Y   | 1          | • Key Agreement  | 키교환을 위한 ECC 공개키 서명                                   |
 
 
-### 3.3. TAS DID Document
+### 3.3. TA DID Document
 
 #### 3.3.1. 주요 속성
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.3.2. 공개키
 
@@ -415,11 +416,11 @@ Holder가 원하는 경우 Holder의 홈페이지 URL을 등록할 수 있다.
 
 ### 3.4. Provider DID Document
 
-Holder, Wallet, TAS를 제외한 모든 사업자에 대한 DID Document 규칙을 정의한다.
+Holder, Wallet, TA를 제외한 모든 사업자에 대한 DID Document 규칙을 정의한다.
 
 #### 3.4.1. 주요 속성
 
-- `~/controller`: TAS
+- `~/controller`: TA
 
 #### 3.4.2. 공개키
 

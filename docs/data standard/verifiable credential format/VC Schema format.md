@@ -20,14 +20,15 @@ VC Schema format
 - Subject
     - Definition of VC Schema Structure
 - Author: Kang Young-ho
-- Date: 2024-09-03
-- Version: v1.0.0
+- Date: 2026-11-12
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v3.0.0  | 2026-11-12 | Fix links |
 | v1.0.0  | 2024-09-03 | Initial version |
 
 

@@ -20,15 +20,15 @@ Software Architecture
 
 - 주제: C4 model을 이용한 Software Architecture 설명
 - 작성: 강영호
-- 일자: 2026-11-12
-- 버전: v1.1.0
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 개정이력
 ---
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.1.0 | 2026-11-12 | OID4VCI 발급, OID4VP 제출, mdoc 근접 제출, Proxy 모드 발급 추가, 오탈자·링크 수정 |
+| v3.0.0 | 2026-11-16 | OID4VCI 발급, OID4VP 제출, mdoc 근접 제출, Proxy 모드 발급 추가, 오탈자·링크 수정, TA 명칭 통일 |
 | v1.0.0 | 2024-09-03 | 최초 작성 |
 
 
@@ -41,7 +41,6 @@ Software Architecture
   - [1. 개요](#1-개요)
     - [1.1. C4 model](#11-c4-model)
     - [1.2. 참조문서](#12-참조문서)
-      - [1.2.1. Proxy 모드 VC 발급 절차도 (P210)](#121-proxy-모드-vc-발급-절차도-p210)
   - [2. Digital ID 플랫폼](#2-digital-id-플랫폼)
     - [2.1. Open DID](#21-open-did)
   - [3. System Context Diagram](#3-system-context-diagram)
@@ -109,16 +108,10 @@ C4 model은 소프트웨어 시스템의 아키텍처를 시각화하기 위한 
 | [VC-FORMAT]  | (OpenDID) VC 포맷                                  | [VC 포맷](./../data%20standard/verifiable%20credential%20format/VC%20format_ko.md)                     |
 | [OID4VCI-ISSUANCE] | (OpenDID) OID4VCI 발급                       | [OID4VCI 발급](./../concepts/OID4VCI%20Issuance_ko.md) |
 | [CRED-STATUS] | (OpenDID) Credential Status 포맷                  | [Credential Status 포맷](./../data%20standard/oid4vc%20credential%20format/Credential%20Status%20format_ko.md) |
-| [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [Proxy 모드 VC 발급 절차도](#121-proxy-모드-vc-발급-절차도-p210) |
+| [ISSUE-VC-PROXY] | (OpenDID) Proxy 모드 VC 발급 절차도 (P210)     | [Proxy 모드 VC 발급 절차도](https://github.com/OmniOneID/did-doc-architecture/blob/V3.0.0/docs/sequence/detailed/P210_issue_vc_proxy_ko.puml) |
 | [LSS]        | (OpenDID) Ledger Service Server                    | [LSS](https://github.com/OmniOneID/did-ledger-service-server) |
 | [OID4VP-PRESENTATION] | (OpenDID) OID4VP 기반 VP 제출              | [OID4VP 제출](./../concepts/OID4VP%20Presentation_ko.md) |
 | [MDOC-PROXIMITY] | (OpenDID) mdoc 근접 제출                       | [mdoc 근접 제출](./../concepts/mdoc%20Proximity%20Presentation_ko.md) |
-
-#### 1.2.1. Proxy 모드 VC 발급 절차도 (P210)
-
-![Proxy 모드 VC 발급 절차도 (P210)](../sequence/detailed/images/P210_issue_vc_proxy_ko.svg)
-
-- 원본: `docs/sequence/detailed/P210_issue_vc_proxy_ko.puml`
 
 <div style="page-break-after: always;"></div>
 
@@ -690,7 +683,7 @@ Trust Agent는 목록 사업자로서 OID4VCI Issuer를 등록·관리하고 월
 1. OID4VCI Issuer 상세 조회
     - 월렛이 `credentialIssuer`로 `ACTIVE` 상태의 Issuer를 조회
 
-TAS 관리자는 Admin Console에서 등록 요청을 승인(`ACTIVE`)하거나 반려(`REJECTED`)하며,
+TA 관리자는 Admin Console에서 등록 요청을 승인(`ACTIVE`)하거나 반려(`REJECTED`)하며,
 승인된 Issuer를 정지(`SUSPENDED`)하거나 등록 취소(`REVOKED`)할 수 있다.
 등록 정보와 상태 전이는 [OID4VCI-ISSUANCE] 문서의 List Provider 등록 절을 참조한다.
 
@@ -836,7 +829,7 @@ OpenDID 발급 프로토콜과 달리 월렛이 Issuer Service를 직접 호출�
 | ------------------------ | ------------------------------------------------------------------------ | ------ |
 | Pre-Authorized Code 발급 | 발급 서비스가 Credential Offer를 생성하여 QR 등으로 사용자에게 전달      | [P230](#5231-pre-authorized-code-발급-절차도-p230) |
 | Authorization Code 발급  | 월렛이 Authorization Server에서 사용자 인증 후 Access Token을 받아 발급  | [P231](#5232-authorization-code-발급-절차도-p231) |
-| 사용자에 의한 발급 개시  | 월렛이 TAS의 Issuer 목록에서 Issuer를 선택하고 Webview에서 Claim을 입력  | [P232](#5233-사용자에-의한-발급-개시-절차도-p232) |
+| 사용자에 의한 발급 개시  | 월렛이 TA의 Issuer 목록에서 Issuer를 선택하고 Webview에서 Claim을 입력  | [P232](#5233-사용자에-의한-발급-개시-절차도-p232) |
 | Credential 폐기          | 월렛이 Holder DID 키로 서명한 폐기 토큰으로 폐기를 요청                  | [P240](#5234-credential-폐기-절차도-p240) |
 
 Credential 상태는 Token Status List로 관리하며, 상태 값은 `VALID`, `SUSPENDED`, `INVALID`이다.

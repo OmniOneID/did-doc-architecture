@@ -2,12 +2,12 @@
 
 - 주제 : 블록체인 연동
 - 작성 : 오픈소스개발팀
-- 일자 : 2026-10-23
-- 버전 : v1.1.0
+- 일자 : 2026-11-16
+- 버전 : v3.0.0
 
 | 버전 | 일자       | 변경         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-10-23 | LSS를 통한 저장소 연동 추가 |
+| v3.0.0  | 2026-11-16 | LSS를 통한 저장소 연동 추가, TA 명칭 통일 |
 | v1.0.0  | 2024-10-18 | 최초 작성 |
 
 <br>
@@ -57,6 +57,6 @@
 | `READ`   | 조회 API |
 
 - Key 검증 여부는 LSS Admin Console의 Server Configuration 화면(`API Key Validation`, 설정 키 `API_KEY_VALIDATION_ENABLED`)에서 정하며, 기본값은 검증하지 않음(`false`)이다.
-- TAS와 Issuer 서버는 `server_config` 테이블의 `API_KEY_LSS` 값을 모든 LSS 요청의 `X-API-Key` 헤더에 넣는다.
-    - 이 값은 TAS와 Issuer Admin Console의 Server Configuration 메뉴에서 변경한다.
+- TA와 Issuer 서버는 `server_config` 테이블의 `API_KEY_LSS` 값을 모든 LSS 요청의 `X-API-Key` 헤더에 넣는다.
+    - 이 값은 TA와 Issuer Admin Console의 Server Configuration 메뉴에서 변경한다.
     - 값이 없거나 비어 있으면 LSS 요청이 실패한다.

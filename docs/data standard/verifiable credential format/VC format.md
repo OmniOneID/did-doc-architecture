@@ -21,8 +21,8 @@ Verifiable Credentials format
     - Definition of VC (Verifiable Credentials) data format
     - Definition of entity-specific certificate VC data
 - Author: Youngho Kang
-- Date: 2026-11-12
-- Version: v1.1.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 
 Revision History
@@ -30,7 +30,7 @@ Revision History
 
 | Version | Date       | Changes                                          |
 | ------- | ---------- | ------------------------------------------------ |
-| v1.1.0  | 2026-11-12 | Add reference to OID4VCI Credential status, Fix typos and links |
+| v3.0.0  | 2026-11-16 | Add reference to OID4VCI Credential status, Fix typos and links, Unify TA naming |
 | v1.0.0  | 2024-09-03 | Initial version                                         |
 
 
@@ -52,7 +52,7 @@ Table of Contents
         - [2.3.3. `VcAttach` object](#233-vcattach-object)
         - [2.3.4. `Vc` object](#234-vc-object)
 - [3. Certificate VC](#3-certificate-vc)
-    - [3.1. TAS Certificate VC](#31-tas-certificate-vc)
+    - [3.1. TA Certificate VC](#31-ta-certificate-vc)
         - [3.1.1. Credential Metadata](#311-credential-metadata)
         - [3.1.2. Claims](#312-claims)
     - [3.2. Provider Certificate VC](#32-provider-certificate-vc)
@@ -153,7 +153,7 @@ def enum LANGUAGE: "Language code"
 def enum VC_TYPE: "VC type"
 {
     "VerifiableCredential": "VC",
-    "CertificateVC"       : "Certificate VC issued by TAS",
+    "CertificateVC"       : "Certificate VC issued by TA",
 }
 
 def enum CLAIM_TYPE: "Claim type"
@@ -435,23 +435,23 @@ The issuer's signature for the VC is stored in the `~/proof` object and the sign
 
 ## 3. Certificate VC
 
-A "Certificate VC" is a type of certificate issued in the form of a VC by TAS to an entity immediately after the creation of a DID Document. The following types are available:
+A "Certificate VC" is a type of certificate issued in the form of a VC by TA to an entity immediately after the creation of a DID Document. The following types are available:
 
-- TAS Certificate VC
+- TA Certificate VC
 - Provider Certificate VC
 
-### 3.1. TAS Certificate VC
+### 3.1. TA Certificate VC
 
 #### 3.1.1. Credential Metadata
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`
-    - `id`: TAS did
+    - `id`: TA did
     - `name`: "TAS"
 - `~/evidence`
     - `[0]`
         - `type`: "DocumentVerification"
-        - `verifier`: TAS did
+        - `verifier`: TA did
         - `evidenceDocument`: "BusinessLicense"
         - `subjectPresence`: "Physical"
         - `documentPresence`: "Physical"
@@ -460,7 +460,7 @@ A "Certificate VC" is a type of certificate issued in the form of a VC by TAS to
 #### 3.1.2. Claims
 
 - `~/credentialSubject`
-    - `id`: TAS did
+    - `id`: TA did
     - `claims`: See the table below
 
 | code                     | caption      | type   | format  | attribute | value (example)       |
@@ -474,12 +474,12 @@ A "Certificate VC" is a type of certificate issued in the form of a VC by TAS to
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`
-    - `id`: TAS did
+    - `id`: TA did
     - `name`: "TAS"
 - `~/evidence`
     - `[0]`
         - `type`: "DocumentVerification"
-        - `verifier`: TAS did
+        - `verifier`: TA did
         - `evidenceDocument`: "BusinessLicense"
         - `subjectPresence`: "Physical"
         - `documentPresence`: "Physical"

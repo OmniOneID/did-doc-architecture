@@ -22,8 +22,8 @@ Verifiable Credentials format
     - VC(Verifiable Credentials) 데이터 형식 정의
     - 엔티티별 가입증명서 VC 데이터 정의
 - 작성: 강영호
-- 일자: 2026-11-12
-- 버전: v1.1.0
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 
 개정이력
@@ -31,7 +31,7 @@ Verifiable Credentials format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
-| v1.1.0 | 2026-11-12 | OID4VCI Credential 상태 참조 추가, 오타·링크 수정 |
+| v3.0.0 | 2026-11-16 | OID4VCI Credential 상태 참조 추가, 오타·링크 수정, TA 명칭 통일 |
 | v1.0.0 | 2024-09-03 | 초안                                         |
 
 
@@ -53,7 +53,7 @@ Verifiable Credentials format
         - [2.3.3. `VcAttach` object](#233-vcattach-object)
         - [2.3.4. `Vc` object](#234-vc-object)
 - [3. 가입증명서 VC](#3-가입증명서-vc)
-    - [3.1. TAS Certificate VC](#31-tas-certificate-vc)
+    - [3.1. TA Certificate VC](#31-ta-certificate-vc)
         - [3.1.1. Credential Metadata](#311-credential-metadata)
         - [3.1.2. Claims](#312-claims)
     - [3.2. Provider Certificate VC](#32-provider-certificate-vc)
@@ -159,7 +159,7 @@ def enum LANGUAGE: "언어 코드"
 def enum VC_TYPE: "VC 타입"
 {
     "VerifiableCredential": "VC",
-    "CertificateVC"       : "TAS가 발급하는 가입증명서 VC",
+    "CertificateVC"       : "TA가 발급하는 가입증명서 VC",
 }
 
 def enum CLAIM_TYPE: "클레임 타입"
@@ -440,24 +440,24 @@ VC에 대한 이슈어 서명은 `~/proof` 객체에 저장하며, 다음의 두
 
 ## 3. 가입증명서 VC
 
-"가입증명서 VC"는 DID Document 생성 직후 TAS가 엔티티에게 발급하는 VC 형태의 가입증명서이다.
+"가입증명서 VC"는 DID Document 생성 직후 TA가 엔티티에게 발급하는 VC 형태의 가입증명서이다.
 아래와 같은 종류가 있다.
 
-- TAS Certificate VC
+- TA Certificate VC
 - Provider Certificate VC
 
-### 3.1. TAS Certificate VC
+### 3.1. TA Certificate VC
 
 #### 3.1.1. Credential Metadata
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`
-    - `id`: TAS did
+    - `id`: TA did
     - `name`: "TAS"
 - `~/evidence`
     - `[0]`
         - `type`: "DocumentVerification"
-        - `verifier`: TAS did
+        - `verifier`: TA did
         - `evidenceDocument`: "BusinessLicense"
         - `subjectPresence`: "Physical"
         - `documentPresence`: "Physical"
@@ -466,7 +466,7 @@ VC에 대한 이슈어 서명은 `~/proof` 객체에 저장하며, 다음의 두
 #### 3.1.2. Claims
 
 - `~/credentialSubject`
-    - `id`: TAS did
+    - `id`: TA did
     - `claims`: 아래 표 참조
 
 | code                     | caption      | type   | format  | attribute | value(example)       |
@@ -481,12 +481,12 @@ VC에 대한 이슈어 서명은 `~/proof` 객체에 저장하며, 다음의 두
 
 - `~/type`: ["VerifiableCredential", "CertificateVC"]
 - `~/issuer`
-    - `id`: TAS did
+    - `id`: TA did
     - `name`: "TAS"
 - `~/evidence`
     - `[0]`
         - `type`: "DocumentVerification"
-        - `verifier`: TAS did
+        - `verifier`: TA did
         - `evidenceDocument`: "BusinessLicense"
         - `subjectPresence`: "Physical"
         - `documentPresence`: "Physical"

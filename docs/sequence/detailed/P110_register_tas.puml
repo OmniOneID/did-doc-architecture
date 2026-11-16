@@ -11,24 +11,28 @@ end footer
 
 '=== Title ===
 title
-	<size:25>P110: TAS Registration</size>
+	<size:25>P110: TA Registration</size>
 end title
 
 '=== Options ===
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box TAS Admin
-    actor "**TAS Admin**" as ADMIN #WhiteSmoke
+box TA Admin
+    actor "**TA Admin**" as ADMIN #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -48,44 +52,44 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ||| 
 
-== TAS DID Document Registration  ==
+== TA DID Document Registration  ==
 rnote across #white
-    TAS DID Document registration is not covered in this specification.
+    TA DID Document registration is not covered in this specification.
 end note
 
 ||| 
 
-== P110: TAS Registration ==
+== P110: TA Registration ==
 rnote across #white
-    The TAS Admin must have received the password in advance.
+    The TA Admin must have received the password in advance.
 end note
-ADMIN -> TAS++: TAS Registration Request
+ADMIN -> TA++: TA Registration Request
 rnote right of ADMIN #LightGray        
-    **[M110_REQ : TAS Registration Request]**
+    **[M110_REQ : TA Registration Request]**
     body : 
         messageId
         password
 end note
 
-    TAS -> TAS: vc: Issue Membership Certificate VC
-    rnote right of TAS #MintCream
+    TA -> TA: vc: Issue Membership Certificate VC
+    rnote right of TA #MintCream
         **Membership Certificate VC**: $refdoc
     end note
 
-    TAS -> TAS: vcMeta: Generate metadata for Membership Certificate VC
-    rnote right of TAS #MintCream
+    TA -> TA: vcMeta: Generate metadata for Membership Certificate VC
+    rnote right of TA #MintCream
         **vcMeta** : $doc
     end note
 
-    TAS -> TAS: Publish Membership Certificate VC\
+    TA -> TA: Publish Membership Certificate VC\
             \n* certVcRef = Membership Certificate VC URL
 
-    TAS -> BC++ : Register vcMeta {vcMeta}
+    TA -> BC++ : Register vcMeta {vcMeta}
     return OK
 
-return TAS Registration Response
+return TA Registration Response
 rnote right of ADMIN #LightGray        
-    **[M110_RES : TAS Registration Response]**
+    **[M110_RES : TA Registration Response]**
     body : 
         certVcRef
 end note

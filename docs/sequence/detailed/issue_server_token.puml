@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -32,8 +36,8 @@ box Certified App Provider #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -49,7 +53,7 @@ end box
 ||| 
 
 rnote across #white
-    The process of key exchange between CA and TAS for encryption and decryption is omitted.
+    The process of key exchange between CA and TA for encryption and decryption is omitted.
 end note
 
 == Request Signed Wallet Information ==
@@ -103,7 +107,7 @@ CA -> CA: Generate Server Token Seed\
         \n     caAppInfo\
         \n  }
 
-    CA -> TAS++ : Server Token Request
+    CA -> TA++ : Server Token Request
     rnote right of CA #LightGray        
         **[API_REQ : Server Token Request]**
         body:
@@ -112,23 +116,23 @@ CA -> CA: Generate Server Token Seed\
             seed
     end note
 
-    TAS -> TAS: Verify signatures\
+    TA -> TA: Verify signatures\
             \n* Verify wallet signature\
             \n* Verify certified app provider signature
 
-    TAS -> TAS: Extract information from seed\
+    TA -> TA: Extract information from seed\
             \n* appId = Certified app identifier\
             \n* walletId = Wallet identifier\
             \n* walletDid = Wallet DID\
             \n* walletProviderDid = Wallet provider DID
 
-    TAS -> TAS: Verify if it matches the registered wallet information
+    TA -> TA: Verify if it matches the registered wallet information
 
-    TAS -> TAS: Generate and store server token\
+    TA -> TA: Generate and store server token\
             \n* Create (ServerTokenData)std\
             \n* serverToken = sha256(std)
 
-    TAS -> TAS: Encrypt response information\
+    TA -> TA: Encrypt response information\
             \n* iv = Generate IV\
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
@@ -148,7 +152,7 @@ end note
 CA -> CA: Decrypt encStd\
     \n encStd = decodeMultibase(encStd)\
     \n mergedNonce = clientNonce|serverNonce\
-    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TA</sub>}\
     \n sharedSecret = dec(secretKey, mergedNonce)\
     \n* std = dec(encStd, sharedSecret, iv) 
 

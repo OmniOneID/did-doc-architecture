@@ -2,12 +2,12 @@
 
 - Subject: Open DID Architecture
 - Author: OpenSource Development Team
-- Date: 2026-11-04
-- Version: v1.1.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-11-04 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation |
+| v3.0.0  | 2026-11-16 | Add OID4VCI issuance, OID4VP presentation, mdoc proximity presentation, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -21,7 +21,7 @@ The components of the Open DID system include entities, services, and providers.
 
 ### Entities
 Entities perform a single function. Each entity has a specific role, and the main entities in Open DID are as follows:
-* **TA (Trusted Authority)**: Responsible for registering all providers into the Open DID system to establish trust relationships.
+* **TA (Trust Agent)**: Responsible for registering all providers into the Open DID system to establish trust relationships.
 * **Issuer**: Holds the user's identity or qualification information and issues digital IDs to the users.
 * **Verifier**: Requests and verifies the user's digital ID to provide services.
 
@@ -55,7 +55,7 @@ The diagram below represents the overall architecture of Open DID. To clearly il
 ### Providers
 Providers are entities that combine various services to offer comprehensive solutions.
 
-#### TAS Provider
+#### TA Provider
 1.	Entity Registration: After authenticating the identity of all entities, register them in the OPEN DID system and grant appropriate permissions to the entities.
 2.	Security Policy Management: Manage and apply security policies for entities in the OPEN DID system to establish trust relationships.
 
@@ -78,7 +78,7 @@ Providers are entities that combine various services to offer comprehensive solu
 #### CApp Provider
 1.	App Status Verification: Checks if the user's app is in a normal state and verifies whether it is a trusted app.
 2.	Wallet Trust Information Provision: Provides reliability information about the app requested by the user.
-3.	Proxy Issuance Relay (optional): Operates a Proxy server that relays VC issuance requests between the CApp and the Issuer without going through the TAS.
+3.	Proxy Issuance Relay (optional): Operates a Proxy server that relays VC issuance requests between the CApp and the Issuer without going through the TA.
 
 #### OP Provider
 1.	Token Provision: Verifies the trust information provided by the user and provides a safe and valid token to the user.
@@ -94,7 +94,7 @@ Providers are entities that combine various services to offer comprehensive solu
 #### List Provider
 1.	Issuer List Provision: Provides a list of issuers for VC issuance.
 2.	VC List Provision: Provides a list of VCs for issuance.
-3.	OID4VCI Issuer List Provision: Approves and manages registration requests from OID4VCI Issuers, and provides the list of approved Issuers to wallets. In OpenDID, the TAS performs the role of the List Provider.
+3.	OID4VCI Issuer List Provision: Approves and manages registration requests from OID4VCI Issuers, and provides the list of approved Issuers to wallets. In OpenDID, the TA performs the role of the List Provider.
 4.	mdoc Trusted Issuer List Provision: Provides the trusted issuer list (issuer DID, allowed docTypes) to mdoc readers.
 
 #### KYC Provider

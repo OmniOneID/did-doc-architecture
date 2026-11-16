@@ -19,6 +19,10 @@
 - Updated Software Architecture and architecture diagrams for OpenDID 3.0
 - Fixed typos, broken links and mistranslations across documents
 - Replaced sequence source (.puml) links with sequence diagrams in the documents
+- Linked the Proxy mode VC issuance sequence (P210) reference in Software Architecture to the sequence source
+- Unified the TAS and TA naming to TA (Trust Agent) across documents and diagrams
+- Updated the version of documents added or changed in 3.0.0 to v3.0.0
+- Fixed the header of the entity registration sequence diagram (P120) and the language of the English token generation diagrams in Data Specification
 
 
 ## v2.0.0 (2025-05-29)

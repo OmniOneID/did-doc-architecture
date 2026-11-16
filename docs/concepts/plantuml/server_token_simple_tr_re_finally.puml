@@ -23,6 +23,6 @@ note left: The TA and the CApp have already exchanged session keys before issuin
 ta --> ca--: Transmit Encrypted ServerTokenData (IV)
 ca -> ca: Decrypt ServerTokenData
 ca -> ca : Generate ServerToken (ServerTokenData)
-ca -> ta: When accessing TAS, submit the ServerToken
+ca -> ta: When accessing TA, submit the ServerToken
 
 @enduml

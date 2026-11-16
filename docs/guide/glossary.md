@@ -3,15 +3,15 @@ Glossary
 
 - Subject: Collection of terms used in OpenDID documents
 - Author: OpenSource Development Team
-- Date: 2026-11-12
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-11-12 | Initial version |
+| v3.0.0  | 2026-11-16 | Initial version |
 
 Table of Contents
 ---
@@ -72,7 +72,7 @@ Source: [OID4VCI Issuance](./../concepts/OID4VCI%20Issuance.md#12-terminology)
 | c_nonce | A one-time nonce issued by the Credential Issuer to prevent reuse of the Proof in a Credential request |
 | Proof | A JWT signed by the wallet with the Holder key to prove possession of the key |
 | Token Status List | A list that publishes the status of Credentials as a bit array ([TOKEN-STATUS]) |
-| List Provider | A provider that manages the list of OID4VCI Issuers and provides it to wallets. In OpenDID, TAS performs this role. |
+| List Provider | A provider that manages the list of OID4VCI Issuers and provides it to wallets. In OpenDID, TA performs this role. |
 
 ## 5. OID4VP Presentation
 

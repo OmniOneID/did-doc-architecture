@@ -23,7 +23,7 @@ ISO mdoc format
     - Credential Configuration과 mdoc 구조의 대응 규칙 정의
 - 작성: 오픈소스개발팀
 - 일자: 2026-11-12
-- 버전: v1.0.0
+- 버전: v3.0.0
 
 
 개정이력
@@ -31,7 +31,7 @@ ISO mdoc format
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v1.0.0 | 2026-11-12 | 초안      |
+| v3.0.0 | 2026-11-12 | 초안 |
 
 
 <div style="page-break-after: always;"></div>

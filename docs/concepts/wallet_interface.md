@@ -5,11 +5,11 @@
 - Subject: Explanation of Wallet Interface
 - Author: OpenSource Development Team
 - Date: 2026-10-13
-- Version: v1.0.1
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.1  | 2026-10-13 | Revise wording  |
+| v3.0.0  | 2026-10-13 | Revise wording |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>

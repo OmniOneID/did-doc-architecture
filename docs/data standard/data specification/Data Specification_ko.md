@@ -20,12 +20,12 @@ puppeteer:
 
 - 주제: 주요 데이터의 구조 및 요건
 - 작성: 오픈소스개발팀
-- 일자: 2026-10-13
-- 버전: v2.0.1
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 | 버전   | 일자       | 변경 내용 |
 | ------ | ---------- | --------- |
-| v2.0.1 | 2026-10-13 | 오타 수정      |
+| v3.0.0 | 2026-11-16 | 오타 수정, TA 명칭 통일 |
 | v2.0.0 | 2025-05-09 | ZKP 데이터 추가 |
 | v1.0.0 | 2024-09-03 | 초기 작성 |
 
@@ -465,9 +465,9 @@ API 요청 처리 중 오류 발생 시 미리 정의된 오류코드를 응답�
 
 #### 2.4.6. refId
 
-TAS 및 발급 사업자가 발급하는 참조번호로서 발급을 수행하는 특정 시점에 발급
+TA 및 발급 사업자가 발급하는 참조번호로서 발급을 수행하는 특정 시점에 발급
 트랜잭션을 유일하게 식별하기 위한 식별자로 사용된다.
-생성규칙은 TAS 및 발급 사업자가 정의한다.
+생성규칙은 TA 및 발급 사업자가 정의한다.
 
 구성은 `identifier`와 동일하나 길이가 20자로 제한된다.
 `refId`임을 쉽게 구별하기 위해 "RID"와 같은 prefix를 첨부하는 것을 추천한다.
@@ -543,7 +543,7 @@ def enum DID_SERVICE_TYPE: "service type"
 def enum VC_TYPE: "VC 타입"
 {
     "VerifiableCredential": "VC",
-    "CertificateVC"       : "TAS가 발급하는 가입증명서 VC",
+    "CertificateVC"       : "TA가 발급하는 가입증명서 VC",
 }
 
 def enum VP_TYPE: "VP 타입"
@@ -868,7 +868,7 @@ def object LogoImage: "logo image data"
 
 DID Document를 보유하는 주체는 다음과 같다.
 
-- 사업자(Provider): TAS, 발급 사업자, 검증 사업자, 월렛 사업자 등
+- 사업자(Provider): TA, 발급 사업자, 검증 사업자, 월렛 사업자 등
 - 월렛
 - 사용자(Holder)
 
@@ -881,7 +881,7 @@ DID Document를 보유하는 주체는 다음과 같다.
 장치는 스스로를 증명할 수 없으므로 이 장치를 배포하고 운영하는 사업자가 증명을 대신하여야 한다.
 그러므로 다음과 같은 절차로 DID Document 등록을 위한 자료를 생성한다.
 
-| 순서 | 장치(월렛)                      | 장치 사업자                               | TAS                                 | 신뢰저장소           |
+| 순서 | 장치(월렛)                      | 장치 사업자                               | TA                                 | 신뢰저장소           |
 | :--: | ------------------------------- | ----------------------------------------- | ----------------------------------- | -------------------- |
 |  1   | 월렛 DidDoc 생성<br>(키 생성)   |                                           |                                     |                      |
 |  2   | OwnerDidDoc 생성<br>(키별 서명) |                                           |                                     |                      |
@@ -894,9 +894,9 @@ DID Document를 보유하는 주체는 다음과 같다.
 
 **사용자 DID Document 등록/갱신 절차**
 
-사용자 DID Document는 월렛의 장치키(Device Key)로 서명하여 TAS에게 등록 및 갱신을 요청한다.
+사용자 DID Document는 월렛의 장치키(Device Key)로 서명하여 TA에게 등록 및 갱신을 요청한다.
 
-| 순서 | 월렛                                       | TAS                                 | 신뢰저장소           |
+| 순서 | 월렛                                       | TA                                 | 신뢰저장소           |
 | :--: | ------------------------------------------ | ----------------------------------- | -------------------- |
 |  1   | (등록 시만)사용자 DidDoc 생성<br>(키 생성) |                                     |                      |
 |  2   | OwnerDidDoc 생성<br>(키별 서명)            |                                     |                      |
@@ -912,10 +912,10 @@ DID Document를 보유하는 주체는 다음과 같다.
 사용자 DID Document 복구는 분실 신고에 의해 `DEACTIVATED`로 비활성화된 것을 `ACTIVATED` 상태로 활성화하는 것을 의미한다.
 `DidDoc:/~deactivated` 속성만 변경할 때는 `versionId`가 바뀌지 않는다.
 
-| 순서 | 월렛               | TAS                                 | 신뢰저장소           |
+| 순서 | 월렛               | TA                                 | 신뢰저장소           |
 | :--: | ------------------ | ----------------------------------- | -------------------- |
 |  1   |                    | 인가앱에 RestoreDidOffer 전송       |                      |
-|  2   | TAS에 Restore 요청 |                                     |                      |
+|  2   | TA에 Restore 요청 |                                     |                      |
 |  3   |                    | 신뢰저장소에 등록된 DidDoc 조회     |                      |
 |  4   |                    | InvokedDidDoc 생성<br>(DidDoc 서명) |                      |
 |  5   |                    |                                     | Controller 서명 검증 |
@@ -1032,7 +1032,7 @@ def object SignedDidDoc: "Wallet signed DID Document - 월렛 서명 첨부"
 
 #### 4.2.5. InvokedDidDoc
 
-TAS와 같은 controller가 신뢰저장소에 DidDoc의 등록을 요청하기 위한 문서의 데이터 구조이다.
+TA와 같은 controller가 신뢰저장소에 DidDoc의 등록을 요청하기 위한 문서의 데이터 구조이다.
 이 때 증명은 반드시 capabilityInvocation 키로 서명하여야 한다.
 
 ```c#
@@ -1460,7 +1460,7 @@ def object VerifyProfile: "Verify Profile"
     - `displayClaims`
         - 선택/필수 여부와 무관하게 사용자 화면에 보여줄 claim 목록
         - `requiredClaims`에 포함된 항목일 경우 선택 해제를 하지 못하도록 해야 함
-        - `displayClaims`에 없으나 `requiredClaims`에는 있는 항목의 제출 여부는 TAS의 정책으로 결정
+        - `displayClaims`에 없으나 `requiredClaims`에는 있는 항목의 제출 여부는 TA의 정책으로 결정
         - 미지정의 경우 모든 claim을 화면에 표시
     - `requiredClaims`
         - 반드시 제출해야 하는 claim 목록
@@ -1606,10 +1606,10 @@ def object DidAuth: "DID Auth Data"
 OpenDID에서 정의하는 토큰은 다음 두 가지가 있다.
 
 - 월렛토큰: 인가앱이 월렛에 접근하기 위해 사용
-- 서버토큰: 인가앱이 TAS에 접근하기 위해 사용
+- 서버토큰: 인가앱이 TA에 접근하기 위해 사용
 
 토큰값 자체는 3자가 주고받은 받은 데이터로 SHA256 해시를 수행한 결과값이다.
-토큰이 생성된 후 인가앱은 월렛이나 TAS에 토큰값을 전달하여 purpose에 맞는 권한을 획득한다.
+토큰이 생성된 후 인가앱은 월렛이나 TA에 토큰값을 전달하여 purpose에 맞는 권한을 획득한다.
 
 월렛토큰 생성 절차는 다음과 같다.
 
@@ -1686,7 +1686,7 @@ def object ServerTokenSeed: "server token seed"
 
 ##### 4.6.4.6. ServerTokenData
 
-여기서 사업자는 기본적으로 TAS이나 그 외 사업자가 될 수도 있다.
+여기서 사업자는 기본적으로 TA이나 그 외 사업자가 될 수도 있다.
 
 ```c#
 def object ServerTokenData: "server token data"

@@ -1,6 +1,6 @@
 @startuml
 participant app as "Client App"
-participant tas as "TAS Server"
+participant tas as "TA Server"
 
 app ->> tas : PII Registration Request (PII)
 tas -->> app : Response (Whether Already Registered)

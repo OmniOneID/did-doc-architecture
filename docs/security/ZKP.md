@@ -2,11 +2,12 @@
 
 - Subject: ZKP (Zero-Knowledge Proof)
 - Author: OpenSource Development Team
-- Date: 2025-05-12
-- Version: v2.0.0
+- Date: 2026-11-12
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v3.0.0  | 2026-11-12 | Fix revision history date |
 | v2.0.0  | 2025-05-12 | Initial version |
 
 <br>

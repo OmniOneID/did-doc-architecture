@@ -20,12 +20,12 @@ Data Specification
 
 - Subject: Structure and Requirements of Major Data
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v2.0.1
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v2.0.1 | 2026-10-13 | Fix typos, Revise wording |
+| v3.0.0 | 2026-11-16 | Fix typos, Revise wording, Unify TA naming |
 | v2.0.0 | 2025-05-09 | Add ZKP data |
 | v1.0.0  | 2024-09-03 | Initial version |
 
@@ -449,7 +449,7 @@ The composition is the same as `identifier` but is limited to 20 characters. It 
 
 #### 2.4.6. refId
 
-A reference number issued by TAS and the issuer to uniquely identify the issuance transaction at a specific point in time. The creation rule is defined by TAS and the issuer.
+A reference number issued by TA and the issuer to uniquely identify the issuance transaction at a specific point in time. The creation rule is defined by TA and the issuer.
 
 The composition is the same as `identifier` but is limited to 20 characters. It is recommended to add a prefix such as "RID" to easily distinguish it as a `refId`.
 
@@ -519,7 +519,7 @@ def enum DID_SERVICE_TYPE: "service type"
 def enum VC_TYPE: "VC type"
 {
     "VerifiableCredential": "VC",
-    "CertificateVC"       : "Certificate VC issued by TAS",
+    "CertificateVC"       : "Certificate VC issued by TA",
 }
 
 def enum VP_TYPE: "VP type"
@@ -835,7 +835,7 @@ def object LogoImage: "logo image data"
 
 Entities holding a DID Document include:
 
-- Providers: TAS, Issuers, Verifiers, Wallet Providers, etc.
+- Providers: TA, Issuers, Verifiers, Wallet Providers, etc.
 - Wallets
 - Users (Holders)
 
@@ -845,7 +845,7 @@ Creating, registering, or modifying a provider's DID Document is beyond the scop
 
 For user wallets, the DID Document is used as a means of utilizing Device Keys. Since the device cannot prove itself, the provider that distributes and operates the device must vouch for it. Therefore, the following procedure is used to generate data for DID Document registration.
 
-| Step | Device (Wallet)                | Device Provider                         | TAS                                  | Trust Repository     |
+| Step | Device (Wallet)                | Device Provider                         | TA                                  | Trust Repository     |
 | :--: | ------------------------------ | --------------------------------------- | ------------------------------------ | -------------------- |
 |  1   | Create Wallet DidDoc<br>(Generate Keys) |                                     |                                      |                      |
 |  2   | Create OwnerDidDoc<br>(Sign with Keys) |                                     |                                      |                      |
@@ -858,9 +858,9 @@ For user wallets, the DID Document is used as a means of utilizing Device Keys. 
 
 **User DID Document Registration/Update Procedure**
 
-For user DID Documents, the wallet signs with the device key and requests registration or restoration with TAS.
+For user DID Documents, the wallet signs with the device key and requests registration or restoration with TA.
 
-| Step | Wallet                                                          | TAS                                   | Trust Repository            |
+| Step | Wallet                                                          | TA                                   | Trust Repository            |
 | :--: | --------------------------------------------------------------- | ------------------------------------- | --------------------------- |
 |  1   | (Only during registration)Create User DidDoc<br>(Generate Keys) |                                       |                             |
 |  2   | Create OwnerDidDoc<br>(Sign with Keys)                          |                                       |                             |
@@ -877,10 +877,10 @@ For user DID Documents, the wallet signs with the device key and requests regist
 The restoration of a user's DID Document refers to reactivating a DID that has been deactivated to the `ACTIVATED` state due to a loss report. 
 When only the `DidDoc:/~deactivated` attribute is changed, the `versionId` does not change.
 
-| Step | Wallet                 | TAS                                                       | Trust Repository             |
+| Step | Wallet                 | TA                                                       | Trust Repository             |
 | :--: | ---------------------- | --------------------------------------------------------- | ---------------------------- |
 |  1   |                        | Send RestoreDidOffer to the Capp.                         |                              |
-|  2   | Request Restore to TAS |                                                           |                              |
+|  2   | Request Restore to TA |                                                           |                              |
 |  3   |                        | Retrieve the DidDoc registered in the trusted repository. |                              |
 |  4   |                        | Generate InvokedDidDoc (Sign DidDoc)                      |                              |
 |  5   |                        |                                                           | Verify Controller Signatures |
@@ -993,7 +993,7 @@ def object SignedDidDoc: "Wallet signed DID Document - Wallet signature attached
 
 #### 4.2.5. InvokedDidDoc
 
-The data structure of the document used by a controller like TAS to request registration of the DidDoc in a trust repository.
+The data structure of the document used by a controller like TA to request registration of the DidDoc in a trust repository.
 The proof must be signed with a capabilityInvocation key.
 
 ```c#
@@ -1419,7 +1419,7 @@ def object VerifyProfile: "Verify Profile"
     - `displayClaims`
         - List of claims to be displayed on the user's screen, regardless of whether they are optional or mandatory
         - If an item is included in `requiredClaims`, it should not be allowed to be deselected
-        - The submission of items that are not in `displayClaims` but are included in `requiredClaims` is determined by TAS's policy
+        - The submission of items that are not in `displayClaims` but are included in `requiredClaims` is determined by TA's policy
         - If unspecified, display all claims on the screen.
     - `requiredClaims`
         - List of claims that must be submitted
@@ -1561,10 +1561,10 @@ def object DidAuth: "DID Auth Data"
 The tokens defined in OpenDID include:
 
 - WalletToken: Used by the authorization app to access the wallet
-- ServerToken: Used by the authorization app to access TAS
+- ServerToken: Used by the authorization app to access TA
 
 The token value itself is the result of performing a SHA256 hash on the data exchanged between the parties.
-After the token is created, the certified app passes the token value to the wallet or TAS to obtain the corresponding permissions.
+After the token is created, the certified app passes the token value to the wallet or TA to obtain the corresponding permissions.
 
 The procedure for creating a WalletToken is as follows:
 
@@ -1641,7 +1641,7 @@ def object ServerTokenSeed: "server token seed"
 
 ##### 4.6.4.6. ServerTokenData
 
-Here, the provider is primarily TAS, but other providers can also be included.
+Here, the provider is primarily TA, but other providers can also be included.
 
 ```c#
 def object ServerTokenData: "server token data"

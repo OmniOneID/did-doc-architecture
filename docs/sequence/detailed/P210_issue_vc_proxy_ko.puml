@@ -46,7 +46,7 @@ box 인가앱 사업자 #AliceBlue
     participant "**Proxy**" as proxy <<Server>>
 end box
 
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
 
 box 신뢰저장소
@@ -63,12 +63,12 @@ rnote right of ca #MintCream
     **VcPlan** : $doc
     vcPlanId | name | ... | issuanceMode | endpoints
     * issuanceMode = DIRECT | PROXY
-    * Issue Profile의 Issuance Mode가 TAS에 등록된 값
+    * Issue Profile의 Issuance Mode가 TA에 등록된 값
 end note
 
 ca -> ca: issuanceMode = PROXY 인 VC Plan 선택
 note right of ca
-    DIRECT인 VC Plan은 TAS를 경유하는
+    DIRECT인 VC Plan은 TA를 경유하는
     표준 VC 발급(P210) 절차를 따른다.
 end note
 
@@ -138,7 +138,7 @@ ca -> proxy ++: Request Issue Profile\n{txId, userId}
                 \n* Holder DID는 VC 발급 요청 시 didAuth로 확정
         vf -> vf: authNonce = issuerNonce
         note right of vf
-            표준 절차에서는 TAS가 authNonce를 생성하지만,
+            표준 절차에서는 TA가 authNonce를 생성하지만,
             Proxy 모드에서는 발급 사업자가 issuerNonce를
             authNonce로 사용한다.
         end note
@@ -211,7 +211,7 @@ ca -> wal++ : WalletToken 생성 요청 \n{WalletTokenData}
     end note
 
 rnote across #white
-    Proxy 모드에서는 TAS와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
+    Proxy 모드에서는 TA와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
     Holder 인증은 월렛이 서명한 DID Auth를 발급 사업자가 직접 검증한다.
 end note
 

@@ -26,7 +26,11 @@ autonumber "<b>(#)</b>"
 !$doc = "Refer to data specification document"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -41,7 +45,7 @@ box Server #AliceBlue
     participant "**CAS**" as cas <<WAS>> #WhiteSmoke
 end box
 
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**Issuer**" as vf <<Server>>
 
 box Trust Repository
@@ -58,7 +62,7 @@ ca -> tas ++: Propose Revoke VC\n{vcId}
     tas -> tas: Confirm Issuer DID
     tas -> vf ++: Inspect Propose Revoke\n{vcId}
     note right
-        Identification of the issuing issuer is done by checking the TAS DB or
+        Identification of the issuing issuer is done by checking the TA DB or
         information stored in internal settings.
     end note
         vf -> vf: Check if VC revocation is possible

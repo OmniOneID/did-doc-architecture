@@ -21,14 +21,14 @@ Credential Request Format
 - Subject: Definition of ZKP Credential Request Structure
 - Author: Dongjun Park
 - Date: 2026-10-13
-- Version: v1.0.1
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes  |
 | ------- | ---------- | -------- |
-| v1.0.1  | 2026-10-13 | Revise wording |
+| v3.0.0  | 2026-10-13 | Revise wording |
 | v1.0.0  | 2025-04-30 | Draft    |
 
 <div style="page-break-after: always;"></div>

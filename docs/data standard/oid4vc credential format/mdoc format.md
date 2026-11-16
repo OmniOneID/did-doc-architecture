@@ -23,7 +23,7 @@ ISO mdoc format
     - Definition of the mapping rules between the Credential Configuration and the mdoc structure
 - Author: OpenSource Development Team
 - Date: 2026-11-12
-- Version: v1.0.0
+- Version: v3.0.0
 
 
 Revision History
@@ -31,7 +31,7 @@ Revision History
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-11-12 | Initial version |
+| v3.0.0  | 2026-11-12 | Initial version |
 
 
 <div style="page-break-after: always;"></div>

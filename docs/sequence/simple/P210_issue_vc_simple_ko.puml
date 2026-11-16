@@ -22,7 +22,11 @@ autonumber "<b>(#)</b>"
 'hide footbox
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -35,8 +39,8 @@ box 모바일 #OldLace
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
-box TAS서버 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA서버 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 발급서버 #AliceBlue
@@ -66,18 +70,18 @@ end box
 
 == P210-1 : VC 발급 준비 ==
 alt Issuer Initiate [Offer 요청]
-    USER -> TAS++: VC 발급 Offer 요청 
+    USER -> TA++: VC 발급 Offer 요청 
     rnote right of CA #LightGray   
         **[API_REQ : VC 발급 Offer 요청]**
     end note
-    TAS -> ISSUER++: VC 발급 Offer 요청
+    TA -> ISSUER++: VC 발급 Offer 요청
         return VC 발급 Offer 응답
-    TAS --> USER--: VC 발급 Offer 응답
+    TA --> USER--: VC 발급 Offer 응답
     rnote right of CA #LightGray   
         **[API_RES : VC 발급 Offer 응답]**
     end note
 else User Initiate [VC Plan ID 요청]
-    CA -> TAS++: VC Plan ID List 요청
+    CA -> TA++: VC Plan ID List 요청
     rnote right of CA #LightGray   
         **[API_REQ : VC Plan ID List 요청]**
     end note
@@ -88,11 +92,11 @@ else User Initiate [VC Plan ID 요청]
     end note
 end
 == P210-2 : VC 발급 시작 요청 ==
-CA -> TAS++: VC 발급 시작 요청
+CA -> TA++: VC 발급 시작 요청
     rnote right of CA #Lavender
         **[M210_REQ : VC 발급 시작 요청]**
     end note
-    TAS -> ISSUER++: VC 발급 시작 요청
+    TA -> ISSUER++: VC 발급 시작 요청
     return VC 발급 시작 응답
 return VC 발급 시작 응답
 rnote right of CA #Lavender
@@ -100,12 +104,12 @@ rnote right of CA #Lavender
 end note
 
 == P210-3 ECDH 요청 ==
-CA -> TAS++ : ECDH 요청
+CA -> TA++ : ECDH 요청
 rnote right of CA #Lavender
     **[M210_REQ : ECDH 요청]**
 end note
 
-TAS --> CA--: ECDH 응답
+TA --> CA--: ECDH 응답
 rnote right of CA #Lavender
     **[M210_RES : ECDH 응답]**
 end note
@@ -117,11 +121,11 @@ rnote across #white
 end note
 
 == P210-5 : Issue Profile 요청 ==
-CA -> TAS++: Issue Profile 요청
+CA -> TA++: Issue Profile 요청
     rnote right of CA #Lavender
         **[M210_REQ : Issue Profile 요청]**
     end note
-    TAS -> ISSUER++: Issue Profile 요청
+    TA -> ISSUER++: Issue Profile 요청
     ISSUER -> ISSUER: Issue Profile 생성
     opt ZKP 포함인 경우
         ISSUER -> ISSUER: ZKP Credential Offer 생성
@@ -138,11 +142,11 @@ CA -> WALLET++: VC 발급 요청
         WALLET -> WALLET : inquery credDef from trust repository, Create/Manage Master Secrets
         WALLET -> WALLET : Generate credentialRequest include in reqVc
     end
-    WALLET -> TAS++: VC 발급 요청
+    WALLET -> TA++: VC 발급 요청
         rnote right of CA #Lavender
             **[M210_REQ : VC 발급 요청]**
         end note
-        TAS -> ISSUER++: VC 발급 요청
+        TA -> ISSUER++: VC 발급 요청
             ISSUER -> ISSUER: vc: VC 발급 또는 재발급
             opt VC 재발급인 경우
                 ISSUER -> BC: 기존 VC 폐기
@@ -173,11 +177,11 @@ CA -> WALLET++: VC 발급 요청
 return 결과
 
 == P210-7 : VC 발급 완료 ==
-CA -> TAS++: VC 발급 완료 요청
+CA -> TA++: VC 발급 완료 요청
     rnote right of CA #Lavender
         **[M210_REQ : VC 발급 완료 요청]**
     end note
-    TAS -> ISSUER++: VC 발급 완료 요청
+    TA -> ISSUER++: VC 발급 완료 요청
     return VC 발급 완료 응답
 return VC 발급 완료 응답
 rnote right of CA #Lavender

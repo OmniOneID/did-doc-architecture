@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -32,8 +36,8 @@ box Wallet Provider #AliceBlue
     participant "**Wallet Service**" as WP <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -57,7 +61,7 @@ end box
 CA -> WALLET++: Wallet Creation Request
 
 == Request for Allowed CA List ==
-WALLET -> TAS++: Request for Allowed CA List
+WALLET -> TA++: Request for Allowed CA List
 rnote right of WALLET #LightGray        
     **[API_REQ: Request for Allowed CA List]**
     query:
@@ -98,7 +102,7 @@ return {attDidDoc}
 
 ||| 
 == P131: Wallet Registration Request ==
-WALLET -> TAS++: Wallet Registration Request
+WALLET -> TA++: Wallet Registration Request
 rnote right of WALLET #LightGray        
     **[M131_REQ: Wallet Registration Request]**
     body : 
@@ -106,25 +110,25 @@ rnote right of WALLET #LightGray
         attestedDidDoc
 end note
 
-    TAS -> TAS: Signature Verification\
+    TA -> TA: Signature Verification\
                 \n* Verify Wallet Provider Signature\
                 \n* Verify Individual Key Signature
 
-    TAS -> TAS: (InvokedDidDoc)invDidDoc = {\
+    TA -> TA: (InvokedDidDoc)invDidDoc = {\
         \n   didDoc,\
-        \n   controller = TAS Information,\
+        \n   controller = TA Information,\
         \n   nonce = Generate nonce\
         \n }
 
-    TAS -> TAS: Controller Signature\
+    TA -> TA: Controller Signature\
         \n* signInvoke(invDidDoc)
 
-    TAS -> BC++: DID Registration Request\n{invDidDoc}
+    TA -> BC++: DID Registration Request\n{invDidDoc}
         BC -> BC: Controller Signature Verification
         BC -> BC: Registration
     return OK
 
-    TAS -> TAS: Save Mapping Information to DB\
+    TA -> TA: Save Mapping Information to DB\
         \n* walletId (Wallet Identifier)\
         \n* walletDid (Wallet DID)\
         \n* walletProviderDid (Wallet Provider DID)

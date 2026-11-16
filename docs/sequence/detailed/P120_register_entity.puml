@@ -4,7 +4,7 @@
 ' Settings
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 '=== Header and Footer ===
-header OPEN-DID TechniENTl SpecifiENTtion
+header OPEN-DID Technical Specification
 footer
   	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
 end footer
@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 2
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -28,8 +32,8 @@ box Entity Provider #AliceBlue
     participant "**Entity**" as ENT <<WAS>> #WhiteSmoke
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Trusted Storage
@@ -56,7 +60,7 @@ end note
 ||| 
 
 == P120-1: Entity Registration Start Request ==
-ENT -> TAS++ : Entity Registration Start Request
+ENT -> TA++ : Entity Registration Start Request
 rnote right of ENT #Lavender
     **[M120_REQ : Entity Registration Start Request]**
     body : 
@@ -77,7 +81,7 @@ end note
 '             \n* (ReqEcdh)reqEcdh\
 '             \n   = Create ECDH request
 
-' ENT -> TAS++ : ECDH Request
+' ENT -> TA++ : ECDH Request
 ' rnote right of ENT #Lavender
 '     **[M120_REQ : ECDH Request]**
 '     body : 
@@ -86,14 +90,14 @@ end note
 '         reqEcdh
 ' end note
 
-'     TAS -> TAS: Verify reqEcdh.proof signature
+'     TA -> TA: Verify reqEcdh.proof signature
 
-'     TAS -> TAS: Perform ECDH\
+'     TA -> TA: Perform ECDH\
 '                 \n* sesKey = session key\
 '                 \n* (AccEcdh)accEcdh\
 '                 \n   = Create ECDH acceptance
 
-'     TAS -> TAS: signKeyAgree(accEcdh)
+'     TA -> TA: signKeyAgree(accEcdh)
 
 ' return ECDH Response
 ' rnote right of ENT #Lavender
@@ -117,7 +121,7 @@ rnote right of ENT #MintCream
     client|clientNonce|curve|publicKey|ENTndidate
 end note
 
-ENT -> TAS++ : ECDH Request
+ENT -> TA++ : ECDH Request
 rnote right of ENT #Lavender
     **[M120_REQ : ECDH Request]**
     body : 
@@ -126,25 +130,25 @@ rnote right of ENT #Lavender
         reqEcdh
 end note
 
-    TAS -> TAS : Validate reqEcdh format
-    TAS -> TAS : Generate Server Nonce
-    TAS -> TAS : Generate mergedNonce
-    rnote right of TAS #MintCream
+    TA -> TA : Validate reqEcdh format
+    TA -> TA : Generate Server Nonce
+    TA -> TA : Generate mergedNonce
+    rnote right of TA #MintCream
         **mergedNonce**
         sha256(serverNonce, clientNonce)
     end note
-    TAS -> TAS: Generate DH Key Pair
+    TA -> TA: Generate DH Key Pair
 
-    TAS -> TAS: Perform ECDH\
+    TA -> TA: Perform ECDH\
                 \n* sesKey = Session Key\
 
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **sesKey**
         ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
     end note
-    TAS -> TAS: Generate ECDH Accept Data\
+    TA -> TA: Generate ECDH Accept Data\
                 \n* (AccEcdh)accEcdh
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **accEcdh** : $doc
         server|serverNonce|cipher|publicKey|padding
     end note
@@ -181,7 +185,7 @@ rnote right of ENT #MintCream
     **DidAuth** : $doc
 end note
 
-ENT -> TAS++ : Entity Registration Request
+ENT -> TA++ : Entity Registration Request
 rnote right of ENT #Lavender
     **[M120_REQ : Entity Registration Request]**
     body : 
@@ -190,20 +194,20 @@ rnote right of ENT #Lavender
         didAuth
 end note
 
-    TAS -> TAS: vc: Issue Registration CertifiENTte VC
-    rnote right of TAS #MintCream
+    TA -> TA: vc: Issue Registration CertifiENTte VC
+    rnote right of TA #MintCream
         **Registration CertifiENTte VC**: $refdoc
     end note
 
-    TAS -> TAS: vcMeta: Create Registration CertifiENTte VC Metadata
-    rnote right of TAS #MintCream
+    TA -> TA: vcMeta: Create Registration CertifiENTte VC Metadata
+    rnote right of TA #MintCream
         **vcMeta** : $doc
     end note
 
-    TAS -> BC++ : Register vcMeta {vcMeta}
+    TA -> BC++ : Register vcMeta {vcMeta}
     return OK
 
-    TAS -> TAS: Encrypt vc\
+    TA -> TA: Encrypt vc\
             \n* iv = Generate IV\
             \n* tmp = enc(vc, sesKey, iv, padding)\
             \n* encVc = multibase(tmp)
@@ -221,12 +225,12 @@ ENT -> ENT: Decrypt encVc\
             \n* tmp = debase(encVc)\
             \n* vc = dec(tmp, sesKey, iv)
 
-ENT -> ENT: Verify and save TAS signature
+ENT -> ENT: Verify and save TA signature
 ENT -> ENT: Extract vcId = VC id
 
 ||| 
 == P120-4: Entity Registration Completion ==
-ENT -> TAS++ : Entity Registration Completion Request
+ENT -> TA++ : Entity Registration Completion Request
 rnote right of ENT #Lavender
     **[M120_REQ : Entity Registration Completion Request]**
     body : 
@@ -235,7 +239,7 @@ rnote right of ENT #Lavender
         vcId
 end note
 
-    TAS -> TAS: Check vcId consistency
+    TA -> TA: Check vcId consistency
 
 return Entity Registration Completion Response
 rnote right of ENT #Lavender

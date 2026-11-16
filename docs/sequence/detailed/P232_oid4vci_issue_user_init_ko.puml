@@ -40,7 +40,7 @@ box 모바일 #OldLace
     participant "**월렛**" as wal <<Wallet>>
 end box
 
-participant "**TAS**\n(List Provider)" as tas <<Server>>
+participant "**TA**\n(List Provider)" as tas <<Server>>
 
 box 발급 사업자 #AliceBlue
     participant "**Webview 발급**" as web <<Server>> #WhiteSmoke
@@ -52,8 +52,8 @@ end box
 == 사전 조건 : List Provider 등록 ==
 
 rnote over tas, ci
-    발급 사업자는 TAS에 Issuer 등록을 요청하고(REQUESTED),
-    TAS 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
+    발급 사업자는 TA에 Issuer 등록을 요청하고(REQUESTED),
+    TA 관리자가 승인하면(ACTIVE) 월렛의 Issuer 목록에 노출된다.
     * credentialIssuer = Issuer DID
     * credentialIssuerMetadataUri = {base}/.well-known/openid-credential-issuer
     * userInitiationUri = {base}/oid4vci/issuance/start

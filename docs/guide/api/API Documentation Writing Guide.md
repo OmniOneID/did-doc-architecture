@@ -3,15 +3,15 @@ OpenDID API Documentation Writing Guide
 
 - Subject: API Documentation Writing Guide
 - Author: Open Source Development Team, Kang Youngho
-- Date: 2026-10-13
-- Version: v1.0.1
+- Date: 2026-11-16
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Change Details  |
 | ------- | ---------- | --------------- |
-| v1.0.1  | 2026-10-13 | Fix links |
+| v3.0.0  | 2026-11-16 | Fix links, Unify TA naming |
 | v1.0.0  | 2024-09-03 | Initial version |
 
 Table of Contents
@@ -205,7 +205,7 @@ The reasons for this approach are as follows:
 
 ### 2.1. Retrieving Issuable VCs
 
-Retrieve information on issuable VCs through the list management service (TAS URL, VC information).
+Retrieve information on issuable VCs through the list management service (TA URL, VC information).
 
 | Item          | Description                               | Remarks |
 | ------------- | ----------------------------------------- | ------- |

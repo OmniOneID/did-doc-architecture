@@ -61,7 +61,7 @@
     </g>
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" stroke-width="2" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-26,122)" stroke-linecap="butt">
       <rect fill="none" x="709.8386" width="192.5773" height="48" y="226.4023" clip-path="url(#clipPath2)"/>
-      <text x="774.6022" y="254.9374" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" stroke-width="1" xml:space="preserve">*TAS 사업자</text>
+      <text x="774.6022" y="254.9374" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none" stroke-width="1" xml:space="preserve">*TA 사업자</text>
     </g>
     <g fill="rgb(215,215,215)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-26,122)" stroke="rgb(215,215,215)">
       <rect x="709.8386" width="192.5773" height="48" y="375.6059" clip-path="url(#clipPath2)" stroke="none"/>

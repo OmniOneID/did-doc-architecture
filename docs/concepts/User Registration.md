@@ -20,11 +20,12 @@ User Registration
 
 - Subject: Explanation of the concept of user registration
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v3.0.0  | 2026-11-16 | Fix links, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -64,7 +65,7 @@ The user registration procedure is as follows:
     - (A1) Create Wallet
     - (A2) Create Wallet DID Document
     - (A3) Generate Wallet Identifier and Sign Wallet DID Document
-    - (A4) Register Wallet in TAS - Request Register Wallet
+    - (A4) Register Wallet in TA - Request Register Wallet
 1. (B) User Registration Procedure
     - (B1) Request start of user registration - `[API] Propose Register User`
     - (B2) ECDH (Establish Secure Session) - `[API] Request ECDH`
@@ -315,7 +316,7 @@ Regardless of the type, wallets must provide the following functions.
     - Verify if the wallet token submitted can perform the requested function by the CApp
     - Manage to ensure only one wallet token exists at a time
 1. VC related functions
-    - Request VC issuance from TAS and securely store the issued VC in the wallet
+    - Request VC issuance from TA and securely store the issued VC in the wallet
     - Provide the VC to the CApp after appropriate wallet token verification
 1. VP related functions
     - Generate and encrypt the VP after appropriate wallet token verification (submission is performed by the CApp)

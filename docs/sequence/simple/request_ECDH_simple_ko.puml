@@ -21,7 +21,11 @@ autonumber "<b>(#)</b>"
 'hide footbox
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -37,8 +41,8 @@ box 서버 #AliceBlue
     participant "**인가서버**" as CAS <<App>> #WhiteSmoke    
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 신뢰저장소
@@ -69,7 +73,7 @@ opt KeyAgreement 서명 ON
     return {signedReqEcdh}
 end
 
-CA -> TAS++ : ECDH 요청
+CA -> TA++ : ECDH 요청
 rnote right of CA #Lavender
     **[REQ : ECDH 요청]**
     body : 
@@ -79,16 +83,16 @@ rnote right of CA #Lavender
 end note
 
     opt KeyAgreement 서명 ON
-        TAS -> TAS: reqEcdh.proof 서명 검증
+        TA -> TA: reqEcdh.proof 서명 검증
     end
 
-    TAS -> TAS: ECDH 수행\
+    TA -> TA: ECDH 수행\
                 \n* sesKey = 세션키\
                 \n* (AccEcdh)accEcdh\
                 \n   = ECDH 수락 생성
 
     opt KeyAgreement 서명  ON
-        TAS -> TAS: signKeyAgree(accEcdh)
+        TA -> TA: signKeyAgree(accEcdh)
     end
 
 return ECDH 응답

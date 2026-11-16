@@ -20,12 +20,12 @@ OID4VCI-based VC Issuance
 
 - Subject: Explanation of OID4VCI-based VC Issuance Concept
 - Author: OpenSource Development Team
-- Date: 2026-10-21
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.0  | 2026-10-21 | Initial version |
+| v3.0.0  | 2026-11-16 | Initial version |
 
 <br>
 
@@ -119,14 +119,14 @@ The OID4VCI-based VC issuance sequence is as follows:
 | c_nonce | A one-time nonce issued by the Credential Issuer to prevent reuse of the Proof in a Credential request |
 | Proof | A JWT signed by the wallet with the Holder key to prove possession of the key |
 | Token Status List | A list that publishes the status of Credentials as a bit array ([TOKEN-STATUS]) |
-| List Provider | A provider that manages the list of OID4VCI Issuers and provides it to wallets. In OpenDID, TAS performs this role. |
+| List Provider | A provider that manages the list of OID4VCI Issuers and provides it to wallets. In OpenDID, TA performs this role. |
 
 ### 1.3. Comparison with the OpenDID Issuance Protocol
 
 | Category | OpenDID Issuance Protocol (P210) | OID4VCI-based Issuance |
 | -------- | -------------------------------- | ---------------------- |
 | Issuance initiation | Issue Offer, VC Plan retrieval | Credential Offer, Issuer list of the List Provider |
-| Relay | Via TAS (or Proxy) | The wallet requests the Issuer directly |
+| Relay | Via TA (or Proxy) | The wallet requests the Issuer directly |
 | Authorization | Server token, DID Auth | OAuth 2.0 Access Token (Pre-Authorized Code / Authorization Code) |
 | Secure channel | ECDH and E2E encryption | TLS, (optional) JWE encryption of the Credential response |
 | Holder binding | DID Auth signature | Proof JWT (`kid` = Holder DID URL) |
@@ -150,7 +150,7 @@ The components of OID4VCI-based issuance are shown in the diagram below.
 | Status List Endpoint | Publishes the signed Token Status List (`application/statuslist+jwt`). |
 | Webview Issuance | Provides the Claim input screen in user-initiated issuance and creates the Credential Offer. |
 | Admin Console | Manages the Issuer Metadata, Credential Configuration, Client settings, List Provider registration, and issuance history and status. |
-| TAS (List Provider) | Approves and manages registered OID4VCI Issuers, and provides the Issuer list to wallets. |
+| TA (List Provider) | Approves and manages registered OID4VCI Issuers, and provides the Issuer list to wallets. |
 | Trust Repository | Provides the Holder DID Document. The Credential Issuer checks the signing key of the Proof and the revocation token against `authentication` in the Holder DID Document. |
 | Verifier | Checks the Credential status using the Status List URI included in the Credential. |
 
@@ -202,8 +202,8 @@ When requesting an Access Token with a Pre-Authorized Code, the request can be m
 
 ### 3.4. List Provider Registration
 
-To support user-initiated issuance, the Issuer must be registered with the List Provider (TAS).
-The Issuer requests registration with the following information, and once the TAS administrator approves it, the Issuer is shown in the wallet's Issuer list.
+To support user-initiated issuance, the Issuer must be registered with the List Provider (TA).
+The Issuer requests registration with the following information, and once the TA administrator approves it, the Issuer is shown in the wallet's Issuer list.
 
 | Item | Description |
 | ---- | ----------- |
@@ -271,7 +271,7 @@ In this method, the user directly selects the Issuer and the Credential to be is
 
 ![User-Initiated Issuance](images/oid4vci_seq_user_init.svg)
 
-1. The wallet retrieves the list of approved (`ACTIVE`) Issuers from the List Provider (TAS).
+1. The wallet retrieves the list of approved (`ACTIVE`) Issuers from the List Provider (TA).
 1. When the user selects an Issuer and a Credential, the wallet opens the Issuer's `userInitiationUri` in a Webview. At this time, it passes the Holder DID and the Credential Configuration ID.
 1. The Issuer creates an issuance session (valid for 10 minutes) and provides an input screen according to the Claim definitions of the Credential Configuration.
 1. When the user enters and confirms the Claims, the Issuer validates and stores the input values, and creates a Pre-Authorized Code Credential Offer without a tx_code.
@@ -383,7 +383,7 @@ A reason must be entered when changing the status.
 
 ### 5.4. Credential Revocation by Wallet
 
-The wallet can directly request the Issuer to revoke a Credential it holds. This feature is an OpenDID extension to OID4VCI, and it identifies the requester by a Holder DID signature without using an Access Token or TAS.
+The wallet can directly request the Issuer to revoke a Credential it holds. This feature is an OpenDID extension to OID4VCI, and it identifies the requester by a Holder DID signature without using an Access Token or TA.
 
 ![Credential Revocation by Wallet](images/oid4vci_seq_revocation.svg)
 
@@ -441,7 +441,7 @@ The OID4VCI support scope of the OpenDID 3.0 wallet is as follows.
 | ---- | --------------- |
 | Authorization method | Only the Pre-Authorized Code flow is supported. The Authorization Code flow is not supported. |
 | tx_code | Only numeric input is supported. |
-| User-initiated issuance | The user selects an Issuer from the TAS Issuer list and enters information in the Webview, and the wallet receives a Credential Offer. |
+| User-initiated issuance | The user selects an Issuer from the TA Issuer list and enters information in the Webview, and the wallet receives a Credential Offer. |
 | Proof | The Holder key is specified with `kid` (Holder DID URL, `did:<method>:<id>?versionId=<version>#<key id>`) instead of `jwk`. The PIN key or biometric key is used, and the key must be registered in `authentication` of the Holder DID Document. |
 | Credential response encryption | Requested only when the Issuer Metadata requires response encryption. `A256GCM` is used for `enc`. |
 | Credential request encryption | Not supported. |

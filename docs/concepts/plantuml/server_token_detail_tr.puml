@@ -17,12 +17,12 @@ rnote over wal
     * WALLET_ID = Wallet ID
     * WALLET_DID = Wallet DID
 end rnote
-/ rnote over ca
+& rnote over ca
     **[Pre-defined]**
     * APP_ID = Certified App ID
-    * sesKey, padding = Generated with TAS and ECDH
+    * sesKey, padding = Generated with TA and ECDH
 end rnote
-/ rnote over tas
+& rnote over tas
     **[Pre-defined]**
     * sesKey, padding = Generated with Certified App and ECDH
 end rnote
@@ -102,6 +102,6 @@ ca -> ca: Decrypt Response Data\
 ca -> ca: Generate Server Token\n* serverToken = sha256(std)
 
 hnote over ca, tas #LimeGreen
-    Submit serverToken when accessing TAS
+    Submit serverToken when accessing TA
 end hnote
 @enduml

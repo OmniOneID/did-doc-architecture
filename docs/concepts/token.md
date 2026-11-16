@@ -2,12 +2,12 @@
 
 - Subject: Open DID Token
 - Author: OpenSource Development Team
-- Date: 2026-11-04
-- Version: v1.1.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.1.0  | 2026-11-04 | Add local Wallet Token, Fix image references |
+| v3.0.0  | 2026-11-16 | Add local Wallet Token, Fix image references, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -97,7 +97,7 @@ Starting with OpenDID 3.0, the wallet can issue a Wallet Token without going thr
 * **Retention**: The wallet keeps only one Wallet Token. A local Wallet Token and a Wallet Token issued through the CApp Service replace each other.
 
 ### Server Token
-Server Token is a token that allows an app to access services like TA (Trusted Application), issued by the service server.
+Server Token is a token that allows an app to access services like TA (Trust Agent), issued by the service server.
 
 #### Server Token Terminology
 * **Signed Wallet Info**: Signed wallet information provided by the wallet to the CApp, used by TA to verify the wallet.

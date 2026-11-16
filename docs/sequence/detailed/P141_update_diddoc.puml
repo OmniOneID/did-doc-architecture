@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -33,8 +37,8 @@ end box
 box Server #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Trusted Storage
@@ -53,7 +57,7 @@ end box
 |||
 
 == P141-1: User DID Document Update Start Request ==
-CA -> TAS++: User DID Document Update Start Request
+CA -> TA++: User DID Document Update Start Request
 rnote right of CA #Lavender        
     **[M141_REQ: User DID Document Update Start Request]**
     body : 
@@ -61,8 +65,8 @@ rnote right of CA #Lavender
         did
 end note
 
-    TAS -> TAS: Check if the DID is in a modifiable state
-    TAS -> TAS: authNonce = Generate nonce for DID Auth
+    TA -> TA: Check if the DID is in a modifiable state
+    TA -> TA: authNonce = Generate nonce for DID Auth
 
 return User DID Document Update Start Response
 rnote right of CA #Lavender        
@@ -105,7 +109,7 @@ end
 
 
 
-CA -> TAS++ : ECDH Request
+CA -> TA++ : ECDH Request
 rnote right of CA #Lavender
     **[M141_REQ : ECDH Request]**
     body : 
@@ -115,33 +119,33 @@ rnote right of CA #Lavender
 end note
 
     opt KeyAgreement Signature ON
-        TAS -> TAS: Verify reqEcdh.proof signature
+        TA -> TA: Verify reqEcdh.proof signature
     end
 
-    TAS -> TAS : Validate reqEcdh format
-    TAS -> TAS : Generate Server Nonce
-    TAS -> TAS : Generate mergedNonce
-    rnote right of TAS #MintCream
+    TA -> TA : Validate reqEcdh format
+    TA -> TA : Generate Server Nonce
+    TA -> TA : Generate mergedNonce
+    rnote right of TA #MintCream
         **mergedNonce**
         sha256(serverNonce, clientNonce)
     end note
-    TAS -> TAS: Generate DH Key Pair
+    TA -> TA: Generate DH Key Pair
 
-    TAS -> TAS: Perform ECDH\
+    TA -> TA: Perform ECDH\
                 \n* sesKey = Session Key\
 
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **sesKey**
         ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
     end note
-    TAS -> TAS: Generate ECDH Accept Data\
+    TA -> TA: Generate ECDH Accept Data\
                 \n* (AccEcdh)accEcdh
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **accEcdh** : $doc
         server|serverNonce|cipher|publicKey|padding
     end note
     opt KeyAgreement Signature ON
-        TAS -> TAS: signKeyAgree(accEcdh)
+        TA -> TA: signKeyAgree(accEcdh)
     end
 
 return ECDH Response
@@ -286,7 +290,7 @@ CA -> CA : Generate ServerTokenSeed\
         \n     caAppInfo\
         \n  }
 
-CA -> TAS++ : Server Token Generation Request
+CA -> TA++ : Server Token Generation Request
 rnote right of CA #Lavender
     **[M141_REQ : Server Token Generation Request]**
     body : 
@@ -295,23 +299,23 @@ rnote right of CA #Lavender
         seed
 end note
 
-    TAS -> TAS: Verify signatures\
+    TA -> TA: Verify signatures\
             \n* Verify wallet signature\
             \n* Verify certified app provider signature
 
-    TAS -> TAS: Extract information from seed\
+    TA -> TA: Extract information from seed\
             \n* appId = Certified app identifier\
             \n* walletId = Wallet identifier\
             \n* walletDid = Wallet DID\
             \n* walletProviderDid = Wallet provider DID
 
-    TAS -> TAS: Check consistency with registered wallet information
+    TA -> TA: Check consistency with registered wallet information
 
-    TAS -> TAS: Generate and store server token\
+    TA -> TA: Generate and store server token\
             \n* Generate (ServerTokenData)std\
             \n* serverToken = sha256(std)
 
-    TAS -> TAS: Encrypt response information\
+    TA -> TA: Encrypt response information\
             \n* iv = Generate IV\
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
@@ -380,7 +384,7 @@ CA -> WALLET ++: Request User DID Document Update\n{walletToken, serverToken}
     USER -[#Blue]\ WALLET: User authentication
     WALLET -> WALLET: signAuth(didAuth)
 
-    WALLET -> TAS ++: User DID Document Update Request
+    WALLET -> TA ++: User DID Document Update Request
     rnote right of WALLET #Lavender
         **[M141_REQ : User DID Document Update Request]**
         body:
@@ -390,35 +394,35 @@ CA -> WALLET ++: Request User DID Document Update\n{walletToken, serverToken}
             didAuth
             signedDidDoc
     end note
-        TAS -> TAS: Validate serverToken
+        TA -> TA: Validate serverToken
 
-        TAS -> TAS: Validate DID Auth\
+        TA -> TA: Validate DID Auth\
                 \n* Verify didAuth.proof\
                 \n* Check if authNonce matches
 
-        TAS -> TAS: Validate signatures\
+        TA -> TA: Validate signatures\
             \n* Verify wallet signature\
             \n* Verify individual key signature
         
-        TAS -> TAS: Validate DID comparison\
+        TA -> TA: Validate DID comparison\
             \n* didDoc.did = M141_1_REQ.did\
             \n* didDoc.did = didAuth.did
 
-        TAS -> TAS: (InvokedDidDoc)invDidDoc = {\
+        TA -> TA: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS information,\
+            \n   controller = TA information,\
             \n   nonce = Generate nonce\
             \n }
 
-        TAS -> TAS: Controller signature\
+        TA -> TA: Controller signature\
             \n* signInvoke(invDidDoc)
 
-        TAS -> BC ++: Request DID Registration\n{invDidDoc}
+        TA -> BC ++: Request DID Registration\n{invDidDoc}
             BC -> BC: Verify Controller signature
             BC -> BC: Register
         return OK
 
-        TAS -> TAS: Check user mapping information in DB\
+        TA -> TA: Check user mapping information in DB\
                 \n* holderDid (User DID)\
                 \n* walletId (Wallet identifier)\
                 \n* appId (Certified app identifier)
@@ -433,7 +437,7 @@ return OK
 
 |||
 == P141-5: User DID Document Update Completion ==
-CA -> TAS++: User DID Document Update Completion Request
+CA -> TA++: User DID Document Update Completion Request
 rnote right of CA #Lavender        
     **[M141_REQ: User DID Document Update Completion Request]**
     body:
@@ -442,8 +446,8 @@ rnote right of CA #Lavender
         serverToken
 end note
 
-    TAS -> TAS: Validate serverToken
-    TAS -> TAS: Delete session information and end transaction
+    TA -> TA: Validate serverToken
+    TA -> TA: Delete session information and end transaction
 
 return User DID Document Update Completion Response
 rnote right of CA #Lavender        

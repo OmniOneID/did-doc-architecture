@@ -22,8 +22,8 @@ Credential Status format
     - OID4VCI로 발급한 Credential의 상태 관리 데이터 형식 정의
     - Credential 내 상태 참조, Status List Token, Credential 폐기 요청·응답 데이터 정의
 - 작성: 오픈소스개발팀
-- 일자: 2026-11-12
-- 버전: v1.0.0
+- 일자: 2026-11-16
+- 버전: v3.0.0
 
 
 개정이력
@@ -31,7 +31,7 @@ Credential Status format
 
 | 버전   | 일자       | 변경 내용                                    |
 | ------ | ---------- | -------------------------------------------- |
-| v1.0.0 | 2026-11-12 | 초안                                         |
+| v3.0.0 | 2026-11-16 | 초안 |
 
 
 <div style="page-break-after: always;"></div>
@@ -591,7 +591,7 @@ Header와 Payload를 디코딩한 값은 [4.2](#42-jose-header), [4.3](#43-paylo
 ## 5. Credential 폐기 (OpenDID 확장)
 
 월렛은 보유한 Credential(`dc+sd-jwt-did`, `mso_mdoc-did`) 한 건의 폐기를 Credential Issuer에 직접 요청할 수 있다.
-이 기능은 OpenDID의 OID4VCI 확장이며, Access Token과 TAS를 사용하지 않고 Holder DID 서명으로 요청자를 확인한다.
+이 기능은 OpenDID의 OID4VCI 확장이며, Access Token과 TA를 사용하지 않고 Holder DID 서명으로 요청자를 확인한다.
 
 | 항목                                                  | 구분              |
 | ----------------------------------------------------- | ----------------- |

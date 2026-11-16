@@ -38,7 +38,7 @@ This video will help you understand the components of the Open DID platform.
 - Overview and features of Open DID
 - Concepts of Open DID components
 - Basic components of Open DID(Ledger, Server, Client)
-- Full components of Open DID(TAS, Issuer, Verifier, etc.)
+- Full components of Open DID(TA, Issuer, Verifier, etc.)
 - Overall process of Open DID(5 steps)
 
 ---

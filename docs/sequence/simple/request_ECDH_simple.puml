@@ -21,7 +21,11 @@ autonumber "<b>(#)</b>"
 'hide footbox
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -37,8 +41,8 @@ box Server #AliceBlue
     participant "**Certified Server**" as CAS <<App>> #WhiteSmoke    
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box Trust Repository
@@ -70,7 +74,7 @@ opt KeyAgreement Signature ON
     return {signedReqEcdh}
 end
 
-CA -> TAS++ : ECDH Request
+CA -> TA++ : ECDH Request
 rnote right of CA #Lavender
     **[REQ : ECDH Request]**
     body : 
@@ -80,16 +84,16 @@ rnote right of CA #Lavender
 end note
 
     opt KeyAgreement Signature ON
-        TAS -> TAS: Verify reqEcdh.proof signature
+        TA -> TA: Verify reqEcdh.proof signature
     end
 
-    TAS -> TAS: Perform ECDH\
+    TA -> TA: Perform ECDH\
                 \n* sesKey = Session Key\
                 \n* (AccEcdh)accEcdh\
                 \n   = Create ECDH acceptance
 
     opt KeyAgreement Signature ON
-        TAS -> TAS: signKeyAgree(accEcdh)
+        TA -> TA: signKeyAgree(accEcdh)
     end
 
 return ECDH Response

@@ -7,10 +7,10 @@ start
 |Wallet Service Provider|
 :**A3.** Sign Wallet DID Document;
 
-|TAS|
+|TA|
 :**A4.** Register Wallet;
 note right
-    [Wallet → TAS]
+    [Wallet → TA]
     * Request Register Wallet
 end note
 stop
@@ -23,31 +23,31 @@ start
 
 :**B1.** Request Start User Registration;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Propose Register User
 end note
 
 :**B2.** ECDH;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Request ECDH
 end note
 
 :**B3.** Create Wallet Token, Server Token;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Request Create Token
 end note
 
 :**B4.** Request User Registration;
 note right
-    [Wallet → TAS]
+    [Wallet → TA]
     * Request Register User
 end note
 
 :**B5.** Complete User Registration;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Confirm Register User
 end note
 
@@ -107,37 +107,37 @@ end fork
 
 :**D1.** Request Start Issuance;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Propose Issue VC
 end note
 
 :**D2.** ECDH;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Request ECDH
 end note
 
 :**D3.** Create Wallet Token, Server Token;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Request Create Token
 end note
 
 :**D4.** Request Issue Profile;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Request Issue Profile
 end note
 
 :**D5.** DID Auth and Request Issuance;
 note right
-    [Wallet → TAS]
+    [Wallet → TA]
     * Request Issue VC
 end note
 
 :**D6.** Complete Issuance;
 note right
-    [CApp → TAS]
+    [CApp → TA]
     * Confirm Issue VC
 end note
 

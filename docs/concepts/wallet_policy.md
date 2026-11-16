@@ -2,11 +2,12 @@
 
 - Subject: Wallet Policy
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v3.0.0  | 2026-11-16 | Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -23,7 +24,7 @@ When reinstalling the app, the types of wallets available to the user and the co
 
 ### App Wallet
 - **Use on the Same Device**: If the wallet to be used is an App Wallet when reinstalling the app, the previous wallet can only be used on the same device.
-    - **Device Verification**: TAS must know the device information of the App.
+    - **Device Verification**: TA must know the device information of the App.
 - **Device Restrictions**: App Wallet does not support a multi-device policy for a single user.
     - **Device Limitation**: One App Wallet can only be used on a single device.
 

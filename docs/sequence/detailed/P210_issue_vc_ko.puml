@@ -26,7 +26,11 @@ autonumber "<b>(#)</b>"
 !$doc = "데이터명세 문서 참조"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -41,7 +45,7 @@ box 인가앱 사업자 #AliceBlue
     participant "**CAS**" as cas <<WAS>> #WhiteSmoke
 end box
 
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
 
 box 신뢰저장소

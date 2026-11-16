@@ -10,7 +10,7 @@ box Mobile #OldLace
     participant "**Wallet**" as wal <<Wallet>>
 end box
 participant "**Wallet Provider**" as wp <<Server>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**Trust Repository**" as bc <<Blockchain>>
 
 activate ca
@@ -46,7 +46,7 @@ ca -> wal ++: Request Wallet Generation
             \n* walletDid (Wallet DID)
     return {attDidDoc}
 
-== (A4) Register Wallet with TAS ==
+== (A4) Register Wallet with TA ==
 
     wal -> tas ++: Request Register Wallet\n{attDidDoc}
         tas -> tas: Verify Signature\
@@ -55,7 +55,7 @@ ca -> wal ++: Request Wallet Generation
         
         tas -> tas: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS Information,\
+            \n   controller = TA Information,\
             \n   nonce = Generate Nonce\
             \n }
 
@@ -90,13 +90,13 @@ box Mobile #OldLace
     participant "**CApp**" as ca <<App>>
     participant "**Wallet**" as wal <<Wallet>>
 end box
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**Trust Repository**" as bc <<Blockchain>>
 
 rnote over ca, bc
     (Optional)
-    KYC may be performed before Request Register User for TAS to obtain a personal identification number
-    CApp may perform KYC and provide the personal identification number to TAS
+    KYC may be performed before Request Register User for TA to obtain a personal identification number
+    CApp may perform KYC and provide the personal identification number to TA
     
     * pii = personal identification number
 end rnote
@@ -230,7 +230,7 @@ ca -> wal ++: Request User Registration\n{walletToken, serverToken}
         
         tas -> tas: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS Information,\
+            \n   controller = TA Information,\
             \n   nonce = Generate Nonce\
             \n }
 
@@ -270,7 +270,7 @@ autonumber "<b>(#)</b>"
 actor "**User**" as user
 participant "**CApp**" as ca <<App>>
 participant "**List Provider**" as lp <<Server>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 
 == (C) Initiation ==
 
@@ -309,7 +309,7 @@ autonumber "<b>(#)</b>"
 
 'actor "**User**" as user
 participant "**CApp**" as ca <<App>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**Issuer**" as vf <<Server>>
 participant "**Notification Provider**" as noti <<Server>>
 
@@ -399,7 +399,7 @@ box Mobile #OldLace
     participant "**CApp**" as ca <<App>>
     participant "**Wallet**" as wal <<Wallet>>
 end box
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**Issuer**" as vf <<Server>>
 
 hnote over ca, vf #LimeGreen
@@ -409,8 +409,8 @@ end hnote
 
 rnote over ca, vf
     (Optional)
-    Before Request Issue Profile, KYC can be performed for TAS to obtain a personal identification number.
-    CApp can perform KYC and provide the personal identification number to TAS.
+    Before Request Issue Profile, KYC can be performed for TA to obtain a personal identification number.
+    CApp can perform KYC and provide the personal identification number to TA.
     
     * pii = personal identification number
 end rnote
@@ -422,7 +422,7 @@ activate ca
 ca -> tas ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
     tas -> tas: * Validate VC plan\n* Identify issuing issuer
     note right
-        Issuer identification is done by checking TAS DB or internal settings
+        Issuer identification is done by checking TA DB or internal settings
     end note
     tas -> vf ++: Inspect Propose\n{vcPlanId[, issuer, offerId]}
         vf -> vf: Check if VC issuance is possible

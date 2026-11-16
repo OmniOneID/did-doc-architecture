@@ -19,7 +19,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -28,8 +32,8 @@ box Entity사업자 #AliceBlue
     participant "**Entity**" as ENT <<WAS>> #WhiteSmoke
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 신뢰저장소
@@ -54,7 +58,7 @@ end note
 |||
 == P120-1 : Entity 등록 시작 요청 ==
 
-ENT -> TAS++ : Entity 등록 시작 요청
+ENT -> TA++ : Entity 등록 시작 요청
 rnote right of ENT #Lavender
     **[M120_REQ : Entity 등록 시작 요청]**
     body : 
@@ -83,7 +87,7 @@ rnote right of ENT #MintCream
     client|clientNonce|curve|publicKey|ENTndidate
 end note
 
-ENT -> TAS++ : ECDH 요청
+ENT -> TA++ : ECDH 요청
 rnote right of ENT #Lavender
     **[M120_REQ : ECDH 요청]**
     body : 
@@ -92,25 +96,25 @@ rnote right of ENT #Lavender
         reqEcdh
 end note
 
-    TAS -> TAS : reqEcdh 정합성 확인
-    TAS -> TAS : Server Nonce 생성
-    TAS -> TAS : mergedNonce 생성
-    rnote right of TAS #MintCream
+    TA -> TA : reqEcdh 정합성 확인
+    TA -> TA : Server Nonce 생성
+    TA -> TA : mergedNonce 생성
+    rnote right of TA #MintCream
         **mergedNonce**
         sha256(serverNonce, clientNonce)
     end note
-    TAS -> TAS: 임시키쌍 생성
+    TA -> TA: 임시키쌍 생성
 
-    TAS -> TAS: ECDH 수행\
+    TA -> TA: ECDH 수행\
                 \n* sesKey = 세션키\
 
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **sesKey**
         ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
     end note
-    TAS -> TAS: ECDH 수락 데이터 생성\
+    TA -> TA: ECDH 수락 데이터 생성\
                 \n* (AccEcdh)accEcdh
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **accEcdh** : $doc
         server|serverNonce|cipher|publicKey|padding
     end note
@@ -147,7 +151,7 @@ rnote right of ENT #MintCream
     **DidAuth** : $doc
 end note
 
-ENT -> TAS++ : Entity 등록 요청
+ENT -> TA++ : Entity 등록 요청
 rnote right of ENT #Lavender
     **[M120_REQ : Entity 등록 요청]**
     body : 
@@ -156,20 +160,20 @@ rnote right of ENT #Lavender
         didAuth
 end note
 
-    TAS -> TAS: vc: 가입증명서VC 발급
-    rnote right of TAS #MintCream
+    TA -> TA: vc: 가입증명서VC 발급
+    rnote right of TA #MintCream
         **가입증명서VC**: $refdoc
     end note
 
-    TAS -> TAS: vcMeta: 가입증명서VC 메타데이터 생성
-    rnote right of TAS #MintCream
+    TA -> TA: vcMeta: 가입증명서VC 메타데이터 생성
+    rnote right of TA #MintCream
         **vcMeta** : $doc
     end note
 
-    TAS -> BC++ : vcMeta 등록 {vcMeta}
+    TA -> BC++ : vcMeta 등록 {vcMeta}
     return OK
 
-    TAS -> TAS: vc 암호화\
+    TA -> TA: vc 암호화\
             \n* iv = IV 생성\
             \n* tmp = enc(vc, sesKey, iv, padding)\
             \n* encVc = multibase(tmp)
@@ -187,12 +191,12 @@ ENT -> ENT: encVc 복호화\
             \n* tmp = debase(encVc)\
             \n* vc = dec(tmp, sesKey, iv)
 
-ENT -> ENT: TAS 서명 검증 및 저장
+ENT -> ENT: TA 서명 검증 및 저장
 ENT -> ENT: vcId = VC id 추출
 
 |||
 == P120-4 : Entity 등록 완료 ==
-ENT -> TAS++ : Entity 등록 완료 요청
+ENT -> TA++ : Entity 등록 완료 요청
 rnote right of ENT #Lavender
     **[M120_REQ : Entity 등록 완료 요청]**
     body : 
@@ -201,7 +205,7 @@ rnote right of ENT #Lavender
         vcId
 end note
 
-    TAS -> TAS: vcId 일치여부 확인
+    TA -> TA: vcId 일치여부 확인
 
 return Entity 등록 완료 응답
 rnote right of ENT #Lavender

@@ -12,24 +12,28 @@ end footer
 
 '=== 제목 ===
 title
-	<size:25>P110 : TAS 등록</size>
+	<size:25>P110 : TA 등록</size>
 end title
 
 '=== 옵션 ===
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
 
-box TAS 관리자
-    actor "**TAS Admin**" as ADMIN #WhiteSmoke
+box TA 관리자
+    actor "**TA Admin**" as ADMIN #WhiteSmoke
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -48,25 +52,25 @@ end box
 '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 |||
 
-== TAS DID Document 등록  ==
+== TA DID Document 등록  ==
 rnote across #white
-    TAS DID Document 등록은 본 규격에서 다루지 않음.
+    TA DID Document 등록은 본 규격에서 다루지 않음.
 end note
 
 |||
 
-== P110 : TAS 등록 ==
-ADMIN -> TAS++: TAS 등록 요청
+== P110 : TA 등록 ==
+ADMIN -> TA++: TA 등록 요청
 rnote right of ADMIN #Lavender        
-    **[M110_REQ : TAS 등록 요청]**
+    **[M110_REQ : TA 등록 요청]**
 end note
 
-TAS -> TAS : TAS 가입증명서VC 생성
-TAS -> BC : 가입증명서VC 메타데이터 등록
+TA -> TA : TA 가입증명서VC 생성
+TA -> BC : 가입증명서VC 메타데이터 등록
 
-TAS --> ADMIN--: TAS 등록 응답
+TA --> ADMIN--: TA 등록 응답
 rnote right of ADMIN #Lavender        
-    **[M110_RES : TAS 등록 응답]**
+    **[M110_RES : TA 등록 응답]**
 end note
 
 |||

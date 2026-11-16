@@ -40,8 +40,8 @@ box 인가앱 사업자 #AliceBlue
     participant "**Proxy**" as PROXY <<Server>> #WhiteSmoke
 end box
 
-box TAS서버 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA서버 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 발급서버 #AliceBlue
@@ -59,7 +59,7 @@ end box
 |||
 
 == VC Plan 목록 조회 ==
-CA -> TAS++: VC Plan 목록 요청
+CA -> TA++: VC Plan 목록 요청
 activate CA
 return VC Plan 목록
 CA -> CA: issuanceMode = PROXY 인 VC Plan 선택
@@ -93,7 +93,7 @@ return {txId, profile, authNonce}
 rnote across #white
     월렛 토큰 생성 과정은 본 규격에서 다루지 않음
     `issue_wallet_token_simple` 참고
-    Proxy 모드에서는 TAS와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
+    Proxy 모드에서는 TA와의 ECDH 및 서버토큰 발급 단계를 수행하지 않는다.
 end note
 
 == P210-4 : VC 발급 요청 ==

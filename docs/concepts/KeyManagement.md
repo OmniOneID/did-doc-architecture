@@ -21,11 +21,11 @@ Key Management Information
 - Subject: Key Management
 - Author: OpenSource Development Team
 - Date: 2026-10-13
-- Version: v2.0.1
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v2.0.1  | 2026-10-13 | Fix typos       |
+| v3.0.0  | 2026-10-13 | Fix typos |
 | v2.0.0  | 2025-06-25 | Initial version |
 
 <br>

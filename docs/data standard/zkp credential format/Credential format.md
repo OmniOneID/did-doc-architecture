@@ -21,14 +21,14 @@ Credential Format
 - Subject: Definition of Credential Data Format
 - Author: Dongjun Park
 - Date: 2026-10-13
-- Version: v1.0.1
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Description                         |
 | ------- | ---------- | ----------------------------------- |
-| v1.0.1  | 2026-10-13 | Revise wording                      |
+| v3.0.0  | 2026-10-13 | Revise wording |
 | v0.0.1  | 2025-04-30 | Initial draft                       |
 
 <div style="page-break-after: always;"></div>

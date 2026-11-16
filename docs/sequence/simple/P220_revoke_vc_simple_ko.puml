@@ -22,7 +22,11 @@ autonumber "<b>(#)</b>"
 'hide footbox
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -35,8 +39,8 @@ box 모바일 #OldLace
     participant "**인가앱**" as CA <<App>> #WhiteSmoke    
 end box
 
-box TAS서버 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA서버 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 폐기서버 #AliceBlue
@@ -64,11 +68,11 @@ end box
 |||
 
 == P220-1 : VC 폐기 시작 요청 ==
-CA -> TAS++: VC 폐기 시작 요청
+CA -> TA++: VC 폐기 시작 요청
     rnote right of CA #Lavender
         **[M220_REQ : VC 폐기 시작 요청]**
     end note
-    TAS -> ISSUER++: VC 폐기 시작 요청
+    TA -> ISSUER++: VC 폐기 시작 요청
     return VC 폐기 시작 응답
 return VC 폐기 시작 응답
 rnote right of CA #Lavender
@@ -76,12 +80,12 @@ rnote right of CA #Lavender
 end note
 
 == P220-3 ECDH 요청 ==
-CA -> TAS++ : ECDH 요청
+CA -> TA++ : ECDH 요청
 rnote right of CA #Lavender
     **[M220_REQ : ECDH 요청]**
 end note
 
-TAS --> CA--: ECDH 응답
+TA --> CA--: ECDH 응답
 rnote right of CA #Lavender
     **[M220_RES : ECDH 응답]**
 end note
@@ -94,11 +98,11 @@ end note
 
 == P220-5 : VC 폐기 요청 ==
 CA -> WALLET++: VC 폐기 요청 
-    WALLET -> TAS++: VC 폐기 요청
+    WALLET -> TA++: VC 폐기 요청
         rnote right of CA #Lavender
             **[M220_REQ : VC 폐기 요청]**
         end note
-        TAS -> ISSUER++: VC 폐기 요청
+        TA -> ISSUER++: VC 폐기 요청
             ISSUER -> ISSUER: VC 폐기
             ISSUER -> BC: VC 상태변경
         return 결과 응답
@@ -113,11 +117,11 @@ CA -> WALLET++: VC 폐기 요청
 return 결과
 
 == P220-6 : VC 폐기 완료 ==
-CA -> TAS++: VC 폐기 완료 요청
+CA -> TA++: VC 폐기 완료 요청
     rnote right of CA #Lavender
         **[M220_REQ : VC 폐기 완료 요청]**
     end note
-    TAS -> ISSUER++: VC 폐기 완료 요청
+    TA -> ISSUER++: VC 폐기 완료 요청
     return VC 폐기 완료 응답
 return VC 폐기 완료 응답
 rnote right of CA #Lavender

@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Panticipants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -34,8 +38,8 @@ box 인가앱 사업자 #AliceBlue
     participant "**CAS**" as CAS <<WAS>> #WhiteSmoke
 end box
 
-box TAS 사업자 #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA 사업자 #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 box 신뢰저장소
@@ -54,7 +58,7 @@ end box
 |||
 
 == P132-1: 사용자 등록 시작 요청 ==
-CA -> TAS++: 사용자 등록 시작 요청
+CA -> TA++: 사용자 등록 시작 요청
 rnote right of CA #Lavender        
     **[M132_REQ: 사용자 등록 시작 요청]**
     body : 
@@ -102,7 +106,7 @@ end
 
 
 
-CA -> TAS++ : ECDH 요청
+CA -> TA++ : ECDH 요청
 rnote right of CA #Lavender
     **[M132_REQ : ECDH 요청]**
     body : 
@@ -112,33 +116,33 @@ rnote right of CA #Lavender
 end note
 
     opt KeyAgreement 서명 ON
-        TAS -> TAS: reqEcdh.proof 서명 검증
+        TA -> TA: reqEcdh.proof 서명 검증
     end
 
-    TAS -> TAS : reqEcdh 정합성 확인
-    TAS -> TAS : Server Nonce 생성
-    TAS -> TAS : mergedNonce 생성
-    rnote right of TAS #MintCream
+    TA -> TA : reqEcdh 정합성 확인
+    TA -> TA : Server Nonce 생성
+    TA -> TA : mergedNonce 생성
+    rnote right of TA #MintCream
         **mergedNonce**
         sha256(serverNonce, clientNonce)
     end note
-    TAS -> TAS: 임시키쌍 생성
+    TA -> TA: 임시키쌍 생성
 
-    TAS -> TAS: ECDH 수행\
+    TA -> TA: ECDH 수행\
                 \n* sesKey = 세션키\
 
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **sesKey**
         ecies(serverPriKey|clientPubKey|mergedNonce|cipherAlg)
     end note
-    TAS -> TAS: ECDH 수락 데이터 생성\
+    TA -> TA: ECDH 수락 데이터 생성\
                 \n* (AccEcdh)accEcdh
-    rnote right of TAS #MintCream
+    rnote right of TA #MintCream
         **accEcdh** : $doc
         server|serverNonce|cipher|publicKey|padding
     end note
     opt KeyAgreement 서명  ON
-        TAS -> TAS: signKeyAgree(accEcdh)
+        TA -> TA: signKeyAgree(accEcdh)
     end
 
 return ECDH 응답
@@ -281,7 +285,7 @@ CA -> CA: 서버토큰시드 생성\
         \n     caAppInfo\
         \n  }
 
-    CA -> TAS++ : 서버토큰 요청
+    CA -> TA++ : 서버토큰 요청
     rnote right of CA #LightGray        
         **[API_REQ : 서버토큰 요청]**
         body:
@@ -290,23 +294,23 @@ CA -> CA: 서버토큰시드 생성\
             seed
     end note
 
-    TAS -> TAS: 서명 검증\
+    TA -> TA: 서명 검증\
             \n* 월렛서명 검증\
             \n* 인증앱 사업자 서명 검증
 
-    TAS -> TAS: seed에서 정보 추출\
+    TA -> TA: seed에서 정보 추출\
             \n* appId = 인가앱 식별자\
             \n* walletId = 월렛 식별자\
             \n* walletDid = 월렛 DID\
             \n* walletProviderDid = 월렛 사업자 DID
 
-    TAS -> TAS: 등록된 월렛정보와 일치여부 확인
+    TA -> TA: 등록된 월렛정보와 일치여부 확인
 
-    TAS -> TAS: 서버토큰 생성 및 저장\
+    TA -> TA: 서버토큰 생성 및 저장\
             \n* (ServerTokenData)std 생성\
             \n* serverToken = sha256(std)
 
-    TAS -> TAS: 응답정보 암호화\
+    TA -> TA: 응답정보 암호화\
             \n* iv = IV 생성\
             \n* tmp = enc(std, sesKey, iv)\
             \n* encStd = multibase(tmp)
@@ -325,7 +329,7 @@ end note
 CA -> CA: encStd 복호화\
     \n encStd = decodeMultibase(encStd)\
     \n mergedNonce = clientNonce|serverNonce\
-    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TAS</sub>}\
+    \n secretKey = { priKey<sub>CA</sub> | pubKey<sub>TA</sub>}\
     \n sharedSecret = dec(secretKey, mergedNonce)\
     \n* std = dec(encStd, sharedSecret, iv) 
 
@@ -371,7 +375,7 @@ CA -> WALLET ++: 사용자 등록 요청\n{walletToken, serverToken}
     WALLET -> WALLET: 월렛 서명\
             \n* signAssert(sgdDidDoc)
 
-    WALLET -> TAS ++: 사용자 등록 요청
+    WALLET -> TA ++: 사용자 등록 요청
     rnote right of WALLET #Lavender
         **[M132_REQ : 사용자 등록 요청]**
         body:
@@ -380,27 +384,27 @@ CA -> WALLET ++: 사용자 등록 요청\n{walletToken, serverToken}
             serverToken
             signedDidDoc
     end note
-        TAS -> TAS: serverToken 검증
+        TA -> TA: serverToken 검증
 
-        TAS -> TAS: 서명 검증\
+        TA -> TA: 서명 검증\
             \n* 월렛 서명 검증\
             \n* 개별키 서명 검증
         
-        TAS -> TAS: (InvokedDidDoc)invDidDoc = {\
+        TA -> TA: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS 정보,\
+            \n   controller = TA 정보,\
             \n   nonce = nonce 생성\
             \n }
 
-        TAS -> TAS: Controller 서명\
+        TA -> TA: Controller 서명\
             \n* signInvoke(invDidDoc)
 
-        TAS -> BC ++: DID 등록 요청\n{invDidDoc}
+        TA -> BC ++: DID 등록 요청\n{invDidDoc}
             BC -> BC: Controller\n서명 검증
             BC -> BC: 등록
         return OK
 
-        TAS -> TAS: 사용자 매핑정보 DB 저장\
+        TA -> TA: 사용자 매핑정보 DB 저장\
                 \n* pii (개인식별번호)\
                 \n* holderDid (사용자 DID)\
                 \n* walletId (월렛 식별자)\
@@ -416,7 +420,7 @@ return OK
 
 |||
 == P132-5: 사용자 등록 완료  ==
-CA -> TAS++: 사용자 등록 완료 요청
+CA -> TA++: 사용자 등록 완료 요청
 rnote right of CA #Lavender        
     **[M132_REQ: 사용자 등록 완료 요청]**
     body:
@@ -425,8 +429,8 @@ rnote right of CA #Lavender
         serverToken
 end note
 
-    TAS -> TAS: serverToken 검증
-    TAS -> TAS: 세션정보 삭제 및 거래종료
+    TA -> TA: serverToken 검증
+    TA -> TA: 세션정보 삭제 및 거래종료
 
 return 사용자 등록 완료 응답
 rnote right of CA #Lavender        

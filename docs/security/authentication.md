@@ -4,12 +4,12 @@
 
 - Subject: Authentication and Secure Channel Creation
 - Author: OpenSource Development Team
-- Date: 2026-10-13
-- Version: v1.0.1
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v1.0.1  | 2026-10-13 | Fix typos       |
+| v3.0.0  | 2026-11-16 | Fix typos, Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -19,7 +19,7 @@ Entities may require authentication to trust other entities accessing them.<br>
 To receive authentication, an entity signs the agreed-upon data with its key and requests authentication from the other party.<br>
 The entity which receives the signed data can authenticate and trust the entity through signature verification.
 - Use Case
-    - In OpenDID, when a user requests VC issuance, TAS verifies the Holder's DID Authentication to perform KYC on their behalf.
+    - In OpenDID, when a user requests VC issuance, TA verifies the Holder's DID Authentication to perform KYC on their behalf.
 
 ### DID-based DID Authentication
 If the entity requesting authentication (A) is registered with a DID, it generates a signature with the Key ID (KID) value registered in the DID Doc and sends it.

@@ -20,15 +20,15 @@ Profile format
 - Subject
     - Profile Structure Definition
 - Author: OpenSource Development Team
-- Date: 2026-11-12
-- Version: v2.0.1
+- Date: 2026-11-16
+- Version: v3.0.0
 
 Revision History
 ---
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
-| v2.0.1 | 2026-11-12 | Fix typos, Revise wording, Add Profile structure diagram, Add reference documents |
+| v3.0.0 | 2026-11-16 | Fix typos, Revise wording, Add Profile structure diagram, Add reference documents, Unify TA naming |
 | v2.0.0 | 2025-05-09 | Add ZKP data     |
 | v1.0.0  | 2024-09-03 | Initial version |
 
@@ -394,7 +394,7 @@ def object VerifyProfile: "Verify Profile"
     - `displayClaims`
         - The list of claims to be displayed to the user, regardless of whether they are optional or required
         - Items included in `requiredClaims` should not be allowed to be deselected
-        - Whether to submit items that are in `requiredClaims` but not in `displayClaims` is determined by the TAS policy
+        - Whether to submit items that are in `requiredClaims` but not in `displayClaims` is determined by the TA policy
         - If unspecified, all claims should be displayed on the screen
     - `requiredClaims`
         - The list of claims that must be submitted

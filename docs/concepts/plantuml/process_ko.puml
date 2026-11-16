@@ -7,10 +7,10 @@ start
 |월렛 사업자|
 :**A3.** 월렛 DID Document 서명;
 
-|TAS|
+|TA|
 :**A4.** 월렛 등록;
 note right
-    [월렛 → TAS]
+    [월렛 → TA]
     * Request Register Wallet
 end note
 stop
@@ -23,31 +23,31 @@ start
 
 :**B1.** 사용자 등록 시작 요청;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Propose Register User
 end note
 
 :**B2.** ECDH;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Request ECDH
 end note
 
 :**B3.** 월렛토큰, 서버토큰 생성;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Request Create Token
 end note
 
 :**B4.** 사용자 등록 요청;
 note right
-    [월렛 → TAS]
+    [월렛 → TA]
     * Request Register User
 end note
 
 :**B5.** 사용자 등록 완료;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Confirm Register User
 end note
 
@@ -107,37 +107,37 @@ end fork
 
 :**D1.** 발급 시작 요청;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Propose Issue VC
 end note
 
 :**D2.** ECDH;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Request ECDH
 end note
 
 :**D3.** 월렛토큰, 서버토큰 생성;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Request Create Token
 end note
 
 :**D4.** Issue Profile 요청;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Request Issue Profile
 end note
 
 :**D5.** DID Auth 및 발급 요청;
 note right
-    [월렛 → TAS]
+    [월렛 → TA]
     * Request Issue VC
 end note
 
 :**D6.** 발급 완료;
 note right
-    [인가앱 → TAS]
+    [인가앱 → TA]
     * Confirm Issue VC
 end note
 

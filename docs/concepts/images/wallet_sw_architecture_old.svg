@@ -121,7 +121,7 @@
     </g>
     <g text-rendering="geometricPrecision" stroke-miterlimit="1.45" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-435,87)" stroke-linecap="butt">
       <rect fill="none" x="504.8388" width="252.8365" height="34.159" y="539.7894" clip-path="url(#clipPath2)"/>
-      <text x="560.9328" xml:space="preserve" y="561.4041" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">ETC (msg-TAS, DB, B/C)</text>
+      <text x="560.9328" xml:space="preserve" y="561.4041" clip-path="url(#clipPath2)" font-family="sans-serif" stroke="none">ETC (msg-TA, DB, B/C)</text>
     </g>
     <g fill="silver" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-435,87)" stroke="silver">
       <rect x="800.6752" width="109.9171" height="275.9473" y="310.7883" clip-path="url(#clipPath2)" stroke="none"/>

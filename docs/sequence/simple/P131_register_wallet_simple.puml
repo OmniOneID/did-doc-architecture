@@ -18,7 +18,11 @@ end title
 autonumber "<b>(#)</b>"
 
 '=== Participants ===
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 500
 skinparam MinClassWidth 80
@@ -28,8 +32,8 @@ box Mobile #OldLace
     participant "**Certified App**" as CA <<App>> #WhiteSmoke    
 end box
 
-box TAS Provider #AliceBlue
-    participant "**TAS**" as TAS <<WAS>> #WhiteSmoke
+box TA Provider #AliceBlue
+    participant "**TA**" as TA <<WAS>> #WhiteSmoke
 end box
 
 
@@ -53,12 +57,12 @@ end box
 CA -> WALLET++: Wallet Creation Request
 
 == Request for Allowed CA List ==
-WALLET -> TAS++: Request for Allowed CA List
+WALLET -> TA++: Request for Allowed CA List
 rnote right of CA #LightGray        
     **[API_REQ: Request for Allowed CA List]**
 end note
 
-TAS --> WALLET--: Response for Allowed CA List
+TA --> WALLET--: Response for Allowed CA List
 rnote right of CA #LightGray        
     **[API_RES: Response for Allowed CA List]**
 end note
@@ -74,7 +78,7 @@ WALLET -> WALLET: Create Wallet
 == Wallet DID Document Creation ==
 WALLET -> WALLET: Create Wallet DID Document
 rnote across #white
-    The Wallet Document must be signed by an entity trusted by the TAS.
+    The Wallet Document must be signed by an entity trusted by the TA.
     This process is not covered in this specification.
 end note
 
@@ -82,17 +86,17 @@ end note
 ||| 
 == P131: Wallet Registration Request ==
 
-WALLET -> TAS++: Wallet Registration Request
+WALLET -> TA++: Wallet Registration Request
 rnote right of CA #LightGray        
     **[M131_REQ: Wallet Registration Request]**
     body:
         Signed Wallet DID Document
 end note
 
-TAS -> TAS: Verify Wallet DID Document
-TAS -> BC: Register Wallet DID Document
+TA -> TA: Verify Wallet DID Document
+TA -> BC: Register Wallet DID Document
 
-TAS --> WALLET--: Wallet Registration Response
+TA --> WALLET--: Wallet Registration Response
 rnote right of CA #LightGray        
     **[M131_RES: Wallet Registration Response]**
 end note

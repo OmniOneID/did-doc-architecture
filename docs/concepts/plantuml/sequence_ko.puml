@@ -10,7 +10,7 @@ box 모바일 #OldLace
     participant "**월렛**" as wal <<Wallet>>
 end box
 participant "**월렛 사업자**" as wp <<Server>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**신뢰저장소**" as bc <<Blockchain>>
 
 activate ca
@@ -46,7 +46,7 @@ ca -> wal ++: 월렛 생성 요청
             \n* walletDid (월렛 DID)
     return {attDidDoc}
 
-== (A4) TAS에 월렛 등록 ==
+== (A4) TA에 월렛 등록 ==
 
     wal -> tas ++: Request Register Wallet\n{attDidDoc}
         tas -> tas: 서명 검증\
@@ -55,7 +55,7 @@ ca -> wal ++: 월렛 생성 요청
         
         tas -> tas: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS 정보,\
+            \n   controller = TA 정보,\
             \n   nonce = nonce 생성\
             \n }
 
@@ -89,13 +89,13 @@ box 모바일 #OldLace
     participant "**인가앱**" as ca <<App>>
     participant "**월렛**" as wal <<Wallet>>
 end box
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**신뢰저장소**" as bc <<Blockchain>>
 
 rnote over ca, bc
     (선택적 수행)
-    Request Register User 이전에 KYC 수행하여 TAS가 개인식별번호 획득
-    인가앱이 KYC 수행하여 TAS에 개인식별번호를 넘겨줄 수도 있음
+    Request Register User 이전에 KYC 수행하여 TA가 개인식별번호 획득
+    인가앱이 KYC 수행하여 TA에 개인식별번호를 넘겨줄 수도 있음
     
     * pii = 개인식별번호
 end rnote
@@ -229,7 +229,7 @@ ca -> wal ++: 사용자 등록 요청\n{walletToken, serverToken}
         
         tas -> tas: (InvokedDidDoc)invDidDoc = {\
             \n   didDoc,\
-            \n   controller = TAS 정보,\
+            \n   controller = TA 정보,\
             \n   nonce = nonce 생성\
             \n }
 
@@ -269,7 +269,7 @@ autonumber "<b>(#)</b>"
 actor "**사용자**" as user
 participant "**인가앱**" as ca <<App>>
 participant "**목록 사업자**" as lp <<Server>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 
 == (C) 개시 단계 ==
 
@@ -308,7 +308,7 @@ autonumber "<b>(#)</b>"
 
 'actor "**사용자**" as user
 participant "**인가앱**" as ca <<App>>
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
 participant "**알림 사업자**" as noti <<Server>>
 
@@ -396,7 +396,7 @@ box 모바일 #OldLace
     participant "**인가앱**" as ca <<App>>
     participant "**월렛**" as wal <<Wallet>>
 end box
-participant "**TAS**" as tas <<Server>>
+participant "**TA**" as tas <<Server>>
 participant "**발급 사업자**" as vf <<Server>>
 
 hnote over ca, vf #LimeGreen
@@ -406,8 +406,8 @@ end hnote
 
 rnote over ca, vf
     (선택적 수행)
-    Request Issue Profile 이전에 KYC 수행하여 TAS가 개인식별번호 획득
-    인가앱이 KYC 수행하여 TAS에 개인식별번호를 넘겨줄 수도 있음
+    Request Issue Profile 이전에 KYC 수행하여 TA가 개인식별번호 획득
+    인가앱이 KYC 수행하여 TA에 개인식별번호를 넘겨줄 수도 있음
     
     * pii = 개인식별번호
 end rnote
@@ -419,7 +419,7 @@ activate ca
 ca -> tas ++: Propose Issue VC\n{vcPlanId[, issuer, offerId]}
     tas -> tas: * VC plan 유효성 확인\n* 발급이슈어 식별
     note right
-        발급이슈어 식별은 TAS DB 또는
+        발급이슈어 식별은 TA DB 또는
         내부 설정에 저장된 정보를 확인
     end note
     tas -> vf ++: Inspect Propose\n{vcPlanId[, issuer, offerId]}

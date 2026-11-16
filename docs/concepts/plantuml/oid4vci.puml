@@ -6,7 +6,7 @@ skinparam padding 4
 
 actor "User" as user
 component "Wallet" as wallet
-component "TAS\n(List Provider)" as tas
+component "TA\n(List Provider)" as tas
 
 rectangle "Issuer (Issuer Server)" {
     component "Webview Issuance\n(User-Initiated)" as web
@@ -35,7 +35,11 @@ verifier -up-> sl : Check status
 
 @startuml oid4vci_seq_pre_authorized
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
@@ -88,7 +92,11 @@ wal -> wal: Verify and store Credential
 
 @startuml oid4vci_seq_authorization_code
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
@@ -136,13 +144,17 @@ return {credentials[{credential}]}
 
 @startuml oid4vci_seq_user_init
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 
 actor "**User**" as user
 participant "**Wallet**" as wal <<Wallet>>
-participant "**TAS**\n(List Provider)" as tas <<Server>>
+participant "**TA**\n(List Provider)" as tas <<Server>>
 box Issuer #AliceBlue
     participant "**Webview Issuance**" as web <<Server>>
     participant "**Credential Issuer**" as ci <<Server>>
@@ -194,7 +206,11 @@ INVALID --> [*]
 
 @startuml oid4vci_seq_revocation
 autonumber "<b>(#)</b>"
-skinparam ParticipantPadding 20
+<style>
+participant {
+  Padding 20
+}
+</style>
 skinparam BoxPadding 20
 skinparam MaxMessageSize 400
 

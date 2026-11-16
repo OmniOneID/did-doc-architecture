@@ -2,11 +2,12 @@
 
 - Subject: Man-in-the-middle Attack
 - Author: OpenSource Development Team
-- Date: 2024-10-18
-- Version: v1.0.0
+- Date: 2026-11-16
+- Version: v3.0.0
 
 | Version | Date       | Changes         |
 | ------- | ---------- | --------------- |
+| v3.0.0  | 2026-11-16 | Unify TA naming |
 | v1.0.0  | 2024-10-18 | Initial version |
 
 <br>
@@ -44,7 +45,7 @@ During ECDH execution, A and B can verify the key exchange request based on the 
 
 ### Explicit Defensive Measures
 - When the DID Doc specifies the entity's role,
-    - It becomes possible to verify if the DID request aligns with the entity's role (e.g., whether it is an Issuer or TAS).
+    - It becomes possible to verify if the DID request aligns with the entity's role (e.g., whether it is an Issuer or TA).
 - When the DID is provided alongside entity information from a directory service provider,
     - Including the DID helps verifying the entity requesting connection.
 
